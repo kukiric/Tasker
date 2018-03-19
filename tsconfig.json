@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "sourceMap": true,
+    "outDir": "./out",
+    "rootDir": "./src",
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "removeComments": true,
+    "noEmitOnError": true,
+    "baseUrl": "./src"
+  },
+  "exclude": [
+    "./node_modules/**/*",
+    "./migrations/*.ts",
+    "./seeds/*.ts",
+    "./knexfile.ts"
+  ]
+}

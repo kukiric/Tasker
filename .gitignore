@@ -1,0 +1,11 @@
+# Módulos instalados
+node_modules/
+
+# Javascript compilado
+out/
+
+# Configurações locais
+.env
+
+# Banco de dado de testes
+development.db
