@@ -46,6 +46,18 @@ export default class Task extends Model {
                 from: "task.id",
                 to: "work.task_id"
             }
+        },
+        users: {
+            relation: Model.ManyToManyRelation,
+            modelClass: User,
+            join: {
+                from: "task.id",
+                through: {
+                    from: "task_user.task_id",
+                    to: "task_user.user_id"
+                },
+                to: "user.id"
+            }
         }
     };
 }
