@@ -1,51 +1,13 @@
-import { Config as EnvConfig } from "knex";
+import { Config } from "knex";
+import "dotenv/config";
 
-interface Config {
-    development: EnvConfig;
-    staging: EnvConfig;
-    production: EnvConfig;
-}
-
-const localConfig: Config = {
-    development: {
-        client: "sqlite3",
-        useNullAsDefault: true,
-        connection: {
-            filename: "./development.db"
-        }
-    },
-
-    staging: {
-        client: "postgresql",
-        connection: {
-            database: "my_db",
-            user: "username",
-            password: "password"
-        },
-        pool: {
-            min: 2,
-            max: 10
-        },
-        migrations: {
-            tableName: "knex_migrations"
-        }
-    },
-
-    production: {
-        client: "postgresql",
-        connection: {
-            database: "my_db",
-            user: "username",
-            password: "password"
-        },
-        pool: {
-            min: 2,
-            max: 10
-        },
-        migrations: {
-            tableName: "knex_migrations"
-        }
+module.exports = <Config> {
+    client: process.env.DB_CLIENT,
+    connection: {
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        filename: process.env.DB_DATABASE
     }
 };
-
-module.exports = localConfig;

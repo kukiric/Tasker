@@ -7,20 +7,15 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "nodemon",
-            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/nodemon",
+            "name": "Launch",
+            "runtimeExecutable": "node",
             "program": "${workspaceFolder}/index.js",
-            "internalConsoleOptions": "neverOpen",
-            "console": "integratedTerminal",
-            "timeout": 3600000,
-            "args": [
-                "-e",
-                "js ts"
-            ],
-            "restart": true,
             "env": {
                 "NODE_ENV": "development"
-            }
+            },
+            "args": [
+                "--nolazy"
+            ]
         }
     ]
 }
