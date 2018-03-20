@@ -5,6 +5,10 @@ const Server = new HapiServer({
     host: process.env.HOSTNAME,
     address: process.env.ADDRESS,
     port: process.env.PORT,
+    router: {
+        isCaseSensitive: false,
+        stripTrailingSlash: true
+    },
     debug: {
         request: ["*"]
     }

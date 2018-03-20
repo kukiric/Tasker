@@ -8,10 +8,9 @@ export default {
     register: async function(server: Server, options: ServerRegisterOptions) {
         function registerController(controller: any) {
             console.log("Registrando controlador: " + controller.name);
-            const controllerRoutes = controller.routes();
-            for (let method in controllerRoutes) {
-                for (let path in controllerRoutes[method]) {
-                    let handler = controllerRoutes[method][path];
+            for (let method in controller.routes) {
+                for (let path in controller.routes[method]) {
+                    let handler = controller.routes[method][path];
                     server.route({ method, path, handler });
                 }
             }
@@ -19,4 +18,4 @@ export default {
         console.log("Registrando rotas...");
         registerController(UserController);
     }
-}
+};
