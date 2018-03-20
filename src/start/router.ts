@@ -2,8 +2,7 @@ import UserController from "api/controllers/UserController";
 import { Plugin, Server, ServerRegisterOptions } from "hapi";
 
 export default {
-
-    name: "Router 1.0",
+    name: "tasker-router",
     version: "1.0",
 
     register: async function(server: Server, options: ServerRegisterOptions) {
