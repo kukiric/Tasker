@@ -1,0 +1,16 @@
+{
+    "defaultSeverity": "warning",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "rules": {
+        "ordered-imports": false,
+        "only-arrow-functions": false,
+        "space-before-function-paren": false,
+        "trailing-comma": [true, { "singleline": "never", "multiline": "never" }],
+        "object-literal-sort-keys": false,
+        "arrow-parens": false,
+        "prefer-const": false
+    },
+    "rulesDirectory": []
+}
