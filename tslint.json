@@ -10,7 +10,8 @@
         "trailing-comma": [true, { "singleline": "never", "multiline": "never" }],
         "object-literal-sort-keys": false,
         "arrow-parens": false,
-        "prefer-const": false
+        "prefer-const": false,
+        "no-console": false
     },
     "rulesDirectory": []
 }
