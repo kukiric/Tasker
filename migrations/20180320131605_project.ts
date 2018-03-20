@@ -7,7 +7,7 @@ exports.up = async function (knex: Knex): Promise<any> {
         table.date("due_date").notNullable();
         table.string("status", 45).notNullable();
         table.integer("manager_id").references("user");
-        table.timestamps();
+        table.timestamps(true, true);
     });
 };
 
