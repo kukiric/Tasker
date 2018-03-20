@@ -11,11 +11,14 @@ const Server = new HapiServer({
 });
 
 export async function start() {
-    await Server.register(Router, {
+    // Registra o roteador da aplicação
+    await Server.register({
+        plugin: Router,
         routes: {
             prefix: "/api"
         }
     });
+    // Inicia a aplicação
     await Server.start();
     console.log("Servidor iniciado no endereço: " + Server.info.uri);
 }
