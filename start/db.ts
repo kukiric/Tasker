@@ -1,4 +1,4 @@
-import * as knexfile from "../../knexfile";
+import * as knexfile from "knexfile";
 import { Model } from "objection";
 import * as knex from "knex";
 

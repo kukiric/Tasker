@@ -2,7 +2,7 @@
 node_modules/
 
 # Javascript compilado
-out/
+compiled/
 
 # Configurações locais
 .env
