@@ -56,8 +56,14 @@ export default class User extends Model {
     }
 
     public $formatJson(json: Pojo) {
+        // Remove informações sensíveis
         delete json.password;
+        // Remove IDs de joins
         delete json.role_id;
+        // Insere valores unitários direto no objeto-raiz
+        if (json.role) {
+            json.role = json.role.name;
+        }
         return super.$formatJson(json);
     }
 }

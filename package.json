@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/dotenv": "^4.0.2",
     "@types/hapi": "^17.0.7",
+    "@types/joi": "^13.0.6",
     "@types/knex": "^0.14.9",
     "app-module-path": "^2.2.0",
     "boom": "^7.2.0",

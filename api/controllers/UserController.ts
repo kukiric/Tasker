@@ -1,24 +1,38 @@
 import { Request, ResponseToolkit } from "hapi";
-import Controller from "api/controllers/Controller";
+import Controller, { RouteDefinitions } from "api/controllers/Controller";
 import User from "api/models/User";
 import * as Boom from "boom";
+import * as Joi from "joi";
 
 export default class UserController implements Controller {
 
-    public get routes() {
+    // Validações padrão
+    private params = {
+        id: Joi.number().required()
+    };
+    private payload = {
+        username: Joi.string().required(),
+        email: Joi.string().email().required(),
+        fullname: Joi.string().required(),
+        password: Joi.string().min(6),
+        role_id: Joi.number()
+    };
+
+    // Rotas do controller
+    public get routes(): RouteDefinitions {
         return {
             GET: {
-                "/users": this.getAll,
-                "/users/{id}": this.getSingle
+                "/users": { handler: this.getAll },
+                "/users/{id}": { handler: this.getSingle, params: this.params }
             },
             POST: {
-                "/users": this.insert
+                "/users": { handler: this.insert, payload: this.payload }
             },
             PUT: {
-                "/users/{id}": this.update
+                "/users/{id}": { handler: this.update, params: this.params, payload: this.payload }
             },
             DELETE: {
-                "/users/{id}": this.delete
+                "/users/{id}": { handler: this.delete, params: this.params }
             }
         };
     }
@@ -27,6 +41,7 @@ export default class UserController implements Controller {
         return await User.eagerQuery().select("*");
     }
 
+    // Handlers
     public async getSingle(request: Request, h: ResponseToolkit) {
         let id = request.params.id;
         return await User.eagerQuery().select("*").where("id", id).limit(1);
