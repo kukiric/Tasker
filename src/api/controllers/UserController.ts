@@ -38,8 +38,7 @@ export default class UserController implements Controller {
             return await User.query().insert(params).returning("*");
         }
         catch (err) {
-            console.log(JSON.stringify(err, null, 4));
-            return Boom.badData(err.message);
+            return Boom.badData(err.detail ? err.detail : err.message);
         }
     }
 
@@ -51,7 +50,7 @@ export default class UserController implements Controller {
             return await User.query().update(params).where({ id: id }).returning("*");
         }
         catch (err) {
-            return Boom.badData(err.message);
+            return Boom.badData(err.detail ? err.detail : err.message);
         }
     }
 
