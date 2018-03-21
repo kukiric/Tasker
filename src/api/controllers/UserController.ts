@@ -1,10 +1,11 @@
 import { Request, ResponseToolkit as Response } from "hapi";
-import * as Boom from "boom";
+import Controller from "api/controllers/Controller";
 import User from "api/models/User";
+import * as Boom from "boom";
 
-export default class UserController {
+export default class UserController implements Controller {
 
-    public static get routes() {
+    public get routes() {
         return {
             GET: {
                 "/users": this.getAll,
@@ -22,26 +23,27 @@ export default class UserController {
         };
     }
 
-    public static async getAll(req: Request, res: Response) {
+    public async getAll(req: Request, res: Response) {
         return await User.query().select("*");
     }
 
-    public static async getSingle(req: Request, res: Response) {
+    public async getSingle(req: Request, res: Response) {
         let id = req.params.id;
         return await User.query().select("*").where("id", id).limit(1);
     }
 
-    public static async insert(req: Request, res: Response) {
+    public async insert(req: Request, res: Response) {
         try {
             let params: any = req.payload;
             return await User.query().insert(params).returning("*");
         }
         catch (err) {
+            console.log(JSON.stringify(err, null, 4));
             return Boom.badData(err.message);
         }
     }
 
-    public static async update(req: Request, res: Response) {
+    public async update(req: Request, res: Response) {
         try {
             let id = req.params.id;
             let params: any = req.payload;
@@ -53,7 +55,7 @@ export default class UserController {
         }
     }
 
-    public static async delete(req: Request, res: Response) {
+    public async delete(req: Request, res: Response) {
         let id = req.params.id;
         return {
             deleted: await User.query().del().where({ id: id })
