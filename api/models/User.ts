@@ -1,13 +1,18 @@
 import { Model, RelationMappings, Pojo } from "objection";
 
 export default class User extends Model {
+
     public static tableName = "user";
+
     public static get relationMappings(): RelationMappings {
+
         const Project = require("api/models/Project").default;
         const Role = require("api/models/Role").default;
         const Work = require("api/models/Work").default;
         const Task = require("api/models/Task").default;
+
         return {
+            // Relação User <- Role
             role: {
                 relation: Model.HasOneRelation,
                 modelClass: Role,
@@ -16,6 +21,7 @@ export default class User extends Model {
                     to: "role.id"
                 }
             },
+            // Relação User <= Work
             work_items: {
                 relation: Model.HasManyRelation,
                 modelClass: Work,
@@ -24,6 +30,7 @@ export default class User extends Model {
                     to: "work.user_id"
                 }
             },
+            // Relação User <=> Project
             projects: {
                 relation: Model.ManyToManyRelation,
                 modelClass: Project,
@@ -36,6 +43,7 @@ export default class User extends Model {
                     to: "project.id"
                 }
             },
+            // Relação User <=> Task
             tasks: {
                 relation: Model.ManyToManyRelation,
                 modelClass: Task,

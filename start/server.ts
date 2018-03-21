@@ -2,9 +2,11 @@ import { Server as HapiServer, Request, ResponseToolkit, Lifecycle } from "hapi"
 import router from "start/router";
 import * as Boom from "boom";
 
+// Trata erros genéricos
 function handleErrors(request: Request, h: ResponseToolkit, err: any): Lifecycle.ReturnValue {
     let error = err ? err : request.response as any;
-    if (error.isBoom) {
+    let statusCode = error.output ? error.output.statusCode : error.statusCode;
+    if (error.isBoom && (statusCode === 400 || statusCode === 500)) {
         return Boom.badData(error.detail ? error.detail : error.message);
     }
     else {
@@ -30,6 +32,8 @@ const server = new HapiServer({
     }
 });
 
+server.ext("onPreResponse", handleErrors);
+
 export async function start() {
     // Registra o roteador da aplicação
     await server.register({
@@ -38,8 +42,6 @@ export async function start() {
             prefix: "/api"
         }
     });
-    // Registra os tratadores de erros
-    server.ext("onPreResponse", handleErrors);
     console.log("Iniciando a aplicação...");
     await server.start();
     console.log("Servidor iniciado no endereço: " + server.info.uri);

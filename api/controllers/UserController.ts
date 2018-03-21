@@ -6,11 +6,13 @@ import * as Joi from "joi";
 
 export default class UserController implements Controller {
 
-    // Validações padrão
+    // Validações
     private params = {
         id: Joi.number().required()
     };
+
     private payload = {
+        id: Joi.forbidden(),
         username: Joi.string().required(),
         email: Joi.string().email().required(),
         fullname: Joi.string().required(),
@@ -55,9 +57,7 @@ export default class UserController implements Controller {
     public async update(request: Request, h: ResponseToolkit) {
         let id = request.params.id;
         let params: any = request.payload;
-        // Não tenta atualizar o id
-        delete params.id;
-        return await User.query().update(params).where({ id: id }).returning("*");
+        return await User.eagerQuery().update(params).where({ id: id }).returning("*");
     }
 
     public async delete(request: Request, h: ResponseToolkit) {
