@@ -1,7 +1,9 @@
 import { Server as HapiServer } from "hapi";
-import Router from "start/router";
+import { createErrorHandler } from "start/error";
+import router from "start/router";
+import DatabaseErrorHandler from "api/handlers/DatabaseErrorHandler";
 
-const Server = new HapiServer({
+const server = new HapiServer({
     host: process.env.HOSTNAME,
     address: process.env.ADDRESS,
     port: process.env.PORT,
@@ -16,15 +18,19 @@ const Server = new HapiServer({
 
 export async function start() {
     // Registra o roteador da aplicação
-    await Server.register({
-        plugin: Router,
+    await server.register({
+        plugin: router,
         routes: {
             prefix: "/api"
         }
     });
-    // Inicia a aplicação
-    await Server.start();
-    console.log("Servidor iniciado no endereço: " + Server.info.uri);
+    // Registra os tratadores de erros
+    server.ext("onPreResponse", createErrorHandler([
+        new DatabaseErrorHandler()
+    ]));
+    console.log("Iniciando a aplicação...");
+    await server.start();
+    console.log("Servidor iniciado no endereço: " + server.info.uri);
 }
 
-export default Server;
+export default server;

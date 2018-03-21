@@ -2,20 +2,14 @@ import * as knexfile from "knexfile";
 import { Model } from "objection";
 import * as knex from "knex";
 
-const Database = knex(knexfile);
-Model.knex(Database);
+const db = knex(knexfile);
+Model.knex(db);
 
 export async function testDB() {
-    try {
-        console.log(`Conectando ao banco "${process.env.DB_DATABASE}" (${process.env.DB_CLIENT})...`);
-        let result = await Database.raw("select true;");
-        console.log(`Conexão realizada com sucesso!`);
-        return result;
-    }
-    catch (err) {
-        console.error(err.stack);
-        throw err;
-    }
+    console.log(`Conectando ao banco "${process.env.DB_DATABASE}" (${process.env.DB_CLIENT})...`);
+    let result = await db.raw("select true;");
+    console.log(`Conexão realizada com sucesso!`);
+    return result;
 }
 
-export default Database;
+export default db;

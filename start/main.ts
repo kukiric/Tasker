@@ -1,4 +1,7 @@
-import Server, { start } from "start/server";
-import Database, { testDB } from "start/db";
+import { start } from "start/server";
+import { testDB } from "start/db";
 
-testDB().then(start);
+testDB().then(start).catch(err => {
+    console.error(err.stack);
+    process.exit(1);
+});

@@ -1,4 +1,4 @@
-import { Request, ResponseToolkit as Response } from "hapi";
+import { Request, ResponseToolkit } from "hapi";
 import Controller from "api/controllers/Controller";
 import User from "api/models/User";
 import * as Boom from "boom";
@@ -23,39 +23,30 @@ export default class UserController implements Controller {
         };
     }
 
-    public async getAll(req: Request, res: Response) {
-        return await User.query().select("*");
+    public async getAll(request: Request, h: ResponseToolkit) {
+        return await User.eagerQuery().select("*");
     }
 
-    public async getSingle(req: Request, res: Response) {
-        let id = req.params.id;
-        return await User.query().select("*").where("id", id).limit(1);
+    public async getSingle(request: Request, h: ResponseToolkit) {
+        let id = request.params.id;
+        return await User.eagerQuery().select("*").where("id", id).limit(1);
     }
 
-    public async insert(req: Request, res: Response) {
-        try {
-            let params: any = req.payload;
-            return await User.query().insert(params).returning("*");
-        }
-        catch (err) {
-            return Boom.badData(err.detail ? err.detail : err.message);
-        }
+    public async insert(request: Request, h: ResponseToolkit) {
+        let params: any = request.payload;
+        return await User.eagerQuery().insert(params).returning("*");
     }
 
-    public async update(req: Request, res: Response) {
-        try {
-            let id = req.params.id;
-            let params: any = req.payload;
-            params.id = undefined;
-            return await User.query().update(params).where({ id: id }).returning("*");
-        }
-        catch (err) {
-            return Boom.badData(err.detail ? err.detail : err.message);
-        }
+    public async update(request: Request, h: ResponseToolkit) {
+        let id = request.params.id;
+        let params: any = request.payload;
+        // Não tenta atualizar o id
+        delete params.id;
+        return await User.query().update(params).where({ id: id }).returning("*");
     }
 
-    public async delete(req: Request, res: Response) {
-        let id = req.params.id;
+    public async delete(request: Request, h: ResponseToolkit) {
+        let id = request.params.id;
         return {
             deleted: await User.query().del().where({ id: id })
         };
