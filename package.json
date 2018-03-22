@@ -5,7 +5,10 @@
   "main": "compiled/index.js",
   "scripts": {
     "build": "tsc -p .",
-    "start": "node compiled/index.js"
+    "start": "node compiled/index.js",
+    "migrate:latest": "knex migrate:latest",
+    "migrate:fallback": "knex migrate:fallback",
+    "dev": "ts-node index.js"
   },
   "author": "",
   "license": "MIT",
