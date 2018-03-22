@@ -40,7 +40,7 @@ export default class UserController implements Controller {
     }
 
     public async getAll(request: Request, h: ResponseToolkit) {
-        return await User.eagerQuery().select("*");
+        return await User.query().select("*");
     }
 
     // Handlers
