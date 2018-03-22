@@ -1,4 +1,4 @@
-import { Model, RelationMappings } from "objection";
+import { Model, RelationMappings, Pojo } from "objection";
 
 export default class Project extends Model {
     public static tableName = "project";
@@ -57,5 +57,15 @@ export default class Project extends Model {
                 }
             }
         };
+    }
+
+    public static eagerQuery() {
+        return this.query().eager("[manager, versions, tasks, users, tags]");
+    }
+
+    public $formatJson(json: Pojo) {
+        // Remove IDs de joins
+        delete json.manager_id;;
+        return super.$formatJson(json);
     }
 }

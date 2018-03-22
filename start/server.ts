@@ -7,7 +7,14 @@ function handleErrors(request: Request, h: ResponseToolkit, err: any): Lifecycle
     let error = err ? err : request.response as any;
     let statusCode = error.output ? error.output.statusCode : error.statusCode;
     if (error.isBoom && (statusCode === 400 || statusCode === 500)) {
-        return Boom.badData(error.detail ? error.detail : error.message);
+        if (error.detail) {
+            // Filtra o erro no banco
+            return Boom.badRequest(error.message.replace(/^.+ - /, ""));
+        }
+        else {
+            // Retorna o erro completo
+            return Boom.badRequest(error.message);
+        }
     }
     else {
         return h.continue;

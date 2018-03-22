@@ -2,6 +2,7 @@ import { Plugin, Server, ServerRegisterOptions } from "hapi";
 import Controller from "api/controllers/Controller";
 
 import UserController from "api/controllers/UserController";
+import ProjectController from "api/controllers/ProjectController";
 
 export default {
     name: "tasker-router",
@@ -21,6 +22,7 @@ export default {
         }
         console.log("Registrando rotas...");
         registerController(new UserController());
+        registerController(new ProjectController());
         console.log("Finalizado registro de rotas!");
     }
 };

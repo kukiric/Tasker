@@ -39,11 +39,11 @@ export default class UserController implements Controller {
         };
     }
 
+    // Handlers
     public async getAll(request: Request, h: ResponseToolkit) {
         return await User.query().select("*");
     }
 
-    // Handlers
     public async getSingle(request: Request, h: ResponseToolkit) {
         let id = request.params.id;
         return await User.eagerQuery().select("*").where("id", id).limit(1);
