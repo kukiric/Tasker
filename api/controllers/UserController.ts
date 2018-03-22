@@ -11,11 +11,20 @@ export default class UserController implements Controller {
         id: Joi.number().required()
     };
 
-    private payload = {
+    private post = {
         id: Joi.forbidden(),
         username: Joi.string().required(),
         email: Joi.string().email().required(),
         fullname: Joi.string().required(),
+        password: Joi.string().min(6),
+        role_id: Joi.number()
+    };
+
+    private put = {
+        id: Joi.forbidden(),
+        username: Joi.string(),
+        email: Joi.string().email(),
+        fullname: Joi.string(),
         password: Joi.string().min(6),
         role_id: Joi.number()
     };
@@ -28,10 +37,10 @@ export default class UserController implements Controller {
                 "/users/{id}": { handler: this.getSingle, params: this.params }
             },
             POST: {
-                "/users": { handler: this.insert, payload: this.payload }
+                "/users": { handler: this.insert, payload: this.post }
             },
             PUT: {
-                "/users/{id}": { handler: this.update, params: this.params, payload: this.payload }
+                "/users/{id}": { handler: this.update, params: this.params, payload: this.put}
             },
             DELETE: {
                 "/users/{id}": { handler: this.delete, params: this.params }
