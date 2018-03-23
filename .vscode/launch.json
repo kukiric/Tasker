@@ -10,13 +10,14 @@
             "name": "Launch",
             "runtimeExecutable": "node",
             "program": "${workspaceFolder}/index.js",
+            "protocol": "inspector",
             "env": {
                 "NODE_ENV": "development"
             },
             "runtimeArgs": [
                 "--nolazy",
                 "-r",
-                "ts-node/register"
+                "ts-node/register/type-check"
             ]
         }
     ]

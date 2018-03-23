@@ -8,7 +8,7 @@
     "start": "node compiled/index.js",
     "migrate:latest": "knex migrate:latest",
     "migrate:fallback": "knex migrate:fallback",
-    "dev": "ts-node index.js"
+    "dev": "ts-node --type-check index.js"
   },
   "author": "",
   "license": "MIT",
