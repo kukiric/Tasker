@@ -46,7 +46,7 @@ export default class UserController implements Controller {
 
     public async getSingle(request: Request, h: ResponseToolkit) {
         let id = request.params.id;
-        return await User.eagerQuery().select("*").where("id", id).limit(1);
+        return await User.eagerQuery().select("*").where("id", id).first();
     }
 
     public async insert(request: Request, h: ResponseToolkit) {

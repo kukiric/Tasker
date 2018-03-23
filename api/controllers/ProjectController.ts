@@ -31,7 +31,9 @@ export default class ProjectController implements Controller {
         return {
             GET: {
                 "/projects": { handler: this.getAll },
-                "/projects/{id}": { handler: this.getSingle, params: this.idValidator }
+                "/projects/{id}": { handler: this.getSingle, params: this.idValidator },
+                "/projects/{id}/users": { handler: this.getManager, params: this.idValidator },
+                "/projects/{id}/manager": { handler: this.getManager, params: this.idValidator }
             },
             POST: {
                 "/projects": { handler: this.insert, payload: this.payloadProjectValidator },
@@ -54,7 +56,13 @@ export default class ProjectController implements Controller {
 
     public async getSingle(request: Request, h: ResponseToolkit) {
         let id = request.params.id;
-        return await Project.eagerQuery().select("*").where("id", id).limit(1);
+        return await Project.eagerQuery().select("*").where("id", id).first();
+    }
+    
+    public async getManager(request: Request, h: ResponseToolkit) {
+        let id = request.params.id;
+        let project = await Project.query().eager("manager").select("*").first();
+        return (project as any).manager;
     }
 
     public async insert(request: Request, h: ResponseToolkit) {
@@ -86,6 +94,10 @@ export default class ProjectController implements Controller {
     }
 
     public async deleteUser(request: Request, h: ResponseToolkit) {
-        return new Error("Not implemented");
+        let id = request.params.id;
+        let uid = request.params.uid;
+        return {
+            deleted: await Model.knex()("project_user").del().where({ project_id: id, user_id: uid })
+        };
     }
 }
