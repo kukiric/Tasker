@@ -1,13 +1,22 @@
 import { Request, ResponseToolkit } from "hapi";
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
 import Project from "api/models/Project";
-import { Model } from "objection";
+import User from "api/models/User";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
 export default class ProjectController implements Controller {
 
-    // Validações
+    // Erros padrões
+    private notFound(id: any) {
+        return Boom.notFound(`Project with id ${id} not found`);
+    }
+
+    private userNotFound(id: any, uid: any) {
+        return Boom.notFound(`User with id ${uid} not found in project with id ${id}`);
+    }
+
+    // Validadores
     private idValidator = {
         id: Joi.number().required()
     };
@@ -17,87 +26,114 @@ export default class ProjectController implements Controller {
         uid: Joi.number().required()
     };
 
-    private payloadProjectValidator = {
-        id: Joi.forbidden(),
-        name: Joi.string(),
-        due_date: Joi.date(),
-        status: Joi.string().max(45),
-        manager_id: Joi.number(),
-        users: Joi.object()
+    private userIdValidator = {
+        user: Joi.object(this.idValidator).required()
     };
 
-    // Rotas do controller
-    public get routes(): RouteDefinitions {
-        return {
-            GET: {
-                "/projects": { handler: this.getAll },
-                "/projects/{id}": { handler: this.getSingle, params: this.idValidator },
-                "/projects/{id}/users": { handler: this.getManager, params: this.idValidator },
-                "/projects/{id}/manager": { handler: this.getManager, params: this.idValidator }
+    private projectValidator = {
+        id: Joi.forbidden(),
+        name: Joi.string().required(),
+        due_date: Joi.date().required(),
+        status: Joi.string().max(45).required(),
+        manager_id: Joi.number().optional()
+    };
+
+    // Rotas
+    public routes: RouteDefinitions = {
+        GET: {
+            "/projects": {
+                handler: async () => {
+                    return await Project.query().eager("manager").select("*");
+                }
             },
-            POST: {
-                "/projects": { handler: this.insert, payload: this.payloadProjectValidator },
-                "/projects/{id}/users": { handler: this.insertUser, params: this.idValidator, payload: this.idValidator }
+            "/projects/{id}": {
+                paramsValidator: this.idValidator,
+                handler: async ({ id }) => {
+                    let project = await Project.query()
+                        .eager("[manager, versions, tasks, users, tags]")
+                        .select("*").findById(id)
+                    return project ? project : this.notFound(id);
+                }
             },
-            PUT: {
-                "/projects/{id}": { handler: this.update, params: this.idValidator, payload: this.idValidator }
+            "/projects/{id}/users": {
+                paramsValidator: this.idValidator,
+                handler: async ({ id }) => {
+                    let project = await Project.query()
+                        .eager("users").select("*")
+                        .findById(id) as any;
+                    return project ? project.users : this.notFound(id);
+                }
             },
-            DELETE: {
-                "/projects/{id}": { handler: this.delete, params: this.idValidator },
-                "/projects/{id}/users/{uid}": { handler: this.deleteUser, params: this.idAndUidValidator }
+            "/projects/{id}/manager": {
+                paramsValidator: this.idValidator,
+                handler: async ({ id }) => {
+                    let project = await Project.query()
+                        .eager("manager").select("*")
+                        .findById(id) as any;
+                    return project && project.manager ? project.manager : this.notFound(id);
+                }
             }
-        };
-    }
-
-    // Handlers
-    public async getAll(request: Request, h: ResponseToolkit) {
-        return await Project.query().eager("manager").select("*");
-    }
-
-    public async getSingle(request: Request, h: ResponseToolkit) {
-        let id = request.params.id;
-        return await Project.eagerQuery().select("*").where("id", id).first();
-    }
-    
-    public async getManager(request: Request, h: ResponseToolkit) {
-        let id = request.params.id;
-        let project = await Project.query().eager("manager").select("*").first();
-        return (project as any).manager;
-    }
-
-    public async insert(request: Request, h: ResponseToolkit) {
-        let body: any = request.payload;
-        return await Project.eagerQuery().insert(body).returning("*");
-    }
-
-    public async insertUser(request: Request, h: ResponseToolkit) {
-        let id = request.params.id;
-        let body: any = request.payload;
-        await Model.knex()("project_user").insert({
-            project_id: id,
-            user_id: body.id
-        });
-        return await new ProjectController().getSingle(request, h);
-    }
-
-    public async update(request: Request, h: ResponseToolkit) {
-        let id = request.params.id;
-        let body: any = request.payload;
-        return await Project.eagerQuery().update(body).where({ id: id }).returning("*");
-    }
-
-    public async delete(request: Request, h: ResponseToolkit) {
-        let id = request.params.id;
-        return {
-            deleted: await Project.query().del().where({ id: id })
-        };
-    }
-
-    public async deleteUser(request: Request, h: ResponseToolkit) {
-        let id = request.params.id;
-        let uid = request.params.uid;
-        return {
-            deleted: await Model.knex()("project_user").del().where({ project_id: id, user_id: uid })
-        };
-    }
+        },
+        POST: {
+            "/projects": {
+                payloadValidator: this.projectValidator,
+                handler: async ({ ...body }, h) => {
+                    let newProject = await Project.query()
+                        .eager("[manager, versions, tasks, users, tags]")
+                        .insert(body).returning("*");
+                    return h.response(newProject).code(201);
+                }
+            },
+            "/projects/{id}/users": {
+                paramsValidator: this.idValidator,
+                payloadValidator: this.userIdValidator,
+                handler: async ({ id, ...body }, h) => {
+                    let project = await Project.query().findById(id);
+                    if (project) {
+                        let relation = await project.$relatedQuery("users").relate(body.user.id);
+                        return h.response(relation).code(201);
+                    }
+                    return this.notFound(id);
+                }
+            }
+        },
+        PUT: {
+            "/projects/{id}": {
+                paramsValidator: this.idValidator,
+                payloadValidator: this.projectValidator,
+                handler: async ({ id, ...body }) => {
+                    let project = await Project.query()
+                        .eager("role").update(body).where({ id: id })
+                        .returning("*").first();
+                    return project ? project : this.notFound(id);
+                }
+            }
+        },
+        DELETE: {
+            "/projects/{id}": {
+                paramsValidator: this.idValidator,
+                handler: async ({ id }, h) => {
+                    let deleted = await Project.query().del().where({ id: id });
+                    if (deleted) {
+                        return h.response().code(204);
+                    }
+                    return this.notFound(id);
+                }
+            },
+            "/projects/{id}/users/{uid}": {
+                paramsValidator: this.idAndUidValidator,
+                handler: async ({ id, uid }, h) => {
+                    let project = await Project.query().findById(id);
+                    if (project) {
+                        let deleted = await project.$relatedQuery("users").unrelate().where({ id: uid });
+                        if (deleted) {
+                            return h.response().code(204);
+                        }
+                        return this.userNotFound(id, uid);
+                    }
+                    return this.notFound(id);
+                }
+            }
+        }
+    };
 }

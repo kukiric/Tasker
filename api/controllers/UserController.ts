@@ -6,64 +6,77 @@ import * as Joi from "joi";
 
 export default class UserController implements Controller {
 
-    // Validações
-    private params = {
+    // Erros padrões
+    private notFound(id: any) {
+        return Boom.notFound(`User with id ${id} not found`);
+    }
+
+    // Validadores
+    private idValidator = {
         id: Joi.number().required()
     };
 
-    private payload = {
+    private userValidator = {
         id: Joi.forbidden(),
-        username: Joi.string(),
-        email: Joi.string().email(),
-        fullname: Joi.string(),
-        password: Joi.string().min(6),
+        username: Joi.string().required(),
+        email: Joi.string().email().required(),
+        fullname: Joi.string().required(),
+        password: Joi.string().min(6).required(),
         role_id: Joi.number()
     };
 
-    // Rotas do controller
-    public get routes(): RouteDefinitions {
-        return {
-            GET: {
-                "/users": { handler: this.getAll },
-                "/users/{id}": { handler: this.getSingle, params: this.params }
+    // Rotas
+    public routes: RouteDefinitions = {
+        GET: {
+            "/users": {
+                handler: async () => {
+                    return await User.query().eager("role").select("*");
+                }
             },
-            POST: {
-                "/users": { handler: this.insert, payload: this.payload }
-            },
-            PUT: {
-                "/users/{id}": { handler: this.update, params: this.params, payload: this.payload }
-            },
-            DELETE: {
-                "/users/{id}": { handler: this.delete, params: this.params }
+            "/users/{id}": {
+                paramsValidator: this.idValidator,
+                handler: async ({ id }) => {
+                    let user = await User.query()
+                        .eager("[role, projects, work_items, tasks]")
+                        .select("*").where("id", id).first();
+                    return user ? user : this.notFound(id);
+                }
             }
-        };
-    }
-
-    // Handlers
-    public async getAll(request: Request, h: ResponseToolkit) {
-        return await User.query().select("*");
-    }
-
-    public async getSingle(request: Request, h: ResponseToolkit) {
-        let id = request.params.id;
-        return await User.eagerQuery().select("*").where("id", id).first();
-    }
-
-    public async insert(request: Request, h: ResponseToolkit) {
-        let params: any = request.payload;
-        return await User.eagerQuery().insert(params).returning("*");
-    }
-
-    public async update(request: Request, h: ResponseToolkit) {
-        let id = request.params.id;
-        let params: any = request.payload;
-        return await User.eagerQuery().update(params).where({ id: id }).returning("*");
-    }
-
-    public async delete(request: Request, h: ResponseToolkit) {
-        let id = request.params.id;
-        return {
-            deleted: await User.query().del().where({ id: id })
-        };
-    }
+        },
+        POST: {
+            "/users": {
+                payloadValidator: this.userValidator,
+                handler: async ({ ...body }, h) => {
+                    let newUser = await User.query()
+                        .eager("[role, projects, work_items, tasks]")
+                        .insert(body).returning("*");
+                    return h.response(newUser).code(201);
+                }
+            }
+        },
+        PUT: {
+            "/users/{id}": {
+                paramsValidator: this.idValidator,
+                payloadValidator: this.userValidator,
+                handler: async ({ id, ...body }) => {
+                    let user = await User.query()
+                        .eager("role").update(body).where({ id: id })
+                        .returning("*").first();
+                    return user ? user : this.notFound(id);
+                }
+            }
+        },
+        DELETE: {
+            "/users/{id}": {
+                paramsValidator: this.idValidator,
+                handler: async ({ id }, h) => {
+                    let deleted = await User.query().del().where({ id: id });
+                    if (deleted) {
+                        return h.response().code(204);
+                    }
+                    return this.notFound(id);
+                }
+            }
+        }
+    };
 }

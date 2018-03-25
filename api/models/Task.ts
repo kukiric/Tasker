@@ -2,6 +2,17 @@ import { Model, RelationMappings } from "objection";
 
 export default class Task extends Model {
     public static tableName = "task";
+    public id!: number;
+    public description!: string;
+    public due_date?: Date;
+    public estimate_work_hour?: number;
+    public type!: string;
+    public status!: string;
+    public progress?: number;
+    public project_id?: number;
+    public parent_id?: number;
+    public version_id?: number;
+
     public static get relationMappings(): RelationMappings {
         const Project = require("api/models/Project").default;
         const Version = require("api/models/Version").default;

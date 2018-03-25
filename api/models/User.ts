@@ -1,8 +1,17 @@
 import { Model, RelationMappings, Pojo } from "objection";
 
 export default class User extends Model {
-
     public static tableName = "user";
+    public id!: number;
+    public username!: string;
+    public email!: string;
+    public password!: string;
+    public fullname!: string;
+    public role_id?: number;
+    public work_items?: any;
+    public projects?: any;
+    public tasks?: any;
+    public role?: any;
 
     public static get relationMappings(): RelationMappings {
 
@@ -68,10 +77,6 @@ export default class User extends Model {
         delete json.password;
         // Remove IDs de joins
         delete json.role_id;
-        // Insere valores unitários direto no objeto-raiz
-        if (json.role) {
-            json.role = json.role.name;
-        }
         return super.$formatJson(json);
     }
 }

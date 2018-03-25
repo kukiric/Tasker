@@ -1,26 +1,33 @@
 import { Server as HapiServer, Request, ResponseToolkit, Lifecycle } from "hapi";
-import router from "start/router";
+import apiPlugin from "api/plugin";
 import * as Boom from "boom";
 
 // Trata erros genéricos
-function handleErrors(request: Request, h: ResponseToolkit, err: any): Lifecycle.ReturnValue {
+function handleInternalError(request: Request, h: ResponseToolkit, err: any): Lifecycle.ReturnValue {
     let error = err ? err : request.response as any;
     let statusCode = error.output ? error.output.statusCode : error.statusCode;
-    if (error.isBoom && (statusCode === 400 || statusCode === 500)) {
-        if (error.detail) {
-            // Filtra o erro no banco
-            return Boom.badRequest(error.message.replace(/^.+ - /, ""));
-        }
-        else {
-            // Retorna o erro completo
-            return Boom.badRequest(error.message);
-        }
+    // Erro no banco
+    if (error.isBoom && error.detail) {
+        return Boom.badRequest(error.message.replace(/^.+ - /, ""));
     }
+    // Recurso vazio
+    else if (request.response === undefined) {
+        return Boom.notFound("The requested resource is empty");
+    }
+    // Outro erro ou nenhum erro
     else {
         return h.continue;
     }
 }
 
+// Trata erros de validação
+function handleValidationError(request: Request, h: ResponseToolkit, err: any): Lifecycle.ReturnValue {
+    let boom = Boom.badRequest("Input validation failed");
+    Object.assign(boom.output.payload, { details: err.details });
+    return boom;
+}
+
+// Configura o servidor do HAPI
 const server = new HapiServer({
     host: process.env.HOSTNAME,
     address: process.env.ADDRESS,
@@ -31,7 +38,10 @@ const server = new HapiServer({
     },
     routes: {
         validate: {
-            failAction: handleErrors
+            failAction: handleValidationError,
+            options: {
+                abortEarly: false
+            }
         }
     },
     debug: {
@@ -39,12 +49,10 @@ const server = new HapiServer({
     }
 });
 
-server.ext("onPreResponse", handleErrors);
-
 export async function start() {
-    // Registra o roteador da aplicação
+    server.ext("onPreResponse", handleInternalError);
     await server.register({
-        plugin: router,
+        plugin: apiPlugin,
         routes: {
             prefix: "/api"
         }

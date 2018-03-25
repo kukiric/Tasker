@@ -2,6 +2,17 @@ import { Model, RelationMappings, Pojo } from "objection";
 
 export default class Project extends Model {
     public static tableName = "project";
+    public id!: number;
+    public name!: string;
+    public due_date!: Date;
+    public status!: string;
+    public manager_id?: number;
+    public manager?: any;
+    public versions?: any;
+    public tasks?: any;
+    public users?: any;
+    public tags?: any;
+
     public static get relationMappings(): RelationMappings {
         const Version = require("api/models/Version").default;
         const Task = require("api/models/Task").default;
@@ -59,13 +70,9 @@ export default class Project extends Model {
         };
     }
 
-    public static eagerQuery() {
-        return this.query().eager("[manager, versions, tasks, users, tags]");
-    }
-
     public $formatJson(json: Pojo) {
         // Remove IDs de joins
-        delete json.manager_id;;
+        delete json.manager_id;
         return super.$formatJson(json);
     }
 }
