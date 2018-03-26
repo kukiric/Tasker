@@ -53,7 +53,7 @@ export default class ProjectController implements Controller {
                 handler: async ({ id }) => {
                     let project = await Project.query()
                         .eager("[manager, versions, tasks, users, tags]")
-                        .select("*").findById(id)
+                        .select("*").findById(id);
                     return project ? project : this.notFound(id);
                 }
             },
@@ -82,7 +82,7 @@ export default class ProjectController implements Controller {
                 handler: async ({ ...body }, h) => {
                     let newProject = await Project.query()
                         .eager("[manager, versions, tasks, users, tags]")
-                        .insert(body).returning("*");
+                        .insert(body).returning("*").first();
                     return h.response(newProject).code(201);
                 }
             },
@@ -105,7 +105,8 @@ export default class ProjectController implements Controller {
                 payloadValidator: this.projectValidator,
                 handler: async ({ id, ...body }) => {
                     let project = await Project.query()
-                        .eager("role").update(body).where({ id: id })
+                        .eager("[manager, versions, tasks, users, tags]")
+                        .update(body).where({ id: id })
                         .returning("*").first();
                     return project ? project : this.notFound(id);
                 }

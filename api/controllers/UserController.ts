@@ -49,7 +49,7 @@ export default class UserController implements Controller {
                 handler: async ({ ...body }, h) => {
                     let newUser = await User.query()
                         .eager("[role, projects, work_items, tasks]")
-                        .insert(body).returning("*");
+                        .insert(body).returning("*").first();
                     return h.response(newUser).code(201);
                 }
             }
@@ -60,7 +60,7 @@ export default class UserController implements Controller {
                 payloadValidator: this.userValidator,
                 handler: async ({ id, ...body }) => {
                     let user = await User.query()
-                        .eager("role").update(body).where({ id: id })
+                        .eager("[role, projects, work_items, tasks]").update(body).where({ id: id })
                         .returning("*").first();
                     return user ? user : this.notFound(id);
                 }
