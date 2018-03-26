@@ -2,15 +2,15 @@ import * as Knex from "knex";
 
 exports.up = async function (knex: Knex): Promise<any> {
     let roles = knex.table("role");
-    await roles.insert({ name: "admin" });
-    await roles.insert({ name: "manager" });
-    await roles.insert({ name: "team member" });
+    await roles.insert({ name: "Admin" });
+    await roles.insert({ name: "Manager" });
+    await roles.insert({ name: "Team Member" });
 };
 
 exports.down = async function (knex: Knex): Promise<any> {
     let roles = knex.table("role");
-    roles.where({ name: "admin" });
-    roles.orWhere({ name: "manager" });
-    roles.orWhere({ name: "team member" });
+    roles.where({ name: "Admin" });
+    roles.orWhere({ name: "Manager" });
+    roles.orWhere({ name: "Team Member" });
     await roles.del();
 };
