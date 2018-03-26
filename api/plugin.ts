@@ -7,6 +7,7 @@ import * as Joi from "joi";
 import TagController from "api/controllers/TagController";
 import UserController from "api/controllers/UserController";
 import RoleController from "api/controllers/RoleController";
+import WorkController from "api/controllers/WorkController";
 import ProjectController from "api/controllers/ProjectController";
 import VersionController from "api/controllers/VersionController";
 
@@ -52,6 +53,7 @@ export default {
         registerController(server, new TagController());
         registerController(server, new UserController());
         registerController(server, new RoleController());
+        registerController(server, new WorkController());
         registerController(server, new ProjectController());
         registerController(server, new VersionController());
         console.log("Finalizado registro de rotas!");
