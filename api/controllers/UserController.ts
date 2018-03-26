@@ -21,7 +21,7 @@ export default class UserController implements Controller {
         email: Joi.string().email().required(),
         fullname: Joi.string().required(),
         password: Joi.string().min(6).required(),
-        role_id: Joi.number()
+        role_id: Joi.number().optional()
     };
 
     // Rotas

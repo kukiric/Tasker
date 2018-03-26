@@ -71,7 +71,7 @@ export default class Project extends Model {
     }
 
     public $formatJson(json: Pojo) {
-        // Remove IDs de joins
+        // Remove todos os IDs de joins para deixar o JSON mais limpo
         delete json.manager_id;
         return super.$formatJson(json);
     }

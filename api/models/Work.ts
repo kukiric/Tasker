@@ -33,13 +33,6 @@ export default class Work extends Model {
     }
 
     public $formatJson(json: Pojo) {
-        // Insere as foreign keys dentro de objetos para compatibilidade entre GET / e GET /id
-        if (!json.user) {
-            json.user = { id: json.user_id };
-        }
-        if (!json.task) {
-            json.task = { id: json.task_id };
-        }
         // Remove as foreign keys
         delete json.task_id;
         delete json.user_id;

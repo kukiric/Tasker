@@ -1,4 +1,4 @@
-import { Model, RelationMappings } from "objection";
+import { Model, RelationMappings, Pojo } from "objection";
 
 export default class Task extends Model {
     public static tableName = "task";
@@ -72,5 +72,13 @@ export default class Task extends Model {
                 }
             }
         };
+    }
+
+    public $formatJson(json: Pojo) {
+        // Remove os IDs de joins
+        delete json.project_id;
+        delete json.parent_id;
+        delete json.version_id;
+        return super.$formatJson(json);
     }
 }
