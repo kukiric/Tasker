@@ -17,6 +17,8 @@ export default class ProjectController implements Controller {
     }
 
     // Validadores
+    private statuses = ["Novo", "Em andamento", "Concluído"];
+
     private idValidator = {
         id: Joi.number().required()
     };
@@ -34,7 +36,7 @@ export default class ProjectController implements Controller {
         id: Joi.forbidden(),
         name: Joi.string().required(),
         due_date: Joi.date().required(),
-        status: Joi.string().max(45).required(),
+        status: Joi.string().only(this.statuses).required(),
         manager_id: Joi.number().optional()
     };
 
