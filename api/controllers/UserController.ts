@@ -1,4 +1,3 @@
-import { Request, ResponseToolkit } from "hapi";
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
 import User from "api/models/User";
 import * as Boom from "boom";
@@ -6,7 +5,7 @@ import * as Joi from "joi";
 
 export default class UserController implements Controller {
 
-    // Erros padrões
+    // Erro padrão
     private notFound(id: any) {
         return Boom.notFound(`User with id ${id} not found`);
     }

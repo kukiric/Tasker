@@ -1,4 +1,3 @@
-import { Request, ResponseToolkit } from "hapi";
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
 import Project from "api/models/Project";
 import User from "api/models/User";

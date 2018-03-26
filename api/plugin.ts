@@ -7,6 +7,7 @@ import * as Joi from "joi";
 import TagController from "api/controllers/TagController";
 import UserController from "api/controllers/UserController";
 import ProjectController from "api/controllers/ProjectController";
+import VersionController from "api/controllers/VersionController";
 
 /**
  * Encapsula os parâmetros de ambos os tipos (url e payload) no mesmo objeto antes de passar para o controlador
@@ -50,6 +51,7 @@ export default {
         registerController(server, new TagController());
         registerController(server, new UserController());
         registerController(server, new ProjectController());
+        registerController(server, new VersionController());
         console.log("Finalizado registro de rotas!");
     }
 } as Plugin<any>;
