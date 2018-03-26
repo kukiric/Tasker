@@ -22,10 +22,12 @@ export default class Version extends Model {
 
     public $formatJson(json: Pojo) {
         if (json.project) {
-            // Insere o nome do projeto direto no json
-            json.project_name = json.project.name;
-            // Remove o projeto antes de enviar
-            delete json.project;
+            // Insere somente o nome e o ID do projeto
+            json.project = {
+                name: json.project.name,
+                id: json.project.id
+            };
+            delete json.project_id;
         }
         return super.$formatJson(json);
     }
