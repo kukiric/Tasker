@@ -6,8 +6,8 @@ exports.up = async function (knex: Knex): Promise<any> {
         table.integer("hours").notNullable();
         table.dateTime("start_time");
         table.dateTime("end_time");
-        table.integer("user_id").references("user");
-        table.integer("task_id").references("task");
+        table.integer("user_id").references("user.id");
+        table.integer("task_id").references("task.id");
     });
 };
 

@@ -9,9 +9,9 @@ exports.up = async function (knex: Knex): Promise<any> {
         table.string("type", 45).notNullable();
         table.string("status", 45).notNullable();
         table.float("progress");
-        table.integer("project_id").references("project");
-        table.integer("parent_id").references("task");
-        table.integer("version_id").references("version");
+        table.integer("project_id").references("project.id");
+        table.integer("parent_id").references("task.id");
+        table.integer("version_id");
     });
 };
 

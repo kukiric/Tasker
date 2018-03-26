@@ -2,8 +2,8 @@ import * as Knex from "knex";
 
 exports.up = async function (knex: Knex): Promise<any> {
     return knex.schema.createTable("tag_project", table => {
-        table.integer("tag_id").references("tag");
-        table.integer("project_id").references("project");
+        table.integer("tag_id").references("tag.id");
+        table.integer("project_id").references("project.id");
         table.primary(["tag_id", "project_id"]);
     });
 };

@@ -5,7 +5,7 @@ exports.up = async function (knex: Knex): Promise<any> {
         table.increments();
         table.string("name").notNullable();
         table.string("type", 45).notNullable();
-        table.integer("project_id").references("project");
+        table.integer("project_id").references("project.id");
     });
 };
 
