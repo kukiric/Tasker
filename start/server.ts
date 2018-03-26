@@ -10,14 +10,7 @@ function handleInternalError(request: Request, h: ResponseToolkit, err: any): Li
     if (error.isBoom && error.detail) {
         return Boom.badRequest(error.message.replace(/^.+ - /, ""));
     }
-    // Recurso vazio
-    else if (request.response === undefined) {
-        return Boom.notFound("The requested resource is empty");
-    }
-    // Outro erro ou nenhum erro
-    else {
-        return h.continue;
-    }
+    return h.continue;
 }
 
 // Trata erros de validação

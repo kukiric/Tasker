@@ -4,6 +4,7 @@ import Controller, { PathHandler, RouteMapping, Route } from "api/controllers/Co
 import * as Joi from "joi";
 
 // Controladores carregados
+import TagController from "api/controllers/TagController";
 import UserController from "api/controllers/UserController";
 import ProjectController from "api/controllers/ProjectController";
 
@@ -46,6 +47,7 @@ export default {
 
     register: async function(server: Server, serverOpts: ServerRegisterOptions) {
         console.log("Registrando rotas...");
+        registerController(server, new TagController());
         registerController(server, new UserController());
         registerController(server, new ProjectController());
         console.log("Finalizado registro de rotas!");
