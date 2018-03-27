@@ -38,7 +38,8 @@ function registerController(server: Server, controller: Controller) {
                     params: route.paramsValidator,
                     payload: route.payloadValidator
                 },
-                tags: ["api", controllerName.replace(regex, "$1 $2")]
+                tags: ["api", controllerName.replace(regex, "$1 $2")],
+                auth: route.auth || false
             };
             // Função de tratamento
             let handler: PathHandler = encapsulateParams.bind(undefined, route.handler);
@@ -47,26 +48,49 @@ function registerController(server: Server, controller: Controller) {
     }
 }
 
+function validate(...args: any[]) {
+    console.log(args);
+    return false;
+}
+
 // Define o plugin do Hapi
 export default {
     name: "Tasker API",
     version: "1.0",
 
     register: async function(server: Server, serverOpts: ServerRegisterOptions) {
-        console.log("Registrando o hapi-swagger...");
+        console.log("Registrando o hapi-swaggered...");
         const swaggerOptions = {
-            grouping: "tags",
-            sortEndpoints: "method",
-            info: {
-                title: this.name,
-                version: this.version
+            backend: {
+                info: {
+                    title: this.name,
+                    version: this.version
+                },
+                tagging: {
+                    mode: "tags"
+                }
+            },
+            ui: {
+                title: this.name + " Documentation",
+                path: "/docs",
+                swaggerOptions: {
+                    operationsSorter: "method",
+                    docExpansion: "none"
+                }
             }
         };
         await server.register([
             { plugin: require("vision"), once: true },
             { plugin: require("inert"), once: true },
-            { plugin: require("hapi-swagger"), options: swaggerOptions }
+            { plugin: require("hapi-swaggered"), options: swaggerOptions.backend },
+            { plugin: require("hapi-swaggered-ui"), options: swaggerOptions.ui }
         ]);
+        console.log("Registrando o hapi-auth-jwt2...");
+        await server.register(require("hapi-auth-jwt2"));
+        server.auth.strategy("jwt", "jwt", {
+            key: process.env.SECRET_KEY,
+            validate: validate
+        });
         console.log("Registrando rotas da aplicação...");
         registerController(server, new TagController());
         registerController(server, new UserController());

@@ -1,4 +1,4 @@
-import { Lifecycle, Request, ResponseToolkit } from "hapi";
+import { Lifecycle, Request, ResponseToolkit, RouteOptionsAccess } from "hapi";
 import * as Joi from "joi";
 
 /**
@@ -29,6 +29,10 @@ export interface Route {
     payloadValidator?: {
         [name: string]: Joi.AnySchema
     };
+    /**
+     * Parâmetros de autenticação necessários na rota
+     */
+    auth?: string | false | RouteOptionsAccess;
     /**
      * Função que responde à requisição
      */
