@@ -54,7 +54,6 @@ export default {
 
     register: async function(server: Server, serverOpts: ServerRegisterOptions) {
         console.log("Registrando o hapi-swagger...");
-        console.log(serverOpts);
         const swaggerOptions = {
             grouping: "tags",
             sortEndpoints: "method",

@@ -82,7 +82,7 @@ export default class ProjectController implements Controller {
                 paramsValidator: this.idValidator,
                 handler: async ({ id }) => {
                     let project = await Project.query()
-                        .eager("[manager, versions, tasks, users, tags]")
+                        .eager("[manager, versions, tasks.[users, work_items, version, parent, children], users, tags]")
                         .select("*").findById(id);
                     return project ? project : this.notFound(id);
                 }
