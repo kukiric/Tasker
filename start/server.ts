@@ -43,6 +43,10 @@ const server = new HapiServer({
 });
 
 export async function start() {
+    if (!process.env.SECRET_KEY || process.env.SECRET_KEY.length < 32) {
+        throw new Error("Chave secreta muito curta! Crie uma chave secreta de 32 ou mais "
+                      + "caracteres e configure-a na varíavel SECRET_KEY no arquivo .env.");
+    }
     server.ext("onPreResponse", handleInternalError);
     await server.register({
         plugin: apiPlugin,

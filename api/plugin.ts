@@ -11,6 +11,7 @@ import TaskController from "api/controllers/TaskController";
 import WorkController from "api/controllers/WorkController";
 import ProjectController from "api/controllers/ProjectController";
 import VersionController from "api/controllers/VersionController";
+import AuthController from "api/controllers/AuthController";
 
 /**
  * Encapsula os parâmetros de ambos os tipos (url e payload) no mesmo objeto antes de passar para o controlador
@@ -49,6 +50,7 @@ function registerController(server: Server, controller: Controller) {
 }
 
 function validate(...args: any[]) {
+    console.log("Tentando autenticar com parâmetros:");
     console.log(args);
     return false;
 }
@@ -99,6 +101,7 @@ export default {
         registerController(server, new TaskController());
         registerController(server, new ProjectController());
         registerController(server, new VersionController());
+        registerController(server, new AuthController());
         console.log("Finalizado registro da aplicação!");
     }
 };
