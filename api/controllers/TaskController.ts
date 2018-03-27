@@ -20,7 +20,7 @@ export default class TaskController implements Controller {
     private statuses = ["Nova", "Atribuída", "Em Desenvolvimento", "Requer Teste", "Concluída"];
 
     private idValidator = {
-        id: Joi.number().required()
+        id: Joi.number().required().example(1)
     };
 
     private workIdValidator = {
@@ -38,13 +38,13 @@ export default class TaskController implements Controller {
 
     private taskValidator = {
         id: Joi.forbidden(),
-        description: Joi.string().required(),
-        due_date: Joi.date().optional(),
-        estimate_work_hour: Joi.number().optional(),
-        type: Joi.string().only(this.types).required(),
+        description: Joi.string().required().example("Tarefa Exemplo"),
+        due_date: Joi.date().optional().example("2018-06-30"),
+        estimate_work_hour: Joi.number().optional().example(16),
+        type: Joi.string().only(this.types).required().example("Funcionalidade"),
         status: Joi.string().only(this.statuses).required(),
-        progress: Joi.number().optional(),
-        project_id: Joi.number().required(),
+        progress: Joi.number().optional().example(0),
+        project_id: Joi.number().required().example(1),
         parent_id: Joi.number().optional(),
         version_id: Joi.number().optional()
     };

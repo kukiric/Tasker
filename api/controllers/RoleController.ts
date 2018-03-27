@@ -3,7 +3,7 @@ import Role from "api/models/Role";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
-export default class TagController implements Controller {
+export default class RoleController implements Controller {
 
     // Erro padrão
     private notFound(id: any) {
@@ -12,7 +12,7 @@ export default class TagController implements Controller {
 
     // Validadores
     private idValidator = {
-        id: Joi.number().required()
+        id: Joi.number().required().example(1)
     };
 
     // Rotas

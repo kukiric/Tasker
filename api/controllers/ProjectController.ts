@@ -20,7 +20,7 @@ export default class ProjectController implements Controller {
     private statuses = ["Novo", "Em andamento", "Concluído"];
 
     private idValidator = {
-        id: Joi.number().required()
+        id: Joi.number().required().example(1)
     };
 
     private dualIdValidator = {
@@ -42,10 +42,10 @@ export default class ProjectController implements Controller {
 
     private projectValidator = {
         id: Joi.forbidden(),
-        name: Joi.string().required(),
-        due_date: Joi.date().required(),
+        name: Joi.string().required().example("Projeto Exemplo"),
+        due_date: Joi.date().required().example("2018-12-31"),
         status: Joi.string().only(this.statuses).required(),
-        manager_id: Joi.number().optional()
+        manager_id: Joi.number().optional().example(1)
     };
 
     // Métodos utilitários

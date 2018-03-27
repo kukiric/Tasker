@@ -25,7 +25,9 @@ function encapsulateParams(handler: PathHandler, request: Request, h: ResponseTo
  * Registra as rotas do controlador no servidor
  */
 function registerController(server: Server, controller: Controller) {
-    console.log("Registrando controlador: " + controller.constructor.name);
+    let regex = /^(.+)(Controller)$/;
+    let controllerName = controller.constructor.name;
+    console.log("Registrando controlador: " + controllerName);
     for (let method in controller.routes) {
         for (let path in controller.routes[method]) {
             // Objeto da rota
@@ -36,7 +38,7 @@ function registerController(server: Server, controller: Controller) {
                     params: route.paramsValidator,
                     payload: route.payloadValidator
                 },
-                tags: ["api"]
+                tags: ["api", controllerName.replace(regex, "$1 $2")]
             };
             // Função de tratamento
             let handler: PathHandler = encapsulateParams.bind(undefined, route.handler);
@@ -51,7 +53,22 @@ export default {
     version: "1.0",
 
     register: async function(server: Server, serverOpts: ServerRegisterOptions) {
-        console.log("Registrando rotas...");
+        console.log("Registrando o hapi-swagger...");
+        console.log(serverOpts);
+        const swaggerOptions = {
+            grouping: "tags",
+            sortEndpoints: "method",
+            info: {
+                title: this.name,
+                version: this.version
+            }
+        };
+        await server.register([
+            { plugin: require("vision"), once: true },
+            { plugin: require("inert"), once: true },
+            { plugin: require("hapi-swagger"), options: swaggerOptions }
+        ]);
+        console.log("Registrando rotas da aplicação...");
         registerController(server, new TagController());
         registerController(server, new UserController());
         registerController(server, new RoleController());
@@ -59,6 +76,6 @@ export default {
         registerController(server, new TaskController());
         registerController(server, new ProjectController());
         registerController(server, new VersionController());
-        console.log("Finalizado registro de rotas!");
+        console.log("Finalizado registro da aplicação!");
     }
-} as Plugin<any>;
+};

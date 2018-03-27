@@ -12,16 +12,16 @@ export default class WorkController implements Controller {
 
     // Validadores
     private idValidator = {
-        id: Joi.number().required()
+        id: Joi.number().required().example(1)
     };
 
     private workValidator = {
         id: Joi.forbidden(),
-        hours: Joi.number().required(),
+        hours: Joi.number().required().example(4),
         start_time: Joi.date().optional(),
         end_time: Joi.date().optional(),
-        user_id: Joi.number().required(),
-        task_id: Joi.number().required()
+        user_id: Joi.number().required().example(1),
+        task_id: Joi.number().required().example(1)
     };
 
     // Rotas

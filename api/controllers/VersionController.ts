@@ -14,14 +14,14 @@ export default class VersionController implements Controller {
     private types = ["Passado", "Presente", "Futuro"];
 
     private idValidator = {
-        id: Joi.number().required()
+        id: Joi.number().required().example(1)
     };
 
     private versionValidator = {
         id: Joi.forbidden(),
-        name: Joi.string().required(),
-        type: Joi.string().only(this.types).required(),
-        project_id: Joi.number().required()
+        name: Joi.string().required().example("1.0.1"),
+        type: Joi.string().only(this.types).required().example("Futuro"),
+        project_id: Joi.number().required().example(1)
     };
 
     // Rotas

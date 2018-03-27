@@ -12,16 +12,16 @@ export default class UserController implements Controller {
 
     // Validadores
     private idValidator = {
-        id: Joi.number().required()
+        id: Joi.number().required().example(1)
     };
 
     private userValidator = {
         id: Joi.forbidden(),
-        username: Joi.string().required(),
-        email: Joi.string().email().required(),
-        fullname: Joi.string().required(),
-        password: Joi.string().min(6).required(),
-        role_id: Joi.number().optional()
+        username: Joi.string().required().example("TestUser"),
+        email: Joi.string().email().required().example("test.user@example.com"),
+        fullname: Joi.string().required().example("Usuário de Teste"),
+        password: Joi.string().min(6).required().example("senha"),
+        role_id: Joi.number().optional().example(2)
     };
 
     // Rotas

@@ -12,12 +12,12 @@ export default class TagController implements Controller {
 
     // Validadores
     private idValidator = {
-        id: Joi.number().required()
+        id: Joi.number().required().example(1)
     };
 
     private tagValidator = {
         id: Joi.forbidden(),
-        name: Joi.string().required()
+        name: Joi.string().required().example("Mobile")
     };
 
     // Rotas
