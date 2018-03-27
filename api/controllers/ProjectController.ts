@@ -1,3 +1,4 @@
+import { ResponseToolkit } from "hapi";
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
 import Project from "api/models/Project";
 import User from "api/models/User";
@@ -11,8 +12,8 @@ export default class ProjectController implements Controller {
         return Boom.notFound(`Project with id ${id} not found`);
     }
 
-    private userNotFound(id: any, uid: any) {
-        return Boom.notFound(`User with id ${uid} not found in project with id ${id}`);
+    private entityNotFound(entity: string, id: any, otherId: any) {
+        return Boom.notFound(`${entity} with id ${otherId} not found in project with id ${id}`);
     }
 
     // Validadores
@@ -22,13 +23,21 @@ export default class ProjectController implements Controller {
         id: Joi.number().required()
     };
 
-    private idAndUidValidator = {
-        id: Joi.number().required(),
-        uid: Joi.number().required()
+    private dualIdValidator = {
+        id1: Joi.number().required(),
+        id2: Joi.number().required()
     };
 
     private userIdValidator = {
         user: Joi.object(this.idValidator).required()
+    };
+
+    private taskIdValidator = {
+        task: Joi.object(this.idValidator).required()
+    };
+
+    private tagIdValidator = {
+        tag: Joi.object(this.idValidator).required()
     };
 
     private projectValidator = {
@@ -38,6 +47,28 @@ export default class ProjectController implements Controller {
         status: Joi.string().only(this.statuses).required(),
         manager_id: Joi.number().optional()
     };
+
+    // Métodos utilitários
+    private async createRelation(id: any, other: string, otherId: any, h: ResponseToolkit) {
+        let project = await Project.query().findById(id);
+        if (project) {
+            let relation = await project.$relatedQuery(other).relate(otherId);
+            return h.response(relation).code(201);
+        }
+        return this.notFound(id);
+    }
+
+    private async deleteRelation(id: any, entity: string, relation: string, otherId: any, h: ResponseToolkit) {
+        let project = await Project.query().findById(id);
+        if (project) {
+            let deleted = await project.$relatedQuery(relation).unrelate().where({ id: otherId });
+            if (deleted) {
+                return h.response().code(204);
+            }
+            return this.entityNotFound(entity, id, otherId);
+        }
+        return this.notFound(id);
+    }
 
     // Rotas
     public routes: RouteDefinitions = {
@@ -88,13 +119,22 @@ export default class ProjectController implements Controller {
             "/projects/{id}/users": {
                 paramsValidator: this.idValidator,
                 payloadValidator: this.userIdValidator,
-                handler: async ({ id, ...body }, h) => {
-                    let project = await Project.query().findById(id);
-                    if (project) {
-                        let relation = await project.$relatedQuery("users").relate(body.user.id);
-                        return h.response(relation).code(201);
-                    }
-                    return this.notFound(id);
+                handler: async ({ id, user: { id: userId } }, h) => {
+                    return this.createRelation(id, "users", userId, h);
+                }
+            },
+            "/projects/{id}/tasks": {
+                paramsValidator: this.idValidator,
+                payloadValidator: this.taskIdValidator,
+                handler: async ({ id, task: { id: taskId } }, h) => {
+                    return this.createRelation(id, "tasks", taskId, h);
+                }
+            },
+            "/projects/{id}/tags": {
+                paramsValidator: this.idValidator,
+                payloadValidator: this.tagIdValidator,
+                handler: async ({ id, tag: { id: tagId } }, h) => {
+                    return this.createRelation(id, "tags", tagId, h);
                 }
             }
         },
@@ -122,18 +162,22 @@ export default class ProjectController implements Controller {
                     return this.notFound(id);
                 }
             },
-            "/projects/{id}/users/{uid}": {
-                paramsValidator: this.idAndUidValidator,
-                handler: async ({ id, uid }, h) => {
-                    let project = await Project.query().findById(id);
-                    if (project) {
-                        let deleted = await project.$relatedQuery("users").unrelate().where({ id: uid });
-                        if (deleted) {
-                            return h.response().code(204);
-                        }
-                        return this.userNotFound(id, uid);
-                    }
-                    return this.notFound(id);
+            "/projects/{id1}/users/{id2}": {
+                paramsValidator: this.dualIdValidator,
+                handler: async ({ id1: id, id2: userId }, h) => {
+                    return this.deleteRelation(id, "User", "users", userId, h);
+                }
+            },
+            "/projects/{id1}/tasks/{id2}": {
+                paramsValidator: this.dualIdValidator,
+                handler: async ({ id1: id, id2: taskId }, h) => {
+                    return this.deleteRelation(id, "Task", "tasks", taskId, h);
+                }
+            },
+            "/projects/{id1}/tags/{id2}": {
+                paramsValidator: this.dualIdValidator,
+                handler: async ({ id1: id, id2: tagId }, h) => {
+                    return this.deleteRelation(id, "Tag", "tags", tagId, h);
                 }
             }
         }

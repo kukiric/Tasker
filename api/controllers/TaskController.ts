@@ -1,3 +1,4 @@
+import { ResponseToolkit } from "hapi";
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
 import Task from "api/models/Task";
 import * as Boom from "boom";
@@ -5,9 +6,13 @@ import * as Joi from "joi";
 
 export default class TaskController implements Controller {
 
-    // Erro padrão
+    // Erros padrões
     private notFound(id: any) {
-        return Boom.notFound(`Task with id ${id} not found`);
+        return Boom.notFound(`Project with id ${id} not found`);
+    }
+
+    private entityNotFound(entity: string, id: any, otherId: any) {
+        return Boom.notFound(`${entity} with id ${otherId} not found in project with id ${id}`);
     }
 
     // Validadores
@@ -16,6 +21,19 @@ export default class TaskController implements Controller {
 
     private idValidator = {
         id: Joi.number().required()
+    };
+
+    private workIdValidator = {
+        work: Joi.object(this.idValidator).required()
+    };
+
+    private versionIdValidator = {
+        version: Joi.object(this.idValidator).required()
+    };
+
+    private dualIdValidator = {
+        id1: Joi.number().required(),
+        id2: Joi.number().required()
     };
 
     private taskValidator = {
@@ -30,6 +48,28 @@ export default class TaskController implements Controller {
         parent_id: Joi.number().optional(),
         version_id: Joi.number().optional()
     };
+
+    // Métodos utilitários
+    private async createRelation(id: any, other: string, otherId: any, h: ResponseToolkit) {
+        let task = await Task.query().findById(id);
+        if (task) {
+            let relation = await task.$relatedQuery(other).relate(otherId);
+            return h.response(relation).code(201);
+        }
+        return this.notFound(id);
+    }
+
+    private async deleteRelation(id: any, entity: string, relation: string, otherId: any, h: ResponseToolkit) {
+        let task = await Task.query().findById(id);
+        if (task) {
+            let deleted = await task.$relatedQuery(relation).unrelate().where({ id: otherId });
+            if (deleted) {
+                return h.response().code(204);
+            }
+            return this.entityNotFound(entity, id, otherId);
+        }
+        return this.notFound(id);
+    }
 
     // Rotas
     public routes: RouteDefinitions = {
@@ -57,6 +97,20 @@ export default class TaskController implements Controller {
                         .insert(body).returning("*");
                     return h.response(newTask).code(201);
                 }
+            },
+            "/tasks/{id}/work_items": {
+                paramsValidator: this.idValidator,
+                payloadValidator: this.workIdValidator,
+                handler: async ({ id, work: { id: workId } }, h) => {
+                    return this.createRelation(id, "work_items", workId, h);
+                }
+            },
+            "/tasks/{id}/versions": {
+                paramsValidator: this.idValidator,
+                payloadValidator: this.versionIdValidator,
+                handler: async ({ id, version: { id: versionId } }, h) => {
+                    return this.createRelation(id, "versions", versionId, h);
+                }
             }
         },
         PUT: {
@@ -81,6 +135,18 @@ export default class TaskController implements Controller {
                         return h.response().code(204);
                     }
                     return this.notFound(id);
+                }
+            },
+            "/tasks/{id1}/work_items/{id2}": {
+                paramsValidator: this.dualIdValidator,
+                handler: async ({ id1: id, id2: workId }, h) => {
+                    return this.deleteRelation(id, "Work Item", "work_items", workId, h);
+                }
+            },
+            "/tasks/{id1}/versions/{id2}": {
+                paramsValidator: this.dualIdValidator,
+                handler: async ({ id1: id, id2: versionId }, h) => {
+                    return this.deleteRelation(id, "Version", "versions", versionId, h);
                 }
             }
         }
