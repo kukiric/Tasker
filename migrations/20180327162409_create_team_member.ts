@@ -3,15 +3,16 @@ import * as Knex from "knex";
 exports.up = async function (knex: Knex): Promise<any> {
     let now = new Date();
     await knex.table("user").insert({
-        username: "admin",
-        password: "admin",
-        email: "admin@example.com",
-        fullname: "Administrador",
+        username: "member",
+        password: "member",
+        email: "member@example.com",
+        fullname: "Membro da Equipe",
         created_at: now,
-        updated_at: now
+        updated_at: now,
+        role_id: 3
     });
 };
 
 exports.down = async function (knex: Knex): Promise<any> {
-    await knex.table("user").where("username", "admin").del();
+    await knex.table("user").where("username", "member").del();
 };
