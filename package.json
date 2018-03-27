@@ -7,7 +7,7 @@
     "build": "tsc -p .",
     "start": "node compiled/index.js",
     "migrate:latest": "knex migrate:latest",
-    "migrate:fallback": "knex migrate:fallback",
+    "migrate:rollback": "knex migrate:rollback",
     "dev": "ts-node --type-check index.js"
   },
   "author": "",
