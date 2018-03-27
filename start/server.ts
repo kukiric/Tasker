@@ -44,6 +44,7 @@ const server = new HapiServer({
 
 export async function start() {
     server.ext("onPreResponse", handleInternalError);
+    await server.register([require("vision"), require("inert"), require("hapi-swagger")]);
     await server.register({
         plugin: apiPlugin,
         routes: {

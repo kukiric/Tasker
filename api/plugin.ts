@@ -35,7 +35,8 @@ function registerController(server: Server, controller: Controller) {
                 validate: {
                     params: route.paramsValidator,
                     payload: route.payloadValidator
-                }
+                },
+                tags: ["api"]
             };
             // Função de tratamento
             let handler: PathHandler = encapsulateParams.bind(undefined, route.handler);
