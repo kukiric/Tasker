@@ -22,8 +22,7 @@ export default class ProjectController extends BaseController {
                 paramsValidator: this.idValidator(),
                 handler: async ({ id }) => {
                     let project = await Project.query()
-                        .eager("[manager, versions, tasks.[users, work_items, version, parent, children], users, tags]")
-                        .select("*").findById(id);
+                        .eager("manager").select("*").findById(id);
                     return project ? project : this.notFound(id);
                 }
             },
@@ -35,6 +34,16 @@ export default class ProjectController extends BaseController {
                         .eager("users").select("*")
                         .findById(id) as any;
                     return project ? project.users : this.notFound(id);
+                }
+            },
+            "/projects/{id}/tasks": {
+                roles: EVERYONE,
+                paramsValidator: this.idValidator(),
+                handler: async ({ id }) => {
+                    let project = await Project.query()
+                        .eager("tasks.[users, parent, children, version]").select("*")
+                        .findById(id) as any;
+                    return project ? project.tasks : this.notFound(id);
                 }
             },
             "/projects/{id}/manager": {
@@ -71,8 +80,9 @@ export default class ProjectController extends BaseController {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator(),
                 payloadValidator: Task.validator,
-                handler: async ({ id, taskId }, h) => {
-                    return this.createRelation(id, "tasks", taskId, h);
+                handler: async ({ id, ...body }, h) => {
+                    let taskWithProjectId = Object.assign(body, { project_id: id });
+                    return await Task.query().insert(taskWithProjectId).returning("*");
                 }
             },
             "/projects/{id}/tags": {

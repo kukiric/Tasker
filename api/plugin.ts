@@ -86,11 +86,8 @@ function authValidate(token: DecodedToken, request: Request, h: ResponseToolkit)
 import TagController from "api/controllers/TagController";
 import UserController from "api/controllers/UserController";
 import RoleController from "api/controllers/RoleController";
-import TaskController from "api/controllers/TaskController";
-import WorkController from "api/controllers/WorkController";
-import ProjectController from "api/controllers/ProjectController";
-import VersionController from "api/controllers/VersionController";
 import AuthController from "api/controllers/AuthController";
+import ProjectController from "api/controllers/ProjectController";
 
 // Define o plugin do Hapi
 export default {
@@ -132,11 +129,8 @@ export default {
         registerController(server, new TagController());
         registerController(server, new UserController());
         registerController(server, new RoleController());
-        registerController(server, new WorkController());
-        registerController(server, new TaskController());
-        registerController(server, new ProjectController());
-        registerController(server, new VersionController());
         registerController(server, new AuthController());
+        registerController(server, new ProjectController());
         console.log("Finalizado registro da aplicação!");
     }
 };

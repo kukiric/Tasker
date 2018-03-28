@@ -25,7 +25,7 @@ export default class Task extends Model {
         type: Joi.string().only(Task.validTypes).required().example("Funcionalidade"),
         status: Joi.string().only(Task.validStatuses).required(),
         progress: Joi.number().optional().example(0),
-        project_id: Joi.number().required().example(1),
+        project_id: Joi.number().forbidden(),
         parent_id: Joi.number().optional(),
         version_id: Joi.number().optional()
     };
