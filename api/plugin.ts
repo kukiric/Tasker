@@ -1,7 +1,7 @@
 import { Plugin, Server, Request, ResponseToolkit} from "hapi";
 import { ServerRegisterOptions, RouteOptions, RouteOptionsAccess } from "hapi";
 import Controller, { PathHandler, RouteMapping, Route } from "api/controllers/Controller";
-import { AllowedRole } from "./models/Role";
+import { AllowedRole, getRoleName } from "./models/Role";
 import { DecodedToken } from "./token";
 import * as assert from "assert";
 import * as Boom from "boom";
@@ -40,7 +40,7 @@ function stringifyRoles(roles?: AllowedRole | AllowedRole[]): string[] | false {
     if (roles.length === 0) {
         return false;
     }
-    return roles.map(int => "ROLE_" + int.toString());
+    return roles.map(id => "ROLE_" + getRoleName(id));
 }
 
 /**
