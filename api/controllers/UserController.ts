@@ -43,6 +43,16 @@ export default class UserController implements Controller {
                         .select("*").where("id", id).first();
                     return user ? user : this.notFound(id);
                 }
+            },
+            "/users/{id}/projects": {
+                roles: EVERYONE,
+                paramsValidator: this.idValidator,
+                handler: async ({ id }) => {
+                    let user = await User.query()
+                        .eager("projects.[manager, versions, tasks, users, tags]").select("*")
+                        .findById(id) as any;
+                    return user ? user.projects : this.notFound(id);
+                }
             }
         },
         POST: {
