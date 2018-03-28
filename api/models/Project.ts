@@ -1,4 +1,5 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import * as Joi from "joi";
 
 export default class Project extends Model {
     public static tableName = "project";
@@ -12,6 +13,16 @@ export default class Project extends Model {
     public tasks?: any;
     public users?: any;
     public tags?: any;
+
+    public static validStatuses = ["Novo", "Em andamento", "Concluído"];
+
+    public static validator = {
+        id: Joi.forbidden(),
+        name: Joi.string().required().example("Projeto Exemplo"),
+        due_date: Joi.date().required().example("2018-12-31"),
+        status: Joi.string().only(Project.validStatuses).required(),
+        manager_id: Joi.number().optional().example(1)
+    };
 
     public static get relationMappings(): RelationMappings {
         const Version = require("api/models/Version").default;

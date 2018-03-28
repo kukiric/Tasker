@@ -16,6 +16,6 @@ export function getRoleName(id: AllowedRole) {
     switch (id) {
         case 1: return "ADMIN";
         case 2: return "MANAGER";
-        case 3: return "TEAM_MEMBER"
+        case 3: return "TEAM_MEMBER";
     }
 }

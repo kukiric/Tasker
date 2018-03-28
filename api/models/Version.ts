@@ -1,10 +1,20 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import * as Joi from "joi";
 
 export default class Version extends Model {
     public static tableName = "version";
     public id!: number;
     public name!: string;
     public type!: string;
+
+    public static validTypes = ["Passado", "Presente", "Futuro"];
+
+    public static versionValidator = {
+        id: Joi.forbidden(),
+        name: Joi.string().required().example("1.0.1"),
+        type: Joi.string().only(Version.validTypes).required().example("Futuro"),
+        project_id: Joi.number().required().example(1)
+    };
 
     public static get relationMappings(): RelationMappings {
         const Project = require("api/models/Project").default;

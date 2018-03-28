@@ -1,4 +1,4 @@
-import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { AllowedRole, EVERYONE } from "api/models/Role";
 import { DecodedToken } from "api/token";
 import User from "api/models/User";
@@ -8,7 +8,7 @@ import * as bcrypt from "bcrypt";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
-export default class AuthController implements Controller {
+export default class AuthController implements BaseController {
 
     private authValidator = {
         username: Joi.string().required().example("admin"),

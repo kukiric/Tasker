@@ -1,4 +1,5 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import * as Joi from "joi";
 
 export default class Work extends Model {
     public static tableName = "work";
@@ -8,6 +9,15 @@ export default class Work extends Model {
     public end_time?: Date;
     public user_id?: number;
     public task_id?: number;
+
+    public static workValidator = {
+        id: Joi.forbidden(),
+        hours: Joi.number().required().example(4),
+        start_time: Joi.date().optional(),
+        end_time: Joi.date().optional(),
+        user_id: Joi.number().required().example(1),
+        task_id: Joi.number().required().example(1)
+    };
 
     public static get relationMappings(): RelationMappings {
         const Task = require("api/models/Task").default;

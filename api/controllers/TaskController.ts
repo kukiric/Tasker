@@ -1,41 +1,9 @@
 import { ResponseToolkit } from "hapi";
-import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Task from "api/models/Task";
-import * as Boom from "boom";
-import * as Joi from "joi";
 
-export default class TaskController implements Controller {
-
-    // Erros padrões
-    private notFound(id: any) {
-        return Boom.notFound(`Project with id ${id} not found`);
-    }
-
-    private entityNotFound(entity: string, id: any, otherId: any) {
-        return Boom.notFound(`${entity} with id ${otherId} not found in project with id ${id}`);
-    }
-
-    // Validadores
-    private types = ["Bug", "Funcionalidade"];
-    private statuses = ["Nova", "Atribuída", "Em Desenvolvimento", "Requer Teste", "Concluída"];
-
-    private idValidator = {
-        id: Joi.number().required().example(1)
-    };
-
-    private workIdValidator = {
-        work: Joi.object(this.idValidator).required()
-    };
-
-    private versionIdValidator = {
-        version: Joi.object(this.idValidator).required()
-    };
-
-    private dualIdValidator = {
-        id1: Joi.number().required(),
-        id2: Joi.number().required()
-    };
+export default class TaskController implements BaseController {
 
     private taskValidator = {
         id: Joi.forbidden(),

@@ -1,20 +1,11 @@
-import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Role from "api/models/Role";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
-export default class RoleController implements Controller {
-
-    // Erro padrão
-    private notFound(id: any) {
-        return Boom.notFound(`Role with id ${id} not found`);
-    }
-
-    // Validadores
-    private idValidator = {
-        id: Joi.number().required().example(1)
-    };
+export default class RoleController extends BaseController {
+    protected modelClass = Role;
 
     // Rotas
     public routes: RouteDefinitions = {
@@ -22,12 +13,13 @@ export default class RoleController implements Controller {
             "/roles": {
                 roles: EVERYONE,
                 handler: async () => {
+                    let r = await this.modelClass.query().findOne({ id: 1 });
                     return await Role.query().select("*");
                 }
             },
             "/roles/{id}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }) => {
                     return await Role.query().findById(id) || this.notFound(id);
                 }

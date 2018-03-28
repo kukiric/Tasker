@@ -1,21 +1,11 @@
 import { Plugin, Server, Request, ResponseToolkit} from "hapi";
 import { ServerRegisterOptions, RouteOptions, RouteOptionsAccess } from "hapi";
-import Controller, { PathHandler, RouteMapping, Route } from "api/controllers/Controller";
+import Controller, { PathHandler, RouteMapping, Route } from "api/controllers/BaseController";
 import { AllowedRole, getRoleName } from "./models/Role";
 import { DecodedToken } from "./token";
 import * as assert from "assert";
 import * as Boom from "boom";
 import * as Joi from "joi";
-
-// Controladores carregados
-import TagController from "api/controllers/TagController";
-import UserController from "api/controllers/UserController";
-import RoleController from "api/controllers/RoleController";
-import TaskController from "api/controllers/TaskController";
-import WorkController from "api/controllers/WorkController";
-import ProjectController from "api/controllers/ProjectController";
-import VersionController from "api/controllers/VersionController";
-import AuthController from "api/controllers/AuthController";
 
 /**
  * Encapsula os parâmetros de ambos os tipos (url e payload) no mesmo objeto antes de passar para o controlador
@@ -91,6 +81,16 @@ function authValidate(token: DecodedToken, request: Request, h: ResponseToolkit)
         credentials: Object.assign(token, { scope: roleAsScope })
     };
 }
+
+// Controladores carregados
+import TagController from "api/controllers/TagController";
+import UserController from "api/controllers/UserController";
+import RoleController from "api/controllers/RoleController";
+import TaskController from "api/controllers/TaskController";
+import WorkController from "api/controllers/WorkController";
+import ProjectController from "api/controllers/ProjectController";
+import VersionController from "api/controllers/VersionController";
+import AuthController from "api/controllers/AuthController";
 
 // Define o plugin do Hapi
 export default {

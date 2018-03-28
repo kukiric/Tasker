@@ -1,29 +1,15 @@
-import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import User from "api/models/User";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
-export default class UserController implements Controller {
+export default class UserController extends BaseController {
 
     // Erro padrão
     private notFound(id: any) {
         return Boom.notFound(`User with id ${id} not found`);
     }
-
-    // Validadores
-    private idValidator = {
-        id: Joi.number().required().example(1)
-    };
-
-    private userValidator = {
-        id: Joi.forbidden(),
-        username: Joi.string().required().example("TestUser"),
-        email: Joi.string().email().required().example("test.user@example.com"),
-        fullname: Joi.string().required().example("Usuário de Teste"),
-        password: Joi.string().min(6).max(72).required().example("senha123"),
-        role_id: Joi.number().optional().example(2)
-    };
 
     // Rotas
     public routes: RouteDefinitions = {

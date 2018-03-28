@@ -1,29 +1,15 @@
-import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Work from "api/models/Work";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
-export default class WorkController implements Controller {
+export default class WorkController extends BaseController {
 
     // Erro padrão
     private notFound(id: any) {
         return Boom.notFound(`Work Item with id ${id} not found`);
     }
-
-    // Validadores
-    private idValidator = {
-        id: Joi.number().required().example(1)
-    };
-
-    private workValidator = {
-        id: Joi.forbidden(),
-        hours: Joi.number().required().example(4),
-        start_time: Joi.date().optional(),
-        end_time: Joi.date().optional(),
-        user_id: Joi.number().required().example(1),
-        task_id: Joi.number().required().example(1)
-    };
 
     // Rotas
     public routes: RouteDefinitions = {

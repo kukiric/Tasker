@@ -1,75 +1,12 @@
 import { ResponseToolkit } from "hapi";
-import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Project from "api/models/Project";
 import User from "api/models/User";
-import * as Boom from "boom";
-import * as Joi from "joi";
+import Task from "api/models/Task";
 
-export default class ProjectController implements Controller {
-
-    // Erros padrões
-    private notFound(id: any) {
-        return Boom.notFound(`Project with id ${id} not found`);
-    }
-
-    private entityNotFound(entity: string, id: any, otherId: any) {
-        return Boom.notFound(`${entity} with id ${otherId} not found in project with id ${id}`);
-    }
-
-    // Validadores
-    private statuses = ["Novo", "Em andamento", "Concluído"];
-
-    private idValidator = {
-        id: Joi.number().required().example(1)
-    };
-
-    private dualIdValidator = {
-        id1: Joi.number().required(),
-        id2: Joi.number().required()
-    };
-
-    private userIdValidator = {
-        user: Joi.object(this.idValidator).required()
-    };
-
-    private taskIdValidator = {
-        task: Joi.object(this.idValidator).required()
-    };
-
-    private tagIdValidator = {
-        tag: Joi.object(this.idValidator).required()
-    };
-
-    private projectValidator = {
-        id: Joi.forbidden(),
-        name: Joi.string().required().example("Projeto Exemplo"),
-        due_date: Joi.date().required().example("2018-12-31"),
-        status: Joi.string().only(this.statuses).required(),
-        manager_id: Joi.number().optional().example(1)
-    };
-
-    // Métodos utilitários
-    private async createRelation(id: any, other: string, otherId: any, h: ResponseToolkit) {
-        let project = await Project.query().findById(id);
-        if (project) {
-            let relation = await project.$relatedQuery(other).relate(otherId);
-            return h.response(relation).code(201);
-        }
-        return this.notFound(id);
-    }
-
-    private async deleteRelation(id: any, entity: string, relation: string, otherId: any, h: ResponseToolkit) {
-        let project = await Project.query().findById(id);
-        if (project) {
-            let deleted = await project.$relatedQuery(relation).unrelate().where({ id: otherId });
-            if (deleted) {
-                return h.response().code(204);
-            }
-            return this.entityNotFound(entity, id, otherId);
-        }
-        return this.notFound(id);
-    }
+export default class ProjectController extends BaseController {
+    protected modelClass = Project;
 
     // Rotas
     public routes: RouteDefinitions = {
@@ -82,7 +19,7 @@ export default class ProjectController implements Controller {
             },
             "/projects/{id}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }) => {
                     let project = await Project.query()
                         .eager("[manager, versions, tasks.[users, work_items, version, parent, children], users, tags]")
@@ -92,7 +29,7 @@ export default class ProjectController implements Controller {
             },
             "/projects/{id}/users": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }) => {
                     let project = await Project.query()
                         .eager("users").select("*")
@@ -102,7 +39,7 @@ export default class ProjectController implements Controller {
             },
             "/projects/{id}/manager": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }) => {
                     let project = await Project.query()
                         .eager("manager").select("*")
@@ -114,7 +51,7 @@ export default class ProjectController implements Controller {
         POST: {
             "/projects": {
                 roles: [ADMIN, MANAGER],
-                payloadValidator: this.projectValidator,
+                payloadValidator: Project.validator,
                 handler: async ({ ...body }, h) => {
                     let newProject = await Project.query()
                         .eager("[manager, versions, tasks, users, tags]")
@@ -124,25 +61,25 @@ export default class ProjectController implements Controller {
             },
             "/projects/{id}/users": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator,
-                payloadValidator: this.userIdValidator,
+                paramsValidator: this.idValidator(),
+                payloadValidator: this.idValidator("userId"),
                 handler: async ({ id, user: { id: userId } }, h) => {
                     return this.createRelation(id, "users", userId, h);
                 }
             },
             "/projects/{id}/tasks": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator,
-                payloadValidator: this.taskIdValidator,
-                handler: async ({ id, task: { id: taskId } }, h) => {
+                paramsValidator: this.idValidator(),
+                payloadValidator: Task.validator,
+                handler: async ({ id, taskId }, h) => {
                     return this.createRelation(id, "tasks", taskId, h);
                 }
             },
             "/projects/{id}/tags": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator,
-                payloadValidator: this.tagIdValidator,
-                handler: async ({ id, tag: { id: tagId } }, h) => {
+                paramsValidator: this.idValidator(),
+                payloadValidator: this.idValidator("tagId"),
+                handler: async ({ id, tagId }, h) => {
                     return this.createRelation(id, "tags", tagId, h);
                 }
             }
@@ -150,8 +87,8 @@ export default class ProjectController implements Controller {
         PUT: {
             "/projects/{id}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator,
-                payloadValidator: this.projectValidator,
+                paramsValidator: this.idValidator(),
+                payloadValidator: Project.validator,
                 handler: async ({ id, ...body }) => {
                     let project = await Project.query()
                         .eager("[manager, versions, tasks, users, tags]")
@@ -164,7 +101,7 @@ export default class ProjectController implements Controller {
         DELETE: {
             "/projects/{id}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }, h) => {
                     let deleted = await Project.query().del().where({ id: id });
                     if (deleted) {
@@ -175,21 +112,19 @@ export default class ProjectController implements Controller {
             },
             "/projects/{id1}/users/{id2}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.dualIdValidator,
                 handler: async ({ id1: id, id2: userId }, h) => {
                     return this.deleteRelation(id, "User", "users", userId, h);
                 }
             },
             "/projects/{id1}/tasks/{id2}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.dualIdValidator,
-                handler: async ({ id1: id, id2: taskId }, h) => {
-                    return this.deleteRelation(id, "Task", "tasks", taskId, h);
+                paramsValidator: this.multiIdValidator("projectId", "taskId"),
+                handler: async ({ projectId, taskId }, h) => {
+                    return this.deleteRelation(projectId, "Task", "tasks", taskId, h);
                 }
             },
             "/projects/{id1}/tags/{id2}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.dualIdValidator,
                 handler: async ({ id1: id, id2: tagId }, h) => {
                     return this.deleteRelation(id, "Tag", "tags", tagId, h);
                 }

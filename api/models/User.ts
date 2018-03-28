@@ -1,5 +1,6 @@
 import { Model, RelationMappings, Pojo, QueryContext } from "objection";
 import * as bcrypt from "bcrypt";
+import * as Joi from "joi";
 
 export default class User extends Model {
     public static tableName = "user";
@@ -13,6 +14,15 @@ export default class User extends Model {
     public projects?: any;
     public tasks?: any;
     public role?: any;
+
+    private validator = {
+        id: Joi.forbidden(),
+        username: Joi.string().required().example("TestUser"),
+        email: Joi.string().email().required().example("test.user@example.com"),
+        fullname: Joi.string().required().example("Usuário de Teste"),
+        password: Joi.string().min(6).max(72).required().example("senha123"),
+        role_id: Joi.number().optional().example(2)
+    };
 
     public static get relationMappings(): RelationMappings {
         const Project = require("api/models/Project").default;

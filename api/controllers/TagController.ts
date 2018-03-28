@@ -1,25 +1,15 @@
-import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Tag from "api/models/Tag";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
-export default class TagController implements Controller {
+export default class TagController extends BaseController {
 
     // Erro padrão
     private notFound(id: any) {
         return Boom.notFound(`Tag with id ${id} not found`);
     }
-
-    // Validadores
-    private idValidator = {
-        id: Joi.number().required().example(1)
-    };
-
-    private tagValidator = {
-        id: Joi.forbidden(),
-        name: Joi.string().required().example("Mobile")
-    };
 
     // Rotas
     public routes: RouteDefinitions = {
