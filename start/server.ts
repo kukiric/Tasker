@@ -2,13 +2,21 @@ import { Server as HapiServer, Request, ResponseToolkit, Lifecycle } from "hapi"
 import apiPlugin from "api/plugin";
 import * as Boom from "boom";
 
-// Trata erros genéricos
+// Trata erros internos genéricos
 function handleInternalError(request: Request, h: ResponseToolkit, err: any): Lifecycle.ReturnValue {
     let error = err ? err : request.response as any;
     let statusCode = error.output ? error.output.statusCode : error.statusCode;
     // Erro no banco
     if (error.isBoom && error.detail) {
-        return Boom.badRequest(error.message.replace(/^.+ - /, ""));
+        let boom = Boom.internal("Database query error");
+        Object.assign(boom.output.payload, {
+            details: {
+                message: error.detail,
+                constraint: error.constraint,
+                table: error.table
+            }
+        });
+        return boom;
     }
     return h.continue;
 }
