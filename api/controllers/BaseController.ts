@@ -132,7 +132,6 @@ export default abstract class BaseController {
         for (let arg of args) {
             validator[arg] = Joi.number().required().example(1);
         }
-        console.log(validator);
         return validator;
     }
 
