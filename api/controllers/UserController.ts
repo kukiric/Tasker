@@ -20,7 +20,7 @@ export default class UserController implements Controller {
         username: Joi.string().required().example("TestUser"),
         email: Joi.string().email().required().example("test.user@example.com"),
         fullname: Joi.string().required().example("Usuário de Teste"),
-        password: Joi.string().min(6).required().example("senha"),
+        password: Joi.string().min(6).max(72).required().example("senha123"),
         role_id: Joi.number().optional().example(2)
     };
 
@@ -28,11 +28,13 @@ export default class UserController implements Controller {
     public routes: RouteDefinitions = {
         GET: {
             "/users": {
+                auth: "jwt",
                 handler: async () => {
                     return await User.query().eager("role").select("*");
                 }
             },
             "/users/{id}": {
+                auth: "jwt",
                 paramsValidator: this.idValidator,
                 handler: async ({ id }) => {
                     let user = await User.query()

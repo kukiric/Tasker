@@ -1,4 +1,5 @@
-import { Model, RelationMappings, Pojo } from "objection";
+import { Model, RelationMappings, Pojo, QueryContext } from "objection";
+import * as bcrypt from "bcrypt";
 
 export default class User extends Model {
     public static tableName = "user";
@@ -60,6 +61,14 @@ export default class User extends Model {
                 }
             }
         };
+    }
+
+    public async $beforeInsert(context: QueryContext) {
+        // Criptografa a senha
+        if (this.password) {
+            this.password = await bcrypt.hash(this.password, 10);
+        }
+        super.$beforeInsert(context);
     }
 
     public $formatJson(json: Pojo) {

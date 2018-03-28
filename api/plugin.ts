@@ -1,6 +1,7 @@
 import { Plugin, Server, ServerRegisterOptions, Request, ResponseToolkit, RouteOptions } from "hapi";
 import Controller, { PathHandler, RouteMapping, Route } from "api/controllers/Controller";
-
+import TokenStorage, { DecodedToken } from "api/tokens";
+import * as assert from "assert";
 import * as Joi from "joi";
 
 // Controladores carregados
@@ -49,10 +50,17 @@ function registerController(server: Server, controller: Controller) {
     }
 }
 
-function validate(...args: any[]) {
-    console.log("Tentando autenticar com parâmetros:");
-    console.log(args);
-    return false;
+function validate(token: DecodedToken, request: Request, h: ResponseToolkit) {
+    // Verifica se o usuário já se autenticou durante essa sessão
+    let serverToken = TokenStorage[token.user];
+    let isValid = serverToken !== undefined
+               && token.user  === serverToken.user
+               && token.uid   === serverToken.uid
+               && token.role  === serverToken.role;
+    return {
+        isValid,
+        credentials: isValid ? serverToken : null
+    };
 }
 
 // Define o plugin do Hapi
@@ -61,6 +69,12 @@ export default {
     version: "1.0",
 
     register: async function(server: Server, serverOpts: ServerRegisterOptions) {
+        console.log("Registrando o hapi-auth-jwt2...");
+        await server.register(require("hapi-auth-jwt2"));
+        server.auth.strategy("jwt", "jwt", {
+            key: process.env.SECRET_KEY,
+            validate: validate
+        });
         console.log("Registrando o hapi-swaggered...");
         const swaggerOptions = {
             backend: {
@@ -78,6 +92,12 @@ export default {
                 swaggerOptions: {
                     operationsSorter: "method",
                     docExpansion: "none"
+                },
+                authorization: {
+                    scope: "header",
+                    field: "Authorization",
+                    valuePrefix: "Bearer ",
+                    placeholder: "JWT auth token"
                 }
             }
         };
@@ -87,12 +107,6 @@ export default {
             { plugin: require("hapi-swaggered"), options: swaggerOptions.backend },
             { plugin: require("hapi-swaggered-ui"), options: swaggerOptions.ui }
         ]);
-        console.log("Registrando o hapi-auth-jwt2...");
-        await server.register(require("hapi-auth-jwt2"));
-        server.auth.strategy("jwt", "jwt", {
-            key: process.env.SECRET_KEY,
-            validate: validate
-        });
         console.log("Registrando rotas da aplicação...");
         registerController(server, new TagController());
         registerController(server, new UserController());

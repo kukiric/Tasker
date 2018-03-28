@@ -1,10 +1,11 @@
 import * as Knex from "knex";
+import * as bcrypt from "bcrypt";
 
 exports.up = async function (knex: Knex): Promise<any> {
     let now = new Date();
     await knex.table("user").insert({
         username: "manager",
-        password: "manager",
+        password: bcrypt.hashSync("manager123", 10),
         email: "manager@example.com",
         fullname: "Gerente de Projetos",
         created_at: now,
