@@ -1,8 +1,6 @@
 import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Version from "api/models/Version";
-import * as Boom from "boom";
-import * as Joi from "joi";
 
 export default class VersionController extends BaseController {
     protected modelClass = Version;

@@ -1,15 +1,9 @@
 import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Work from "api/models/Work";
-import * as Boom from "boom";
-import * as Joi from "joi";
 
 export default class WorkController extends BaseController {
-
-    // Erro padrão
-    private notFound(id: any) {
-        return Boom.notFound(`Work Item with id ${id} not found`);
-    }
+    protected modelClass = Work;
 
     // Rotas
     public routes: RouteDefinitions = {
@@ -22,7 +16,7 @@ export default class WorkController extends BaseController {
             },
             "/work_items/{id}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }) => {
                     return await Work.query().eager("[user, task]").findById(id) || this.notFound(id);
                 }
@@ -31,7 +25,7 @@ export default class WorkController extends BaseController {
         POST: {
             "/work_items": {
                 roles: EVERYONE,
-                payloadValidator: this.workValidator,
+                payloadValidator: Work.validator,
                 handler: async ({ ...body }, h) => {
                     let newWork = await Work.query().eager("[user, task]").insert(body).returning("*");
                     return h.response(newWork).code(201);
@@ -41,8 +35,8 @@ export default class WorkController extends BaseController {
         PUT: {
             "/work_items/{id}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
-                payloadValidator: this.workValidator,
+                paramsValidator: this.idValidator(),
+                payloadValidator: Work.validator,
                 handler: async ({ id, ...body }) => {
                     let work = await Work.query()
                         .eager("[user, task]").update(body).where({ id: id })
@@ -54,7 +48,7 @@ export default class WorkController extends BaseController {
         DELETE: {
             "/work_items/{id}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }, h) => {
                     let deleted = await Work.query().del().where({ id: id });
                     if (deleted) {

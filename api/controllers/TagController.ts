@@ -1,15 +1,9 @@
 import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Tag from "api/models/Tag";
-import * as Boom from "boom";
-import * as Joi from "joi";
 
 export default class TagController extends BaseController {
-
-    // Erro padrão
-    private notFound(id: any) {
-        return Boom.notFound(`Tag with id ${id} not found`);
-    }
+    protected modelClass = Tag;
 
     // Rotas
     public routes: RouteDefinitions = {
@@ -22,7 +16,7 @@ export default class TagController extends BaseController {
             },
             "/tags/{id}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }) => {
                     return await Tag.query().findById(id) || this.notFound(id);
                 }
@@ -31,7 +25,7 @@ export default class TagController extends BaseController {
         POST: {
             "/tags": {
                 roles: [ADMIN, MANAGER],
-                payloadValidator: this.tagValidator,
+                payloadValidator: Tag.validator,
                 handler: async ({ ...body }, h) => {
                     let newTag = await Tag.query().insert(body).returning("*");
                     return h.response(newTag).code(201);
@@ -41,8 +35,8 @@ export default class TagController extends BaseController {
         PUT: {
             "/tags/{id}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator,
-                payloadValidator: this.tagValidator,
+                paramsValidator: this.idValidator(),
+                payloadValidator: Tag.validator,
                 handler: async ({ id, ...body }) => {
                     let tag = await Tag.query()
                         .update(body).where({ id: id })
@@ -54,7 +48,7 @@ export default class TagController extends BaseController {
         DELETE: {
             "/tags/{id}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }, h) => {
                     let deleted = await Tag.query().del().where({ id: id });
                     if (deleted) {

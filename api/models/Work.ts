@@ -10,7 +10,7 @@ export default class Work extends Model {
     public user_id?: number;
     public task_id?: number;
 
-    public static workValidator = {
+    public static validator = {
         id: Joi.forbidden(),
         hours: Joi.number().required().example(4),
         start_time: Joi.date().optional(),
