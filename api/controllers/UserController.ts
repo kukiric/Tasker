@@ -2,6 +2,7 @@ import Controller, { RouteDefinitions } from "api/controllers/Controller";
 import User from "api/models/User";
 import * as Boom from "boom";
 import * as Joi from "joi";
+import { ADMIN, EVERYONE } from "../models/Role";
 
 export default class UserController implements Controller {
 
@@ -28,11 +29,13 @@ export default class UserController implements Controller {
     public routes: RouteDefinitions = {
         GET: {
             "/users": {
+                roles: EVERYONE,
                 handler: async () => {
                     return await User.query().eager("role").select("*");
                 }
             },
             "/users/{id}": {
+                roles: EVERYONE,
                 paramsValidator: this.idValidator,
                 handler: async ({ id }) => {
                     let user = await User.query()
@@ -44,6 +47,7 @@ export default class UserController implements Controller {
         },
         POST: {
             "/users": {
+                roles: [ADMIN],
                 payloadValidator: this.userValidator,
                 handler: async ({ ...body }, h) => {
                     let newUser = await User.query()
@@ -55,6 +59,7 @@ export default class UserController implements Controller {
         },
         PUT: {
             "/users/{id}": {
+                roles: [ADMIN],
                 paramsValidator: this.idValidator,
                 payloadValidator: this.userValidator,
                 handler: async ({ id, ...body }) => {
@@ -67,6 +72,7 @@ export default class UserController implements Controller {
         },
         DELETE: {
             "/users/{id}": {
+                roles: [ADMIN],
                 paramsValidator: this.idValidator,
                 handler: async ({ id }, h) => {
                     let deleted = await User.query().del().where({ id: id });

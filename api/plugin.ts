@@ -1,7 +1,10 @@
-import { Plugin, Server, ServerRegisterOptions, Request, ResponseToolkit, RouteOptions } from "hapi";
+import { Plugin, Server, Request, ResponseToolkit} from "hapi";
+import { ServerRegisterOptions, RouteOptions, RouteOptionsAccess } from "hapi";
 import Controller, { PathHandler, RouteMapping, Route } from "api/controllers/Controller";
+import { AllowedRole } from "./models/Role";
 import { DecodedToken } from "./token";
 import * as assert from "assert";
+import * as Boom from "boom";
 import * as Joi from "joi";
 
 // Controladores carregados
@@ -24,6 +27,17 @@ function encapsulateParams(handler: PathHandler, request: Request, h: ResponseTo
 }
 
 /**
+ * Transforma uma lista de role IDs (ex. [1, 2]) em um array de roles para
+ * o Hapi (ex. ["1", "2"]), eliminando listas vazias
+ */
+function stringifyRoles(roles?: AllowedRole[]): string[] | false {
+    if (!roles || roles.length === 0) {
+        return false;
+    }
+    return roles.map(int => int.toString());
+}
+
+/**
  * Registra as rotas do controlador no servidor
  */
 function registerController(server: Server, controller: Controller) {
@@ -34,14 +48,24 @@ function registerController(server: Server, controller: Controller) {
         for (let path in controller.routes[method]) {
             // Objeto da rota
             let route: Route = controller.routes[method][path];
-            // Opções de validação e autenticação
+            // Verifica se a rota requer autenticação (requer false explícito para desativar)
+            let authRequired = route.authRequired !== false;
+            // Opções de autenticação
+            const authStrategy: RouteOptionsAccess = {
+                mode: "required",
+                strategy: "jwt",
+                access: {
+                    scope: stringifyRoles(route.roles)
+                }
+            };
+            // Opções de validação e documentação
             let options: RouteOptions = {
                 validate: {
                     params: route.paramsValidator,
                     payload: route.payloadValidator
                 },
                 tags: ["api", controllerName.replace(regex, "$1 $2")],
-                auth: route.auth != null ? route.auth : { mode: "required", strategy: "jwt" }
+                auth: authRequired && authStrategy
             };
             // Função de tratamento
             let handler: PathHandler = encapsulateParams.bind(undefined, route.handler);
@@ -51,13 +75,14 @@ function registerController(server: Server, controller: Controller) {
 }
 
 /**
- * Valid a token JWT durante a autenticação
+ * Valida o token JWT durante a autenticação
  */
-function validate(token: DecodedToken, request: Request, h: ResponseToolkit) {
-    console.log(request);
+function authValidate(token: DecodedToken, request: Request, h: ResponseToolkit) {
+    // Adiciona o role do usuário no seu scope para validação no Hapi
+    let roleAsScope = token.role && token.role.toString();
     return {
         isValid: true,
-        credentials: token
+        credentials: Object.assign(token, { scope: roleAsScope })
     };
 }
 
@@ -71,7 +96,7 @@ export default {
         await server.register(require("hapi-auth-jwt2"));
         server.auth.strategy("jwt", "jwt", {
             key: process.env.SECRET_KEY,
-            validate: validate
+            validate: authValidate
         });
         console.log("Registrando o hapi-swagger...");
         const swaggerOptions = {

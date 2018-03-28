@@ -1,5 +1,6 @@
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
 import { DecodedToken } from "api/token";
+import { AllowedRole } from "api/models/Role";
 import User from "api/models/User";
 import * as JWT from "jsonwebtoken";
 import * as assert from "assert";
@@ -24,7 +25,7 @@ export default class AuthController implements Controller {
         },
         POST: {
             "/auth": {
-                auth: false,
+                authRequired: false,
                 payloadValidator: this.authValidator,
                 handler: async ({ username, password }, h, request) => {
                     // Checa a validez da chave secreta
@@ -37,7 +38,7 @@ export default class AuthController implements Controller {
                         let payload: DecodedToken = {
                             user: username,
                             uid: user.id,
-                            role: user.role_id
+                            role: user.role_id as AllowedRole
                         };
                         // Gera a nova token
                         let token = JWT.sign(payload, key!, { expiresIn: "30d" });

@@ -1,4 +1,5 @@
 import { Lifecycle, Request, ResponseToolkit, RouteOptionsAccess } from "hapi";
+import { AllowedRole } from "../models/Role";
 import * as Joi from "joi";
 
 /**
@@ -30,9 +31,14 @@ export interface Route {
         [name: string]: Joi.AnySchema
     };
     /**
-     * Parâmetros de autenticação necessários na rota
+     * Obriga os usuários a estarem autenticados para acessar essa rota
+     * @default true
      */
-    auth?: string | false | RouteOptionsAccess;
+    authRequired?: boolean;
+    /**
+     * Roles permitidos a acessar essa rota
+     */
+    roles?: AllowedRole[];
     /**
      * Função que responde à requisição
      */
