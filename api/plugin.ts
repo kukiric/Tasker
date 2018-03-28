@@ -72,37 +72,29 @@ export default {
             key: process.env.SECRET_KEY,
             validate: validate
         });
-        console.log("Registrando o hapi-swaggered...");
+        console.log("Registrando o hapi-swagger...");
         const swaggerOptions = {
-            backend: {
-                info: {
-                    title: this.name,
-                    version: this.version
-                },
-                tagging: {
-                    mode: "tags"
-                }
-            },
-            ui: {
+            grouping: "tags",
+            sortEndpoints: "method",
+            expanded: "none",
+            jsonEditor: true,
+            info: {
                 title: this.name + " Documentation",
-                path: "/docs",
-                swaggerOptions: {
-                    operationsSorter: "method",
-                    docExpansion: "none"
-                },
-                authorization: {
-                    scope: "header",
-                    field: "Authorization",
-                    valuePrefix: "Bearer ",
-                    placeholder: "JWT auth token"
+                description: "An API made with Hapi.js - https://github.com/kukiric/tasker",
+                version: this.version
+            },
+            securityDefinitions: {
+                jwt: {
+                    type: "apiKey",
+                    name: "Authorization",
+                    in: "header"
                 }
             }
         };
         await server.register([
             { plugin: require("vision"), once: true },
             { plugin: require("inert"), once: true },
-            { plugin: require("hapi-swaggered"), options: swaggerOptions.backend },
-            { plugin: require("hapi-swaggered-ui"), options: swaggerOptions.ui }
+            { plugin: require("hapi-swagger"), options: swaggerOptions }
         ]);
         console.log("Registrando rotas da aplicação...");
         registerController(server, new TagController());
