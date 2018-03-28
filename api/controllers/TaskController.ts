@@ -1,5 +1,6 @@
 import { ResponseToolkit } from "hapi";
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Task from "api/models/Task";
 import * as Boom from "boom";
 import * as Joi from "joi";
@@ -75,11 +76,13 @@ export default class TaskController implements Controller {
     public routes: RouteDefinitions = {
         GET: {
             "/tasks": {
+                roles: EVERYONE,
                 handler: async () => {
                     return await Task.query().eager("project").select("*");
                 }
             },
             "/tasks/{id}": {
+                roles: EVERYONE,
                 paramsValidator: this.idValidator,
                 handler: async ({ id }) => {
                     return await Task.query()
@@ -90,6 +93,7 @@ export default class TaskController implements Controller {
         },
         POST: {
             "/tasks": {
+                roles: [ADMIN, MANAGER],
                 payloadValidator: this.taskValidator,
                 handler: async ({ ...body }, h) => {
                     let newTask = await Task.query()
@@ -99,6 +103,7 @@ export default class TaskController implements Controller {
                 }
             },
             "/tasks/{id}/work_items": {
+                roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator,
                 payloadValidator: this.workIdValidator,
                 handler: async ({ id, work: { id: workId } }, h) => {
@@ -106,6 +111,7 @@ export default class TaskController implements Controller {
                 }
             },
             "/tasks/{id}/versions": {
+                roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator,
                 payloadValidator: this.versionIdValidator,
                 handler: async ({ id, version: { id: versionId } }, h) => {
@@ -115,6 +121,7 @@ export default class TaskController implements Controller {
         },
         PUT: {
             "/tasks/{id}": {
+                roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator,
                 payloadValidator: this.taskValidator,
                 handler: async ({ id, ...body }) => {
@@ -128,6 +135,7 @@ export default class TaskController implements Controller {
         },
         DELETE: {
             "/tasks/{id}": {
+                roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator,
                 handler: async ({ id }, h) => {
                     let deleted = await Task.query().del().where({ id: id });
@@ -138,12 +146,14 @@ export default class TaskController implements Controller {
                 }
             },
             "/tasks/{id1}/work_items/{id2}": {
+                roles: [ADMIN, MANAGER],
                 paramsValidator: this.dualIdValidator,
                 handler: async ({ id1: id, id2: workId }, h) => {
                     return this.deleteRelation(id, "Work Item", "work_items", workId, h);
                 }
             },
             "/tasks/{id1}/versions/{id2}": {
+                roles: [ADMIN, MANAGER],
                 paramsValidator: this.dualIdValidator,
                 handler: async ({ id1: id, id2: versionId }, h) => {
                     return this.deleteRelation(id, "Version", "versions", versionId, h);

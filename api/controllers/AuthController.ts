@@ -1,6 +1,6 @@
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import { AllowedRole, EVERYONE } from "api/models/Role";
 import { DecodedToken } from "api/token";
-import { AllowedRole } from "api/models/Role";
 import User from "api/models/User";
 import * as JWT from "jsonwebtoken";
 import * as assert from "assert";
@@ -18,6 +18,7 @@ export default class AuthController implements Controller {
     public routes: RouteDefinitions = {
         GET: {
             "/auth": {
+                roles: EVERYONE,
                 handler: async ({}, h, request) => {
                     return request.auth.credentials;
                 }

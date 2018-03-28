@@ -1,4 +1,5 @@
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Tag from "api/models/Tag";
 import * as Boom from "boom";
 import * as Joi from "joi";
@@ -24,11 +25,13 @@ export default class TagController implements Controller {
     public routes: RouteDefinitions = {
         GET: {
             "/tags": {
+                roles: EVERYONE,
                 handler: async () => {
                     return await Tag.query().select("*");
                 }
             },
             "/tags/{id}": {
+                roles: EVERYONE,
                 paramsValidator: this.idValidator,
                 handler: async ({ id }) => {
                     return await Tag.query().findById(id) || this.notFound(id);
@@ -37,6 +40,7 @@ export default class TagController implements Controller {
         },
         POST: {
             "/tags": {
+                roles: [ADMIN, MANAGER],
                 payloadValidator: this.tagValidator,
                 handler: async ({ ...body }, h) => {
                     let newTag = await Tag.query().insert(body).returning("*");
@@ -46,6 +50,7 @@ export default class TagController implements Controller {
         },
         PUT: {
             "/tags/{id}": {
+                roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator,
                 payloadValidator: this.tagValidator,
                 handler: async ({ id, ...body }) => {
@@ -58,6 +63,7 @@ export default class TagController implements Controller {
         },
         DELETE: {
             "/tags/{id}": {
+                roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator,
                 handler: async ({ id }, h) => {
                     let deleted = await Tag.query().del().where({ id: id });

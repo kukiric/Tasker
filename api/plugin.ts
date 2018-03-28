@@ -30,11 +30,17 @@ function encapsulateParams(handler: PathHandler, request: Request, h: ResponseTo
  * Transforma uma lista de role IDs (ex. [1, 2]) em um array de roles para
  * o Hapi (ex. ["1", "2"]), eliminando listas vazias
  */
-function stringifyRoles(roles?: AllowedRole[]): string[] | false {
-    if (!roles || roles.length === 0) {
+function stringifyRoles(roles?: AllowedRole | AllowedRole[]): string[] | false {
+    if (!roles) {
         return false;
     }
-    return roles.map(int => int.toString());
+    if (!Array.isArray(roles)) {
+        roles = [roles];
+    }
+    if (roles.length === 0) {
+        return false;
+    }
+    return roles.map(int => "ROLE_" + int.toString());
 }
 
 /**
@@ -79,7 +85,7 @@ function registerController(server: Server, controller: Controller) {
  */
 function authValidate(token: DecodedToken, request: Request, h: ResponseToolkit) {
     // Adiciona o role do usuário no seu scope para validação no Hapi
-    let roleAsScope = token.role && token.role.toString();
+    let roleAsScope = stringifyRoles(token.role);
     return {
         isValid: true,
         credentials: Object.assign(token, { scope: roleAsScope })

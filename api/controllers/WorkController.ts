@@ -1,4 +1,5 @@
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Work from "api/models/Work";
 import * as Boom from "boom";
 import * as Joi from "joi";
@@ -28,11 +29,13 @@ export default class WorkController implements Controller {
     public routes: RouteDefinitions = {
         GET: {
             "/work_items": {
+                roles: EVERYONE,
                 handler: async () => {
                     return await Work.query().select("*");
                 }
             },
             "/work_items/{id}": {
+                roles: EVERYONE,
                 paramsValidator: this.idValidator,
                 handler: async ({ id }) => {
                     return await Work.query().eager("[user, task]").findById(id) || this.notFound(id);
@@ -41,6 +44,7 @@ export default class WorkController implements Controller {
         },
         POST: {
             "/work_items": {
+                roles: EVERYONE,
                 payloadValidator: this.workValidator,
                 handler: async ({ ...body }, h) => {
                     let newWork = await Work.query().eager("[user, task]").insert(body).returning("*");
@@ -50,6 +54,7 @@ export default class WorkController implements Controller {
         },
         PUT: {
             "/work_items/{id}": {
+                roles: EVERYONE,
                 paramsValidator: this.idValidator,
                 payloadValidator: this.workValidator,
                 handler: async ({ id, ...body }) => {
@@ -62,6 +67,7 @@ export default class WorkController implements Controller {
         },
         DELETE: {
             "/work_items/{id}": {
+                roles: EVERYONE,
                 paramsValidator: this.idValidator,
                 handler: async ({ id }, h) => {
                     let deleted = await Work.query().del().where({ id: id });

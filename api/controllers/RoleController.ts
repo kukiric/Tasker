@@ -1,4 +1,5 @@
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Role from "api/models/Role";
 import * as Boom from "boom";
 import * as Joi from "joi";
@@ -19,11 +20,13 @@ export default class RoleController implements Controller {
     public routes: RouteDefinitions = {
         GET: {
             "/roles": {
+                roles: EVERYONE,
                 handler: async () => {
                     return await Role.query().select("*");
                 }
             },
             "/roles/{id}": {
+                roles: EVERYONE,
                 paramsValidator: this.idValidator,
                 handler: async ({ id }) => {
                     return await Role.query().findById(id) || this.notFound(id);

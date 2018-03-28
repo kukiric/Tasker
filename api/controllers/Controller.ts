@@ -11,7 +11,7 @@ export type PathHandler = (
     request: Request
 ) => Lifecycle.ReturnValue;
 
-export interface Route {
+interface BaseRoute {
     /**
      * Validação para os parâmetros no caminho do recurso
      */
@@ -31,19 +31,32 @@ export interface Route {
         [name: string]: Joi.AnySchema
     };
     /**
-     * Obriga os usuários a estarem autenticados para acessar essa rota
-     * @default true
-     */
-    authRequired?: boolean;
-    /**
-     * Roles permitidos a acessar essa rota
-     */
-    roles?: AllowedRole[];
-    /**
      * Função que responde à requisição
      */
     handler: PathHandler;
 }
+
+interface RouteWithAuth extends BaseRoute {
+    /**
+     * Obriga os usuários a estarem autenticados para acessar essa rota
+     * @default true
+     */
+    authRequired?: true;
+    /**
+     * Roles permitidos a acessar essa rota
+     */
+    roles: AllowedRole[];
+}
+
+interface RouteWithoutAuth extends BaseRoute {
+    authRequired: false;
+    roles?: undefined;
+}
+
+/**
+ * União dos tipos de rota com e sem o parâmetro authRequired
+ */
+export type Route = RouteWithAuth | RouteWithoutAuth;
 
 export interface RouteMapping {
     [uri: string]: Route;

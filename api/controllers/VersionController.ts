@@ -1,4 +1,5 @@
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
+import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
 import Version from "api/models/Version";
 import * as Boom from "boom";
 import * as Joi from "joi";
@@ -28,11 +29,13 @@ export default class VersionController implements Controller {
     public routes: RouteDefinitions = {
         GET: {
             "/versions": {
+                roles: EVERYONE,
                 handler: async () => {
                     return await Version.query().eager("project").select("*");
                 }
             },
             "/versions/{id}": {
+                roles: EVERYONE,
                 paramsValidator: this.idValidator,
                 handler: async ({ id }) => {
                     return await Version.query().eager("project").findById(id) || this.notFound(id);
@@ -41,6 +44,7 @@ export default class VersionController implements Controller {
         },
         POST: {
             "/versions": {
+                roles: [ADMIN, MANAGER],
                 payloadValidator: this.versionValidator,
                 handler: async ({ ...body }, h) => {
                     let newVersion = await Version.query().eager("project").insert(body).returning("*");
@@ -50,6 +54,7 @@ export default class VersionController implements Controller {
         },
         PUT: {
             "/versions/{id}": {
+                roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator,
                 payloadValidator: this.versionValidator,
                 handler: async ({ id, ...body }) => {
@@ -62,6 +67,7 @@ export default class VersionController implements Controller {
         },
         DELETE: {
             "/versions/{id}": {
+                roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator,
                 handler: async ({ id }, h) => {
                     let deleted = await Version.query().del().where({ id: id });
