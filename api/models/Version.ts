@@ -9,7 +9,7 @@ export default class Version extends Model {
 
     public static validTypes = ["Passado", "Presente", "Futuro"];
 
-    public static versionValidator = {
+    public static validator = {
         id: Joi.forbidden(),
         name: Joi.string().required().example("1.0.1"),
         type: Joi.string().only(Version.validTypes).required().example("Futuro"),

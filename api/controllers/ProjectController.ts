@@ -110,23 +110,25 @@ export default class ProjectController extends BaseController {
                     return this.notFound(id);
                 }
             },
-            "/projects/{id1}/users/{id2}": {
+            "/projects/{projectId}/users/{userId}": {
                 roles: [ADMIN, MANAGER],
-                handler: async ({ id1: id, id2: userId }, h) => {
-                    return this.deleteRelation(id, "User", "users", userId, h);
+                paramsValidator: this.multiIdValidator("projectId", "taskId"),
+                handler: async ({ projectId, userId }, h) => {
+                    return this.deleteRelation(projectId, "User", "users", userId, h);
                 }
             },
-            "/projects/{id1}/tasks/{id2}": {
+            "/projects/{projectId}/tasks/{taskId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
                 handler: async ({ projectId, taskId }, h) => {
                     return this.deleteRelation(projectId, "Task", "tasks", taskId, h);
                 }
             },
-            "/projects/{id1}/tags/{id2}": {
+            "/projects/{projectId}/tags/{tagId}": {
                 roles: [ADMIN, MANAGER],
-                handler: async ({ id1: id, id2: tagId }, h) => {
-                    return this.deleteRelation(id, "Tag", "tags", tagId, h);
+                paramsValidator: this.multiIdValidator("projectId", "tagId"),
+                handler: async ({ projectId, tagId }, h) => {
+                    return this.deleteRelation(projectId, "Tag", "tags", tagId, h);
                 }
             }
         }

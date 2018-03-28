@@ -92,7 +92,7 @@ export default abstract class BaseController {
     /**
      * Retorna um erro de não encontrado para outra entidade dentro dessa
      */
-    protected otherNotFound(entity: string, id: any, otherId: any) {
+    protected childNotFound(entity: string, id: any, otherId: any) {
         return Boom.notFound(`${entity} with id ${otherId} not found in` +
                              `${this.modelClass.name.toLowerCase()} with id ${id}`);
     }
@@ -119,7 +119,7 @@ export default abstract class BaseController {
             if (deleted) {
                 return h.response().code(204);
             }
-            return this.otherNotFound(entity, id, otherId);
+            return this.childNotFound(entity, id, otherId);
         }
         return this.notFound(id);
     }

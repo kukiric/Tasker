@@ -5,11 +5,7 @@ import * as Boom from "boom";
 import * as Joi from "joi";
 
 export default class UserController extends BaseController {
-
-    // Erro padrão
-    private notFound(id: any) {
-        return Boom.notFound(`User with id ${id} not found`);
-    }
+    protected modelClass = User;
 
     // Rotas
     public routes: RouteDefinitions = {
@@ -22,7 +18,7 @@ export default class UserController extends BaseController {
             },
             "/users/{id}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }) => {
                     let user = await User.query()
                         .eager("[role, projects, work_items, tasks]")
@@ -32,7 +28,7 @@ export default class UserController extends BaseController {
             },
             "/users/{id}/projects": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }) => {
                     let user = await User.query()
                         .eager("projects.[manager, versions, tasks, users, tags]").select("*")
@@ -44,7 +40,7 @@ export default class UserController extends BaseController {
         POST: {
             "/users": {
                 roles: [ADMIN],
-                payloadValidator: this.userValidator,
+                payloadValidator: User.validator,
                 handler: async ({ ...body }, h) => {
                     let newUser = await User.query()
                         .eager("[role, projects, work_items, tasks]")
@@ -56,8 +52,8 @@ export default class UserController extends BaseController {
         PUT: {
             "/users/{id}": {
                 roles: [ADMIN],
-                paramsValidator: this.idValidator,
-                payloadValidator: this.userValidator,
+                paramsValidator: this.idValidator(),
+                payloadValidator: User.validator,
                 handler: async ({ id, ...body }) => {
                     let user = await User.query()
                         .eager("[role, projects, work_items, tasks]").update(body).where({ id: id })
@@ -69,7 +65,7 @@ export default class UserController extends BaseController {
         DELETE: {
             "/users/{id}": {
                 roles: [ADMIN],
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }, h) => {
                     let deleted = await User.query().del().where({ id: id });
                     if (deleted) {

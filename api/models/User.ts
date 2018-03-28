@@ -15,7 +15,7 @@ export default class User extends Model {
     public tasks?: any;
     public role?: any;
 
-    private validator = {
+    public static validator = {
         id: Joi.forbidden(),
         username: Joi.string().required().example("TestUser"),
         email: Joi.string().email().required().example("test.user@example.com"),

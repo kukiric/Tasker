@@ -4,12 +4,8 @@ import Version from "api/models/Version";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
-export default class VersionController implements BaseController {
-
-    // Erro padrão
-    private notFound(id: any) {
-        return Boom.notFound(`Version with id ${id} not found`);
-    }
+export default class VersionController extends BaseController {
+    protected modelClass = Version;
 
     // Rotas
     public routes: RouteDefinitions = {
@@ -22,7 +18,7 @@ export default class VersionController implements BaseController {
             },
             "/versions/{id}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }) => {
                     return await Version.query().eager("project").findById(id) || this.notFound(id);
                 }
@@ -31,7 +27,7 @@ export default class VersionController implements BaseController {
         POST: {
             "/versions": {
                 roles: [ADMIN, MANAGER],
-                payloadValidator: this.versionValidator,
+                payloadValidator: Version.validator,
                 handler: async ({ ...body }, h) => {
                     let newVersion = await Version.query().eager("project").insert(body).returning("*");
                     return h.response(newVersion).code(201);
@@ -41,8 +37,8 @@ export default class VersionController implements BaseController {
         PUT: {
             "/versions/{id}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator,
-                payloadValidator: this.versionValidator,
+                paramsValidator: this.idValidator(),
+                payloadValidator: Version.validator,
                 handler: async ({ id, ...body }) => {
                     let version = await Version.query()
                         .eager("project").update(body).where({ id: id })
@@ -54,7 +50,7 @@ export default class VersionController implements BaseController {
         DELETE: {
             "/versions/{id}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator,
+                paramsValidator: this.idValidator(),
                 handler: async ({ id }, h) => {
                     let deleted = await Version.query().del().where({ id: id });
                     if (deleted) {
