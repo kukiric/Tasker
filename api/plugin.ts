@@ -34,14 +34,14 @@ function registerController(server: Server, controller: Controller) {
         for (let path in controller.routes[method]) {
             // Objeto da rota
             let route: Route = controller.routes[method][path];
-            // Opções de validação
+            // Opções de validação e autenticação
             let options: RouteOptions = {
                 validate: {
                     params: route.paramsValidator,
                     payload: route.payloadValidator
                 },
                 tags: ["api", controllerName.replace(regex, "$1 $2")],
-                auth: route.auth || false
+                auth: route.auth != null ? route.auth : { mode: "required", strategy: "jwt" }
             };
             // Função de tratamento
             let handler: PathHandler = encapsulateParams.bind(undefined, route.handler);
@@ -54,6 +54,7 @@ function registerController(server: Server, controller: Controller) {
  * Valid a token JWT durante a autenticação
  */
 function validate(token: DecodedToken, request: Request, h: ResponseToolkit) {
+    console.log(request);
     return {
         isValid: true,
         credentials: token

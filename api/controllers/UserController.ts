@@ -28,13 +28,11 @@ export default class UserController implements Controller {
     public routes: RouteDefinitions = {
         GET: {
             "/users": {
-                auth: "jwt",
                 handler: async () => {
                     return await User.query().eager("role").select("*");
                 }
             },
             "/users/{id}": {
-                auth: "jwt",
                 paramsValidator: this.idValidator,
                 handler: async ({ id }) => {
                     let user = await User.query()

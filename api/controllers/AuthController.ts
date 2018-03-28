@@ -17,7 +17,6 @@ export default class AuthController implements Controller {
     public routes: RouteDefinitions = {
         GET: {
             "/auth": {
-                auth: "jwt",
                 handler: async ({}, h, request) => {
                     return request.auth.credentials;
                 }
@@ -25,6 +24,7 @@ export default class AuthController implements Controller {
         },
         POST: {
             "/auth": {
+                auth: false,
                 payloadValidator: this.authValidator,
                 handler: async ({ username, password }, h, request) => {
                     // Checa a validez da chave secreta
