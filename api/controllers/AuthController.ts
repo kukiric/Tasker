@@ -1,5 +1,5 @@
 import Controller, { RouteDefinitions } from "api/controllers/Controller";
-import TokenStorage, { DecodedToken } from "api/tokens";
+import { DecodedToken } from "api/token";
 import User from "api/models/User";
 import * as JWT from "jsonwebtoken";
 import * as assert from "assert";
@@ -13,8 +13,6 @@ export default class AuthController implements Controller {
         username: Joi.string().required().example("admin"),
         password: Joi.string().min(6).max(72).required().example("admin123")
     };
-
-    private tokens: { [key: string]: string } = {};
 
     public routes: RouteDefinitions = {
         GET: {
@@ -35,29 +33,19 @@ export default class AuthController implements Controller {
                     // Busca o usuário e checa suas credenciais
                     let user = await User.query().findOne({ username });
                     if (user && await bcrypt.compare(password, user.password)) {
-                        // Cria os dados do JWT
+                        // Cria os dados da JWT
                         let payload: DecodedToken = {
                             user: username,
                             uid: user.id,
-                            role: user.role_id || null
+                            role: user.role_id
                         };
-                        // Grava a token em memória
-                        TokenStorage[username] = payload;
-                        // Retorna a nova token para o usuário
-                        return {
-                            username: username,
-                            token: JWT.sign(payload, key!)
-                        };
+                        // Gera a nova token
+                        let token = JWT.sign(payload, key!, { expiresIn: "30d" });
+                        // Retorna a token para o usuário
+                        return { username, token };
                     }
-                    // Recusa as credenciais do usuário
+                    // Recusa credenciais inválidos
                     return Boom.unauthorized("Incorrect username or password");
-                }
-            }
-        },
-        DELETE: {
-            "/auth": {
-                handler: async () => {
-                    return Boom.notImplemented();
                 }
             }
         }

@@ -1,6 +1,6 @@
 import { Plugin, Server, ServerRegisterOptions, Request, ResponseToolkit, RouteOptions } from "hapi";
 import Controller, { PathHandler, RouteMapping, Route } from "api/controllers/Controller";
-import TokenStorage, { DecodedToken } from "api/tokens";
+import { DecodedToken } from "./token";
 import * as assert from "assert";
 import * as Joi from "joi";
 
@@ -50,16 +50,13 @@ function registerController(server: Server, controller: Controller) {
     }
 }
 
+/**
+ * Valid a token JWT durante a autenticação
+ */
 function validate(token: DecodedToken, request: Request, h: ResponseToolkit) {
-    // Verifica se o usuário já se autenticou durante essa sessão
-    let serverToken = TokenStorage[token.user];
-    let isValid = serverToken !== undefined
-               && token.user  === serverToken.user
-               && token.uid   === serverToken.uid
-               && token.role  === serverToken.role;
     return {
-        isValid,
-        credentials: isValid ? serverToken : null
+        isValid: true,
+        credentials: token
     };
 }
 
