@@ -1,5 +1,5 @@
 import { Model } from "objection";
-import * as Joi from "joi".
+import * as Joi from "joi";
 
 export default class Tag extends Model {
     public static tableName = "tag";
