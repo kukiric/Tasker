@@ -26,7 +26,7 @@ export default class User extends Model {
         email: Joi.string().email().required().example("test.user@example.com"),
         fullname: Joi.string().required().example("Usuário de Teste"),
         password: Joi.string().min(6).max(72).required().example("senha123"),
-        role_id: Joi.number().optional().example(2)
+        role_id: Joi.number().required().only([1, 2, 3]).example(2)
     };
 
     public static get relationMappings(): RelationMappings {

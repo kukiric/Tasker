@@ -6,7 +6,7 @@ exports.up = async function (knex: Knex): Promise<any> {
         table.string("name").notNullable();
         table.date("due_date").notNullable();
         table.string("status", 45).notNullable();
-        table.integer("manager_id").references("user.id");
+        table.integer("manager_id").references("user.id").onDelete("SET NULL");
         table.timestamps(true, true);
     });
 };
