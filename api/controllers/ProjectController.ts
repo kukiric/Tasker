@@ -17,14 +17,14 @@ export default class ProjectController extends BaseController {
             "/projects": {
                 roles: EVERYONE,
                 handler: async () => {
-                    return await Project.query().select("*");
+                    return await Project.query();
                 }
             },
             "/projects/{projectId}": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("projectId"),
                 handler: async ({ projectId }) => {
-                    let project = await Project.query().eager("manager").select("*").findById(projectId);
+                    let project = await Project.query().eager("manager").findById(projectId);
                     return project ? project : this.notFound(projectId);
                 }
             },

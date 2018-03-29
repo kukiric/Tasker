@@ -6,6 +6,7 @@ import User from "api/models/User";
 import * as Joi from "joi";
 
 export default class Task extends Model {
+    public static defaultEagerAlgorithm = Model.JoinEagerAlgorithm;
     public static tableName = "task";
     public id!: number;
     public description!: string;

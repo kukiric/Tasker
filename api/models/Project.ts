@@ -6,6 +6,7 @@ import Tag from "api/models/Tag";
 import * as Joi from "joi";
 
 export default class Project extends Model {
+    public static defaultEagerAlgorithm = Model.JoinEagerAlgorithm;
     public static tableName = "project";
     public id!: number;
     public name!: string;

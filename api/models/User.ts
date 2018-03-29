@@ -7,6 +7,7 @@ import * as bcrypt from "bcrypt";
 import * as Joi from "joi";
 
 export default class User extends Model {
+    public static defaultEagerAlgorithm = Model.JoinEagerAlgorithm;
     public static tableName = "user";
     public id!: number;
     public username!: string;

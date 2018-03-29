@@ -2,6 +2,7 @@ import { Model, RelationMappings, Pojo } from "objection";
 import * as Joi from "joi";
 
 export default class Work extends Model {
+    public static defaultEagerAlgorithm = Model.JoinEagerAlgorithm;
     public static tableName = "work";
     public id!: number;
     public hours!: number;
