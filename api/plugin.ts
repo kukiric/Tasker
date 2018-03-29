@@ -1,6 +1,6 @@
 import { Plugin, Server, Request, ResponseToolkit} from "hapi";
 import { ServerRegisterOptions, RouteOptions, RouteOptionsAccess } from "hapi";
-import Controller, { PathHandler, RouteMapping, Route } from "api/controllers/BaseController";
+import BaseController, { PathHandler, RouteMapping, Route } from "api/controllers/BaseController";
 import { AllowedRole, getRoleName } from "./models/Role";
 import { DecodedToken } from "./token";
 import * as assert from "assert";
@@ -36,7 +36,7 @@ function stringifyRoles(roles?: AllowedRole | AllowedRole[]): string[] | false {
 /**
  * Registra as rotas do controlador no servidor
  */
-function registerController(server: Server, controller: Controller) {
+function registerController(server: Server, controller: BaseController) {
     let regex = /^(.+)(Controller)$/;
     let controllerName = controller.constructor.name;
     console.log("Registrando controlador: " + controllerName);
@@ -106,7 +106,7 @@ export default {
             grouping: "tags",
             sortEndpoints: "method",
             expanded: "none",
-            jsonEditor: true,
+            jsonEditor: false,
             info: {
                 title: this.name + " Documentation",
                 description: "An API made with Hapi.js - https://github.com/kukiric/tasker",

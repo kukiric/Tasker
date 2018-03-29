@@ -1,4 +1,8 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import Project from "api/models/Project";
+import Version from "api/models/Version";
+import Work from "api/models/Work";
+import User from "api/models/User";
 import * as Joi from "joi";
 
 export default class Task extends Model {
@@ -13,6 +17,12 @@ export default class Task extends Model {
     public project_id?: number;
     public parent_id?: number;
     public version_id?: number;
+    public project?: Project;
+    public parent?: Task;
+    public children?: Task[];
+    public version?: Version;
+    public work_items?: Work[];
+    public users?: User[];
 
     public static validTypes = ["Bug", "Funcionalidade"];
     public static validStatuses = ["Nova", "Atribuída", "Em Desenvolvimento", "Requer Teste", "Concluída"];
@@ -24,17 +34,13 @@ export default class Task extends Model {
         estimate_work_hour: Joi.number().optional().example(16),
         type: Joi.string().only(Task.validTypes).required().example("Funcionalidade"),
         status: Joi.string().only(Task.validStatuses).required(),
-        progress: Joi.number().optional().example(0),
+        progress: Joi.number().optional().example(0.25),
         project_id: Joi.number().forbidden(),
         parent_id: Joi.number().optional(),
         version_id: Joi.number().optional()
     };
 
     public static get relationMappings(): RelationMappings {
-        const Project = require("api/models/Project").default;
-        const Version = require("api/models/Version").default;
-        const Work = require("api/models/Work").default;
-        const User = require("api/models/User").default;
         return {
             project: {
                 relation: Model.BelongsToOneRelation,

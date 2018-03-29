@@ -7,16 +7,16 @@ export default class Work extends Model {
     public hours!: number;
     public start_time?: Date;
     public end_time?: Date;
-    public user_id?: number;
     public task_id?: number;
+    public user_id?: number;
 
     public static validator = {
         id: Joi.forbidden(),
         hours: Joi.number().required().example(4),
         start_time: Joi.date().optional(),
         end_time: Joi.date().optional(),
-        user_id: Joi.number().required().example(1),
-        task_id: Joi.number().required().example(1)
+        task_id: Joi.number().forbidden(),
+        user_id: Joi.number().required().example(1)
     };
 
     public static get relationMappings(): RelationMappings {

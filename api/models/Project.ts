@@ -1,4 +1,8 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import Version from "api/models/Version";
+import Task from "api/models/Task";
+import User from "api/models/User";
+import Tag from "api/models/Tag";
 import * as Joi from "joi";
 
 export default class Project extends Model {
@@ -8,11 +12,11 @@ export default class Project extends Model {
     public due_date!: Date;
     public status!: string;
     public manager_id?: number;
-    public manager?: any;
-    public versions?: any;
-    public tasks?: any;
-    public users?: any;
-    public tags?: any;
+    public manager?: User;
+    public versions?: Version;
+    public tasks?: Task[];
+    public users?: User[];
+    public tags?: Tag[];
 
     public static validStatuses = ["Novo", "Em andamento", "Concluído"];
 
@@ -25,10 +29,6 @@ export default class Project extends Model {
     };
 
     public static get relationMappings(): RelationMappings {
-        const Version = require("api/models/Version").default;
-        const Task = require("api/models/Task").default;
-        const User = require("api/models/User").default;
-        const Tag = require("api/models/Tag").default;
         return {
             manager: {
                 relation: Model.BelongsToOneRelation,

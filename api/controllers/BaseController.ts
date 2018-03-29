@@ -33,6 +33,12 @@ interface BaseRoute {
         [name: string]: Joi.AnySchema
     };
     /**
+     * Validação para o a resposta da requisição
+     */
+    responseValidator?: {
+        [name: string]: Joi.AnySchema
+    } | Joi.AnySchema;
+    /**
      * Função que responde à requisição
      */
     handler: PathHandler;
@@ -92,9 +98,18 @@ export default abstract class BaseController {
     /**
      * Retorna um erro de não encontrado para outra entidade dentro dessa
      */
-    protected childNotFound(entity: string, id: any, otherId: any) {
-        return Boom.notFound(`${entity} with id ${otherId} not found in` +
+    protected childNotFound(childName: string, id: any, otherId: any) {
+        return Boom.notFound(`${childName} with id ${otherId} not found in ` +
                              `${this.modelClass.name.toLowerCase()} with id ${id}`);
+    }
+
+    /**
+     * Checa se o objeto do tipo modelClass existe no banco
+     * @default modelClass this.modelClass
+     */
+    protected async exists(id: number, modelClass?: typeof Model) {
+        let model = modelClass || this.modelClass;
+        return await model.query().findById(id) !== undefined;
     }
 
     /**
@@ -125,12 +140,19 @@ export default abstract class BaseController {
     }
 
     /**
+     * Cria um validador que envolve o objeto em um array
+     */
+    protected arrayValidator(obj: { [key: string]: Joi.AnySchema }) {
+        return Joi.array().items(Joi.object(obj));
+    }
+
+    /**
      * Cria um validador simples com propriedades obrigatórias do tipo number
      */
     protected multiIdValidator(...args: string[]) {
         let validator: { [key: string]: Joi.NumberSchema } = {};
         for (let arg of args) {
-            validator[arg] = Joi.number().required().example(1);
+            validator[arg] = Joi.number().required();
         }
         return validator;
     }

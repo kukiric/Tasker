@@ -11,27 +11,39 @@ export default class UserController extends BaseController {
             "/users": {
                 roles: EVERYONE,
                 handler: async () => {
-                    return await User.query().eager("role").select("*");
+                    return await User.query().eager("role");
                 }
             },
-            "/users/{id}": {
+            "/users/{userId}": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator(),
-                handler: async ({ id }) => {
-                    let user = await User.query()
-                        .eager("[role, projects, work_items, tasks]")
-                        .select("*").where("id", id).first();
-                    return user ? user : this.notFound(id);
+                handler: async ({ userId }) => {
+                    let user = await User.query().eager("role").findById(userId)
+                    return user ? user : this.notFound(userId)
                 }
             },
-            "/users/{id}/projects": {
+            "/users/{userId}/projects": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator(),
-                handler: async ({ id }) => {
-                    let user = await User.query()
-                        .eager("projects.[manager, versions, tasks, users, tags]").select("*")
-                        .findById(id) as any;
-                    return user ? user.projects : this.notFound(id);
+                handler: async ({ userId }) => {
+                    let user = await User.query().eager("projects").findById(userId)
+                    return user ? user.projects : this.notFound(userId)
+                }
+            },
+            "/users/{userId}/tasks": {
+                roles: EVERYONE,
+                paramsValidator: this.idValidator("userId"),
+                handler: async ({ userId }) => {
+                    let user = await User.query().eager("tasks.[project]").findById(userId);
+                    return user ? user.tasks : this.notFound(userId);
+                }
+            },
+            "/users/{userId}/work_items": {
+                roles: EVERYONE,
+                paramsValidator: this.idValidator("userId"),
+                handler: async ({ userId }) => {
+                    let user = await User.query().eager("work_items").findById(userId);
+                    return user ? user.work_items : this.notFound(userId);
                 }
             }
         },
@@ -40,36 +52,35 @@ export default class UserController extends BaseController {
                 roles: [ADMIN],
                 payloadValidator: User.validator,
                 handler: async ({ ...body }, h) => {
-                    let newUser = await User.query()
-                        .eager("[role, projects, work_items, tasks]")
+                    let newUser = await User.query().eager("role")
                         .insert(body).returning("*").first();
                     return h.response(newUser).code(201);
                 }
             }
         },
         PUT: {
-            "/users/{id}": {
+            "/users/{userId}": {
                 roles: [ADMIN],
-                paramsValidator: this.idValidator(),
+                paramsValidator: this.idValidator("userId"),
                 payloadValidator: User.validator,
-                handler: async ({ id, ...body }) => {
+                handler: async ({ userId, ...body }) => {
                     let user = await User.query()
-                        .eager("[role, projects, work_items, tasks]").update(body).where({ id: id })
-                        .returning("*").first();
-                    return user ? user : this.notFound(id);
+                        .eager("[role, projects, work_items, tasks]")
+                        .update(body).findById(userId).returning("*");
+                    return user ? user : this.notFound(userId);
                 }
             }
         },
         DELETE: {
-            "/users/{id}": {
+            "/users/{userId}": {
                 roles: [ADMIN],
-                paramsValidator: this.idValidator(),
-                handler: async ({ id }, h) => {
-                    let deleted = await User.query().del().where({ id: id });
+                paramsValidator: this.idValidator("userId"),
+                handler: async ({ userId }, h) => {
+                    let deleted = await User.query().deleteById(userId);
                     if (deleted) {
                         return h.response().code(204);
                     }
-                    return this.notFound(id);
+                    return this.notFound(userId);
                 }
             }
         }

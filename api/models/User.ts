@@ -1,4 +1,8 @@
 import { Model, RelationMappings, Pojo, QueryContext } from "objection";
+import Project from "api/models/Project";
+import Role from "api/models/Role";
+import Work from "api/models/Work";
+import Task from "api/models/Task";
 import * as bcrypt from "bcrypt";
 import * as Joi from "joi";
 
@@ -10,10 +14,10 @@ export default class User extends Model {
     public password!: string;
     public fullname!: string;
     public role_id?: number;
-    public work_items?: any;
-    public projects?: any;
-    public tasks?: any;
-    public role?: any;
+    public work_items?: Work[];
+    public projects?: Project[];
+    public tasks?: Task[];
+    public role?: Role;
 
     public static validator = {
         id: Joi.forbidden(),
@@ -25,10 +29,6 @@ export default class User extends Model {
     };
 
     public static get relationMappings(): RelationMappings {
-        const Project = require("api/models/Project").default;
-        const Role = require("api/models/Role").default;
-        const Work = require("api/models/Work").default;
-        const Task = require("api/models/Task").default;
         return {
             role: {
                 relation: Model.HasOneRelation,

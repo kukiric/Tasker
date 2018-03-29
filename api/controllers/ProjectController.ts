@@ -1,9 +1,12 @@
 import { ResponseToolkit } from "hapi";
-import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
+import { QueryBuilder, Model } from "objection";
 import { EVERYONE, ADMIN, MANAGER, TEAM_MEMBER } from "api/models/Role";
+import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
+import Version from "api/models/Version";
 import Project from "api/models/Project";
 import User from "api/models/User";
 import Task from "api/models/Task";
+import Work from "api/models/Work";
 
 export default class ProjectController extends BaseController {
     protected modelClass = Project;
@@ -14,46 +17,65 @@ export default class ProjectController extends BaseController {
             "/projects": {
                 roles: EVERYONE,
                 handler: async () => {
-                    return await Project.query().eager("manager").select("*");
+                    return await Project.query().select("*");
                 }
             },
-            "/projects/{id}": {
+            "/projects/{projectId}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator(),
-                handler: async ({ id }) => {
-                    let project = await Project.query()
-                        .eager("manager").select("*").findById(id);
-                    return project ? project : this.notFound(id);
+                paramsValidator: this.idValidator("projectId"),
+                handler: async ({ projectId }) => {
+                    let project = await Project.query().eager("manager").select("*").findById(projectId);
+                    return project ? project : this.notFound(projectId);
                 }
             },
-            "/projects/{id}/users": {
+            "/projects/{projectId}/users": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator(),
-                handler: async ({ id }) => {
+                paramsValidator: this.idValidator("projectId"),
+                handler: async ({ projectId }) => {
+                    let taskFilter = (query: QueryBuilder<Project>) => {
+                        query.where({ project_id: projectId });
+                    };
                     let project = await Project.query()
-                        .eager("users").select("*")
-                        .findById(id) as any;
-                    return project ? project.users : this.notFound(id);
+                        .eager("users.[tasks(taskFilter)]", { taskFilter: taskFilter })
+                        .findById(projectId);
+                    return project ? project.users : this.notFound(projectId);
                 }
             },
-            "/projects/{id}/tasks": {
+            "/projects/{projectId}/tasks": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator(),
-                handler: async ({ id }) => {
+                paramsValidator: this.idValidator("projectId"),
+                handler: async ({ projectId }) => {
                     let project = await Project.query()
-                        .eager("tasks.[users, parent, children, version]").select("*")
-                        .findById(id) as any;
-                    return project ? project.tasks : this.notFound(id);
+                        .eager("tasks.[users, parent, children, version]")
+                        .findById(projectId);
+                    return project ? project.tasks : this.notFound(projectId);
                 }
             },
-            "/projects/{id}/manager": {
+            "/projects/{projectId}/tags": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator(),
-                handler: async ({ id }) => {
-                    let project = await Project.query()
-                        .eager("manager").select("*")
-                        .findById(id) as any;
-                    return project && project.manager ? project.manager : this.notFound(id);
+                paramsValidator: this.idValidator("projectId"),
+                handler: async ({ projectId }) => {
+                    let project = await Project.query().eager("tags").findById(projectId);
+                    return project ? project.tags : this.notFound(projectId);
+                }
+            },
+            "/projects/{projectId}/versions": {
+                roles: EVERYONE,
+                paramsValidator: this.idValidator("projectId"),
+                handler: async ({ projectId }) => {
+                    let project = await Project.query().eager("versions").findById(projectId);
+                    return project ? project.versions : this.notFound(projectId);
+                }
+            },
+            "/projects/{projectId}/tasks/{taskId}/work_items": {
+                roles: EVERYONE,
+                paramsValidator: this.multiIdValidator("projectId", "taskId"),
+                handler: async ({ projectId, taskId, ...body }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    let task = await Task.query().eager("work_items").findOne({ id: taskId, project_id: projectId });
+                    return task ? task.work_items : this.childNotFound("Task", projectId, taskId);
                 }
             }
         },
@@ -62,62 +84,77 @@ export default class ProjectController extends BaseController {
                 roles: [ADMIN, MANAGER],
                 payloadValidator: Project.validator,
                 handler: async ({ ...body }, h) => {
-                    let newProject = await Project.query()
-                        .eager("[manager, versions, tasks, users, tags]")
-                        .insert(body).returning("*").first();
+                    let newProject = await Project.query().eager("manager")
+                        .insert(body).returning("*");
                     return h.response(newProject).code(201);
                 }
             },
-            "/projects/{id}/users": {
+            "/projects/{projectId}/users": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator(),
+                paramsValidator: this.idValidator("projectId"),
                 payloadValidator: this.idValidator("userId"),
-                handler: async ({ id, user: { id: userId } }, h) => {
-                    return this.createRelation(id, "users", userId, h);
+                handler: async ({ projectId, userId }, h) => {
+                    return this.createRelation(projectId, "users", userId, h);
                 }
             },
-            "/projects/{id}/tasks": {
+            "/projects/{projectId}/tags": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator(),
+                paramsValidator: this.idValidator("projectId"),
+                payloadValidator: this.idValidator("tagId"),
+                handler: async ({ projectId, tagId }, h) => {
+                    return this.createRelation(projectId, "tags", tagId, h);
+                }
+            },
+            "/projects/{projectId}/tasks": {
+                roles: [ADMIN, MANAGER],
+                paramsValidator: this.idValidator("projectId"),
                 payloadValidator: Task.validator,
-                handler: async ({ id, ...body }, h) => {
-                    let taskWithProjectId = Object.assign(body, { project_id: id });
+                handler: async ({ projectId, ...body }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    let taskWithProjectId = Object.assign(body, { project_id: projectId });
                     return await Task.query().insert(taskWithProjectId).returning("*");
                 }
             },
-            "/projects/{id}/tags": {
+            "/projects/{projectId}/tasks/{taskId}/work_items": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator(),
-                payloadValidator: this.idValidator("tagId"),
-                handler: async ({ id, tagId }, h) => {
-                    return this.createRelation(id, "tags", tagId, h);
+                paramsValidator: this.multiIdValidator("projectId", "taskId"),
+                payloadValidator: Work.validator,
+                handler: async ({ projectId, taskId, ...body }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    if (await this.exists(taskId, Task) === false) {
+                        return this.childNotFound("Task", projectId, taskId);
+                    }
+                    let workWithTaskId = Object.assign(body, { task_id: taskId });
+                    return await Work.query().insert(workWithTaskId).returning("*");
                 }
             }
         },
         PUT: {
-            "/projects/{id}": {
+            "/projects/{projectId}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator(),
+                paramsValidator: this.idValidator("projectId"),
                 payloadValidator: Project.validator,
-                handler: async ({ id, ...body }) => {
-                    let project = await Project.query()
-                        .eager("[manager, versions, tasks, users, tags]")
-                        .update(body).where({ id: id })
-                        .returning("*").first();
-                    return project ? project : this.notFound(id);
+                handler: async ({ projectId, ...body }) => {
+                    let project = await Project.query().eager("manager")
+                        .update(body).findById(projectId).returning("*").first();
+                    return project ? project : this.notFound(projectId);
                 }
             }
         },
         DELETE: {
-            "/projects/{id}": {
+            "/projects/{projectId}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator(),
-                handler: async ({ id }, h) => {
-                    let deleted = await Project.query().del().where({ id: id });
+                paramsValidator: this.idValidator("projectId"),
+                handler: async ({ projectId }, h) => {
+                    let deleted = await Project.query().deleteById(projectId);
                     if (deleted) {
                         return h.response().code(204);
                     }
-                    return this.notFound(id);
+                    return this.notFound(projectId);
                 }
             },
             "/projects/{projectId}/users/{userId}": {
@@ -127,18 +164,37 @@ export default class ProjectController extends BaseController {
                     return this.deleteRelation(projectId, "User", "users", userId, h);
                 }
             },
-            "/projects/{projectId}/tasks/{taskId}": {
-                roles: [ADMIN, MANAGER],
-                paramsValidator: this.multiIdValidator("projectId", "taskId"),
-                handler: async ({ projectId, taskId }, h) => {
-                    return this.deleteRelation(projectId, "Task", "tasks", taskId, h);
-                }
-            },
             "/projects/{projectId}/tags/{tagId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "tagId"),
                 handler: async ({ projectId, tagId }, h) => {
                     return this.deleteRelation(projectId, "Tag", "tags", tagId, h);
+                }
+            },
+            "/projects/{projectId}/tasks/{taskId}": {
+                roles: [ADMIN, MANAGER],
+                paramsValidator: this.multiIdValidator("projectId", "taskId"),
+                handler: async ({ projectId, taskId }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    if (await Task.query().deleteById(taskId)) {
+                        return h.response().code(204);
+                    }
+                    return this.childNotFound("Task", projectId, taskId);
+                }
+            },
+            "/projects/{projectId}/versions/{versionId}": {
+                roles: [ADMIN, MANAGER],
+                paramsValidator: this.multiIdValidator("projectId", "versionId"),
+                handler: async ({ projectId, versionId }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    if (await Version.query().deleteById(versionId)) {
+                        return h.response().code(204);
+                    }
+                    return this.childNotFound("Version", projectId, versionId);
                 }
             }
         }
