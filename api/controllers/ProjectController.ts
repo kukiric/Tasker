@@ -74,7 +74,8 @@ export default class ProjectController extends BaseController {
                     if (await this.exists(projectId) === false) {
                         return this.notFound(projectId);
                     }
-                    let task = await Task.query().eager("work_items").findOne({ id: taskId, project_id: projectId });
+                    let task = await Task.query().eager("work_items")
+                        .findOne({ "task.id": taskId, "project_id": projectId });
                     return task ? task.work_items : this.childNotFound("Task", projectId, taskId);
                 }
             }
@@ -114,7 +115,21 @@ export default class ProjectController extends BaseController {
                         return this.notFound(projectId);
                     }
                     let taskWithProjectId = Object.assign(body, { project_id: projectId });
-                    return await Task.query().insert(taskWithProjectId).returning("*");
+                    let newTask = await Task.query().insert(taskWithProjectId).returning("*");
+                    return h.response(newTask).code(201);
+                }
+            },
+            "/projects/{projectId}/versions": {
+                roles: [ADMIN, MANAGER],
+                paramsValidator: this.idValidator("projectId"),
+                payloadValidator: Version.validator,
+                handler: async ({ projectId, ...body }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    let versionWithProjectId = Object.assign(body, { project_id: projectId });
+                    let newVersion = await Version.query().insert(versionWithProjectId).returning("*");
+                    return h.response(newVersion).code(201);
                 }
             },
             "/projects/{projectId}/tasks/{taskId}/work_items": {
@@ -129,7 +144,8 @@ export default class ProjectController extends BaseController {
                         return this.childNotFound("Task", projectId, taskId);
                     }
                     let workWithTaskId = Object.assign(body, { task_id: taskId });
-                    return await Work.query().insert(workWithTaskId).returning("*");
+                    let newItem = await Work.query().insert(workWithTaskId).returning("*");
+                    return h.response(newItem).code(201);
                 }
             }
         },
@@ -142,6 +158,51 @@ export default class ProjectController extends BaseController {
                     let project = await Project.query().eager("manager")
                         .update(body).findById(projectId).returning("*").first();
                     return project ? project : this.notFound(projectId);
+                }
+            },
+            "/projects/{projectId}/tasks/{taskId}": {
+                roles: [ADMIN, MANAGER],
+                paramsValidator: this.multiIdValidator("projectId", "taskId"),
+                payloadValidator: Task.validator,
+                handler: async ({ projectId, taskId, ...body }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    let taskWithProjectId = Object.assign(body, { project_id: projectId });
+                    let task = await Task.query().update(taskWithProjectId)
+                        .where({ project_id: projectId, id: taskId }).returning("*").first();
+                    return task ? task : this.childNotFound("Task", projectId, taskId);
+                }
+            },
+            "/projects/{projectId}/version/{versionId}": {
+                roles: [ADMIN, MANAGER],
+                paramsValidator: this.multiIdValidator("projectId", "versionId"),
+                payloadValidator: Version.validator,
+                handler: async ({ projectId, versionId, ...body }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    let versionWithProjectId = Object.assign(body, { project_id: projectId });
+                    let version = await Version.query().update(versionWithProjectId)
+                        .where({ project_id: projectId, id: versionId }).returning("*").first();
+                    return version ? version : this.childNotFound("Version", projectId, versionId);
+                }
+            },
+            "/projects/{projectId}/tasks/{taskId}/work_items/{workId}": {
+                roles: [ADMIN, MANAGER],
+                paramsValidator: this.multiIdValidator("projectId", "taskId", "workId"),
+                payloadValidator: Work.validator,
+                handler: async ({ projectId, taskId, workId, ...body }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    if (await this.exists(taskId, Task) === false) {
+                        return this.childNotFound("Task", projectId, taskId);
+                    }
+                    let workWithTaskId = Object.assign(body, { task_id: taskId });
+                    let work = await Work.query().update(workWithTaskId)
+                        .where({ task_id: taskId, id: workId }).returning("*").first();
+                    return work ? work : this.childNotFound("Work item", projectId, workId);
                 }
             }
         },
@@ -195,6 +256,22 @@ export default class ProjectController extends BaseController {
                         return h.response().code(204);
                     }
                     return this.childNotFound("Version", projectId, versionId);
+                }
+            },
+            "/projects/{projectId}/tasks/{taskId}/work_items/{workId}": {
+                roles: [ADMIN, MANAGER],
+                paramsValidator: this.multiIdValidator("projectId", "taskId", "workId"),
+                handler: async ({ projectId, taskId, workId, ...body }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    if (await this.exists(taskId, Task) === false) {
+                        return this.childNotFound("Task", projectId, taskId);
+                    }
+                    if (await Work.query().deleteById(workId)) {
+                        return h.response().code(204);
+                    }
+                    return this.childNotFound("Work item", projectId, workId);
                 }
             }
         }

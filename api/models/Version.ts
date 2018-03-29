@@ -1,4 +1,5 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import Project from "api/models/Project";
 import * as Joi from "joi";
 
 export default class Version extends Model {
@@ -18,7 +19,6 @@ export default class Version extends Model {
     };
 
     public static get relationMappings(): RelationMappings {
-        const Project = require("api/models/Project").default;
         return {
             project: {
                 relation: Model.BelongsToOneRelation,
@@ -32,14 +32,8 @@ export default class Version extends Model {
     }
 
     public $formatJson(json: Pojo) {
-        if (json.project) {
-            // Insere somente o nome e o ID do projeto
-            json.project = {
-                name: json.project.name,
-                id: json.project.id
-            };
-            delete json.project_id;
-        }
+        // Remove as foreign keys
+        delete json.project_id;
         return super.$formatJson(json);
     }
 }

@@ -1,4 +1,6 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import Task from "api/models/Task";
+import User from "api/models/User";
 import * as Joi from "joi";
 
 export default class Work extends Model {
@@ -21,8 +23,6 @@ export default class Work extends Model {
     };
 
     public static get relationMappings(): RelationMappings {
-        const Task = require("api/models/Task").default;
-        const User = require("api/models/User").default;
         return {
             user: {
                 relation: Model.BelongsToOneRelation,
