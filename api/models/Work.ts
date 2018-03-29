@@ -1,11 +1,13 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import { WorkStub } from "api/stubs";
 import Task from "api/models/Task";
 import User from "api/models/User";
 import * as Joi from "joi";
 
-export default class Work extends Model {
+export default class Work extends Model implements WorkStub {
     public static defaultEagerAlgorithm = Model.JoinEagerAlgorithm;
     public static tableName = "work";
+
     public id!: number;
     public hours!: number;
     public start_time?: Date;

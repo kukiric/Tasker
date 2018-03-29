@@ -1,4 +1,5 @@
 import { Model, RelationMappings, Pojo, QueryContext } from "objection";
+import { UserStub } from "api/stubs";
 import Project from "api/models/Project";
 import Role from "api/models/Role";
 import Work from "api/models/Work";
@@ -6,9 +7,10 @@ import Task from "api/models/Task";
 import * as bcrypt from "bcrypt";
 import * as Joi from "joi";
 
-export default class User extends Model {
+export default class User extends Model implements UserStub {
     public static defaultEagerAlgorithm = Model.JoinEagerAlgorithm;
     public static tableName = "user";
+
     public id!: number;
     public username!: string;
     public email!: string;

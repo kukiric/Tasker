@@ -1,13 +1,15 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import { TaskStub } from "api/stubs";
 import Project from "api/models/Project";
 import Version from "api/models/Version";
 import Work from "api/models/Work";
 import User from "api/models/User";
 import * as Joi from "joi";
 
-export default class Task extends Model {
+export default class Task extends Model implements TaskStub {
     public static defaultEagerAlgorithm = Model.JoinEagerAlgorithm;
     public static tableName = "task";
+
     public id!: number;
     public description!: string;
     public due_date?: Date;

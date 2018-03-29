@@ -1,13 +1,15 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import { ProjectStub } from "api/stubs";
 import Version from "api/models/Version";
 import Task from "api/models/Task";
 import User from "api/models/User";
 import Tag from "api/models/Tag";
 import * as Joi from "joi";
 
-export default class Project extends Model {
+export default class Project extends Model implements ProjectStub {
     public static defaultEagerAlgorithm = Model.JoinEagerAlgorithm;
     public static tableName = "project";
+
     public id!: number;
     public name!: string;
     public due_date!: Date;

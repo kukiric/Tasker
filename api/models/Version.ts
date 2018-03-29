@@ -1,10 +1,12 @@
 import { Model, RelationMappings, Pojo } from "objection";
+import { VersionStub } from "api/stubs";
 import Project from "api/models/Project";
 import * as Joi from "joi";
 
-export default class Version extends Model {
+export default class Version extends Model implements VersionStub {
     public static defaultEagerAlgorithm = Model.JoinEagerAlgorithm;
     public static tableName = "version";
+
     public id!: number;
     public name!: string;
     public type!: string;

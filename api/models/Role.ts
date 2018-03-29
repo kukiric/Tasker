@@ -1,7 +1,7 @@
-import { Model, RelationMappings } from "objection";
+import { Model } from "objection";
+import { RoleStub } from "api/stubs";
 
-export default class Role extends Model {
-    public static tableName = "role";
+export default class Role extends Model implements RoleStub {
     public id!: number;
     public name?: string;
 }
