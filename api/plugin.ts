@@ -125,7 +125,7 @@ export default {
             { plugin: require("inert"), once: true },
             { plugin: require("hapi-swagger"), options: swaggerOptions }
         ]);
-        console.log("Registrando rotas da aplicação...");
+        console.log("Registrando as rotas da aplicação...");
         registerController(server, new TagController());
         registerController(server, new UserController());
         registerController(server, new RoleController());

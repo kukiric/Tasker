@@ -56,10 +56,21 @@ export async function start() {
                       + "caracteres e configure-a na varíavel SECRET_KEY no arquivo .env.");
     }
     server.ext("onPreResponse", handleInternalError);
+    console.log("Registrando o plugin da aplicação...");
     await server.register({
         plugin: apiPlugin,
         routes: {
             prefix: "/api"
+        }
+    });
+    console.log("Registrando caminho para arquivos estáticos...");
+    server.route({
+        method: "GET",
+        path: "/{path?}",
+        handler: {
+            directory: {
+                path: "web/public"
+            }
         }
     });
     console.log("Iniciando a aplicação...");
