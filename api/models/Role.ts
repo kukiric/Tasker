@@ -2,6 +2,7 @@ import { Model } from "objection";
 import { RoleStub } from "api/stubs";
 
 export default class Role extends Model implements RoleStub {
+    public static tableName = "role";
     public id!: number;
     public name?: string;
 }

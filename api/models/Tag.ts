@@ -3,6 +3,7 @@ import { TagStub } from "api/stubs";
 import * as Joi from "joi";
 
 export default class Tag extends Model implements TagStub {
+    public static tableName = "tag";
     public id!: number;
     public name!: string;
 
