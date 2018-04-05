@@ -30,7 +30,7 @@ function handleValidationError(request: Request, h: ResponseToolkit, err: any): 
 
 // Configura o servidor do HAPI
 const server = new HapiServer({
-    host: process.env.HOSTNAME,
+    host: process.env.HOST,
     address: process.env.ADDRESS,
     port: process.env.PORT,
     router: {
