@@ -17,9 +17,9 @@ const config: Webpack.Configuration = {
     mode: "development",
     entry: rel("src/app.ts"),
     output: {
+        publicPath: "dist/",
         path: rel("public/dist/"),
-        filename: "bundle.js",
-        publicPath: "public/"
+        filename: "bundle.js"
     },
     module: {
         rules: [
