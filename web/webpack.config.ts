@@ -34,7 +34,7 @@ const config: Webpack.Configuration = {
         extensions: ["*", ".js", ".ts", ".vue", ".json"]
     },
     devServer: devServerConfig,
-    devtool: "source-map"
+    devtool: "eval"
 };
 
 export default config;
