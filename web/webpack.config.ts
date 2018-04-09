@@ -1,5 +1,4 @@
 import * as WebpackDevServer from "webpack-dev-server";
-// import * as TypeScript from "typescript";
 import * as Webpack from "webpack";
 import * as path from "path";
 
@@ -7,12 +6,11 @@ function rel(relativePath: string) {
     return path.join(__dirname, relativePath);
 }
 
-// const typescriptConfig: TypeScript.CompilerOptions = {};
-
 const devServerConfig: WebpackDevServer.Configuration = {
     contentBase: rel("public/"),
     historyApiFallback: true,
-    overlay: true
+    overlay: true,
+    stats: "minimal"
 };
 
 const config: Webpack.Configuration = {

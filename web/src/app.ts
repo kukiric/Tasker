@@ -1,4 +1,6 @@
 window.onload = () => {
-    let x;
-    alert("Página carregada com sucesso!");
+    let el = document.querySelector("h1");
+    if (el) {
+        el.innerText = "Página carregada com sucesso!";
+    }
 };

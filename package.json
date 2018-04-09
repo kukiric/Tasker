@@ -4,19 +4,20 @@
   "description": "",
   "main": "compiled/index.js",
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsc -p . && webpack --config web/webpack.config.ts",
     "start": "node compiled/index.js",
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
-    "dev": "ts-node --type-check index.js",
+    "dev": "cross-env NODE_ENV=development ts-node --type-check index.js",
     "webpack:build": "webpack --config web/webpack.config.ts",
-    "webpack:dev": "webpack-dev-server --config web/webpack.config.ts"
+    "webpack:dev": "webpack-dev-server --config web/webpack.config.ts --hot"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "@types/bcrypt": "^1.0.0",
     "@types/dotenv": "^4.0.2",
+    "@types/h2o2": "^5.4.6",
     "@types/hapi": "^17.0.7",
     "@types/joi": "^13.0.6",
     "@types/jsonwebtoken": "^7.2.6",
@@ -27,7 +28,9 @@
     "axios": "^0.18.0",
     "bcrypt": "^1.0.3",
     "boom": "^7.2.0",
+    "cross-env": "^5.1.4",
     "dotenv": "^5.0.1",
+    "h2o2": "^8.0.1",
     "hapi": "^17.2.3",
     "hapi-auth-jwt2": "^8.0.1",
     "hapi-swagger": "^9.1.1",

@@ -30,7 +30,7 @@ function handleValidationError(request: Request, h: ResponseToolkit, err: any): 
 
 // Configura o servidor do HAPI
 const server = new HapiServer({
-    host: process.env.HOST,
+    host: process.env.HOST || process.env.ADDRESS,
     address: process.env.ADDRESS,
     port: process.env.PORT,
     router: {
@@ -50,7 +50,7 @@ const server = new HapiServer({
     }
 });
 
-export async function start() {
+export async function startServer(webpackHook?: (server: HapiServer) => void) {
     if (!process.env.SECRET_KEY || process.env.SECRET_KEY.length < 32) {
         throw new Error("Chave secreta muito curta! Crie uma chave secreta de 32 ou mais "
                       + "caracteres e configure-a na varíavel SECRET_KEY no arquivo .env.");
@@ -63,16 +63,21 @@ export async function start() {
             prefix: "/api"
         }
     });
-    console.log("Registrando caminho para arquivos estáticos...");
-    server.route({
-        method: "GET",
-        path: "/{path?}",
-        handler: {
-            directory: {
-                path: "web/public"
+    if (webpackHook) {
+        await webpackHook(server);
+    }
+    else {
+        console.log("Registrando caminho para arquivos estáticos...");
+        server.route({
+            method: "GET",
+            path: "/{path*}",
+            handler: {
+                directory: {
+                    path: "web/public"
+                }
             }
-        }
-    });
+        });
+    }
     console.log("Iniciando a aplicação...");
     await server.start();
     console.log("Servidor iniciado no endereço: " + server.info.uri);
