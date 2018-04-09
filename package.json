@@ -8,7 +8,9 @@
     "start": "node compiled/index.js",
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
-    "dev": "ts-node --type-check index.js"
+    "dev": "ts-node --type-check index.js",
+    "webpack:build": "webpack --config web/webpack.config.ts",
+    "webpack:dev": "webpack-dev-server --config web/webpack.config.ts"
   },
   "author": "",
   "license": "MIT",
@@ -19,7 +21,10 @@
     "@types/joi": "^13.0.6",
     "@types/jsonwebtoken": "^7.2.6",
     "@types/knex": "^0.14.9",
+    "@types/webpack": "^4.1.3",
+    "@types/webpack-dev-server": "^2.9.4",
     "app-module-path": "^2.2.0",
+    "axios": "^0.18.0",
     "bcrypt": "^1.0.3",
     "boom": "^7.2.0",
     "dotenv": "^5.0.1",
@@ -32,9 +37,14 @@
     "knex": "^0.14.4",
     "objection": "^1.0.0",
     "pg": "^7.4.1",
+    "ts-loader": "^4.2.0",
     "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
     "typescript": "^2.7.2",
-    "vision": "^5.3.2"
+    "vision": "^5.3.2",
+    "vue-router": "^3.0.1",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14",
+    "webpack-dev-server": "^3.1.3"
   }
 }
