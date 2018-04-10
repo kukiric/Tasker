@@ -3,10 +3,6 @@ import { spawn, exec } from "child_process";
 import * as h2o2 from "h2o2";
 import * as path from "path";
 
-interface ResponseToolkit {
-    proxy(options: h2o2.ProxyHandlerOptions): void;
-}
-
 const devPort = 9000;
 const webpackCommand = [
     path.normalize("node_modules/.bin/webpack-dev-server"),
@@ -33,11 +29,15 @@ async function setupWebpack() {
 
 async function setupProxy(server: HapiServer) {
     await server.register({ plugin: require("h2o2") });
+    let proxyHandler: h2o2.ProxyHandlerOptions = {
+        host: "127.0.0.1",
+        port: devPort
+    };
     server.route({
         method: "GET",
         path: "/{path*}",
-        handler: (request, h: ResponseToolkit) => {
-            return h.proxy({ host: "127.0.0.1", port: devPort, protocol: "http" });
+        handler: {
+            proxy: proxyHandler
         }
     });
 }

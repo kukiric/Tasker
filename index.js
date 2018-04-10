@@ -1,4 +1,11 @@
+function panic(err) {
+    console.error(`\nUncaught ${err.stack}`);
+    process.exit(1);
+}
+
 try {
+    // Trata erros incuráveis da aplicação
+    process.on("unhandledRejection", panic);
     // Carrega as configurações da aplicação
     require("dotenv").config();
     // Busca os módulos a partir do diretório raiz
@@ -7,5 +14,5 @@ try {
     require("start/main");
 }
 catch (err) {
-    console.error(`\nUncaught ${err.stack}`);
+    panic(err);
 }

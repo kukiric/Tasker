@@ -9,8 +9,8 @@ function rel(relativePath: string) {
 const devServerConfig: WebpackDevServer.Configuration = {
     contentBase: rel("public/"),
     historyApiFallback: true,
-    overlay: true,
-    stats: "minimal"
+    stats: "minimal",
+    overlay: true
 };
 
 const config: Webpack.Configuration = {
