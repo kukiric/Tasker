@@ -1,7 +1,7 @@
 <template>
     <div>
         <Navbar/>
-        <div class="ui grid container">
+        <div class="ui container">
             <LoginForm/>
         </div>
     </div>
