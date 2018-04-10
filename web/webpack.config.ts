@@ -15,18 +15,22 @@ const devServerConfig: WebpackDevServer.Configuration = {
 
 const config: Webpack.Configuration = {
     mode: "development",
-    entry: rel("src/index.ts"),
+    entry: {
+        index: rel("src/index.ts"),
+        styles: rel("src/styles.ts")
+    },
     output: {
         publicPath: "dist/",
         path: rel("public/dist/"),
-        filename: "bundle.js"
+        filename: "[name].js"
     },
     module: {
         rules: [
-            { test: /\.ts$/, loader: "ts-loader" },
             { test: /\.vue$/, loader: "vue-loader" },
             { test: /\.css$/, use: ["vue-style-loader", "css-loader"] },
-            { test: /\.(png|jpg|gif|svg)$/, loader: "file-loader", options: { name: "[name].[ext]?[hash]" } }
+            { test: /\.ts$/, loader: "ts-loader", options: { appendTsSuffixTo: [/\.vue$/] }},
+            { test: /\.(png|jpg|gif|svg)$/, loader: "file-loader", options: { name: "[name].[ext]?[hash]" } },
+            { test: /\.(ttf|woff|woff2|eot|otf)$/, loader: "file-loader", options: { name: "[name].[ext]?[hash]" } }
         ]
     },
     resolve: {

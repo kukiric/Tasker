@@ -35,18 +35,17 @@ export default class AuthController extends BaseController {
                     let key = process.env.SECRET_KEY;
                     assert(key && key.length > 32, "A chave secreta do JWT deve conter pelo menos 32 caracteres");
                     // Busca o usuário e checa suas credenciais
-                    let user = await User.query().findOne({ username });
-                    if (user && await bcrypt.compare(password, user.password)) {
+                    let user = await User.query().eager("role").findOne({ username });
+                    if (user && user.role && await bcrypt.compare(password, user.password)) {
                         // Cria os dados da JWT
                         let payload: DecodedToken = {
-                            user: username,
                             uid: user.id,
-                            role: user.role_id as AllowedRole
+                            role: user.role.id as AllowedRole
                         };
                         // Gera a nova token
                         let token = JWT.sign(payload, key!, { expiresIn: "30d" });
-                        // Retorna a token para o usuário
-                        return { username, token };
+                        // Retorna a token e os dados do usuário
+                        return { username: user.username, fullname: user.fullname, role: user.role.name, token };
                     }
                     // Recusa credenciais inválidos
                     return Boom.unauthorized("Incorrect username or password");

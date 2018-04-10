@@ -8,6 +8,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "suppressImplicitAnyIndexErrors": true,
+    "listEmittedFiles": true,
     "removeComments": true,
     "baseUrl": ".",
     "paths": {
