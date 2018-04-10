@@ -1,5 +1,5 @@
 <template>
-    <div class="ui attached secondary menu" style="margin-bottom: 1em;">
+    <div class="ui attached secondary menu" style="margin-bottom: 1em; background-color: white;">
         <router-link class="header item" to="/">Tasker</router-link>
         <span class="right item" v-if="user">
             <router-link to="/login" style="color: black;">

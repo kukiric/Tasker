@@ -19,7 +19,6 @@
 
 <script>
 import Vue from "vue";
-import axios from "axios";
 export default Vue.extend({
     data: () => {
         return {
@@ -32,7 +31,7 @@ export default Vue.extend({
         async login() {
             try {
                 this.error = "";
-                let req = await axios.post("/api/auth", {
+                let req = await this.$http.post("/api/auth", {
                     username: this.username,
                     password: this.password
                 });
@@ -46,12 +45,17 @@ export default Vue.extend({
                     localStorage.setItem("fullname", req.data.fullname);
                     localStorage.setItem("user-role", req.data.role);
                     let redirect = this.$route.query.redirect || "/";
-                    console.log("Indo para a rota... " + redirect);
                     this.$router.push(redirect);
                 }
             }
             catch (err) {
                 this.error = "Usuário ou senha incorreta!";
+                if (err.response) {
+                    console.error(err.response || err.response.data || err.response.details);
+                }
+                else {
+                    throw err;
+                }
             }
         }
     },
