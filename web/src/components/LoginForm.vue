@@ -4,7 +4,7 @@
             <form class="ui form" @submit.prevent="login">
                 <div class="field">
                     <label for="username">Usuário</label>
-                    <input name="username" autofocus v-model="username" autocomplete="off">
+                    <input name="username" ref="autofocus" v-model="username" autocomplete="off">
                 </div>
                 <div class="field">
                     <label for="password">Senha</label>
@@ -62,6 +62,12 @@ export default Vue.extend({
     computed: {
         canSubmit() {
             return this.username.length > 0 && this.password.length >= 6;
+        }
+    },
+    mounted() {
+        let ref = this.$refs.autofocus;
+        if (ref instanceof HTMLInputElement) {
+            ref.focus();
         }
     }
 });
