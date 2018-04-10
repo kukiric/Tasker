@@ -4,7 +4,7 @@ import * as h2o2 from "h2o2";
 import * as path from "path";
 
 const devPort = 9000;
-const webpackCommand = [
+const webpack = [
     path.normalize("node_modules/.bin/webpack-dev-server"),
     "--config",
     "web/webpack.config.ts",
@@ -14,7 +14,9 @@ const webpackCommand = [
 ];
 
 async function setupWebpack() {
-    let devServer = exec(webpackCommand.join(" "));
+    let devServer = spawn(webpack[0], webpack.splice(1), {
+        shell: true
+    });
     devServer.stderr.on("data", data => {
         console.error("webpack-dev-server: " + data.toString().trim());
     });
