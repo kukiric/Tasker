@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "allowJs": true,
     "sourceMap": true,
     "strict": true,
     "outDir": "compiled/",
@@ -10,7 +9,10 @@
     "noFallthroughCasesInSwitch": true,
     "suppressImplicitAnyIndexErrors": true,
     "removeComments": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [ "web/src/*" ]
+    }
   },
   "exclude": [
     "node_modules/**/*",
