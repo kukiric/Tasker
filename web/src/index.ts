@@ -1,16 +1,17 @@
 import VueRouter from "vue-router";
+import Layout from "@/Layout.vue";
 import Vue from "vue";
 
 const Home = () => import("@/pages/Home.vue");
-const Login = () => import("@/pages/Login.vue");
 const NotFound = () => import("@/pages/NotFound.vue");
-const ProjectDetails = () => import("@/pages/ProjectDetails.vue");
+const Login = () => import("@/components/Login.vue");
+const Project = () => import("@/components/Project.vue");
 
 let router = new VueRouter({
     routes: [
         { path: "/", name: "Home", component: Home },
         { path: "/login", name: "Login", component: Login },
-        { path: "/projects/:projectId", name: "ProjectDetails", component: ProjectDetails, props: true },
+        { path: "/projects/:projectId", name: "ProjectDetails", component: Project, props: true },
         { path: "*", name: "NotFound", component: NotFound }
     ]
 });
@@ -38,4 +39,9 @@ import axios from "@/axios";
 Vue.prototype.$http = axios;
 
 // Cria e monta a aplicação no documento
-let app = new Vue({ router }).$mount("#app");
+let app = new Vue({
+    el: "#app",
+    router: router,
+    components: { Layout },
+    template: "<Layout/>"
+});

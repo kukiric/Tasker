@@ -39,7 +39,7 @@ export default Vue.extend({
         }
     },
     props: {
-        projectId: { type: String, required: true }
+        projectId: { type: Number, required: true }
     },
     methods: {
         date(date) {
@@ -50,8 +50,8 @@ export default Vue.extend({
             this.project = req.data ? req.data : { name: "Ocorreu um erro carregando o projeto" };
         }
     },
-    async beforeMount() {
-        await this.loadProject(this.$route.params.projectId);
+    created() {
+        this.loadProject(this.$route.params.projectId);
     }
 });
 </script>
