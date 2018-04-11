@@ -22,13 +22,14 @@ const config: Webpack.Configuration = {
     output: {
         publicPath: "dist/",
         path: rel("public/dist/"),
+        chunkFilename: "[name].js",
         filename: "[name].js"
     },
     module: {
         rules: [
+            { test: /\.ts$/, loader: "ts-loader" },
             { test: /\.vue$/, loader: "vue-loader" },
             { test: /\.css$/, use: ["vue-style-loader", "css-loader"] },
-            { test: /\.ts$/, loader: "ts-loader", options: { appendTsSuffixTo: [/\.vue$/] }},
             { test: /\.(png|jpg|gif|svg)$/, loader: "file-loader", options: { name: "[name].[ext]?[hash]" } },
             { test: /\.(ttf|woff|woff2|eot|otf)$/, loader: "file-loader", options: { name: "[name].[ext]?[hash]" } }
         ]
