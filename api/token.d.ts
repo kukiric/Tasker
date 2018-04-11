@@ -12,3 +12,14 @@ export interface DecodedToken {
     uid: number;
     role?: AllowedRole;
 }
+
+/**
+ * Objeto retornado do AuthController com token e dados do usuário
+ */
+export interface AuthData {
+    username: string,
+    fullname: string,
+    role: string,
+    id: number,
+    token: string
+}

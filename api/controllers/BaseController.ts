@@ -160,7 +160,7 @@ export default abstract class BaseController {
     /**
      * Especialização de multiIdValidator para ID simples
      */
-    protected idValidator(name?: string) {
-        return this.multiIdValidator(name || "id");
+    protected idValidator(name: string) {
+        return this.multiIdValidator(name);
     }
 }

@@ -16,18 +16,18 @@ export default class UserController extends BaseController {
             },
             "/users/{userId}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator(),
+                paramsValidator: this.idValidator("userId"),
                 handler: async ({ userId }) => {
-                    let user = await User.query().eager("role").findById(userId)
-                    return user ? user : this.notFound(userId)
+                    let user = await User.query().eager("role").findById(userId);
+                    return user ? user : this.notFound(userId);
                 }
             },
             "/users/{userId}/projects": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator(),
+                paramsValidator: this.idValidator("userId"),
                 handler: async ({ userId }) => {
-                    let user = await User.query().eager("projects").findById(userId)
-                    return user ? user.projects : this.notFound(userId)
+                    let user = await User.query().eager("projects").findById(userId);
+                    return user ? user.projects : this.notFound(userId);
                 }
             },
             "/users/{userId}/tasks": {

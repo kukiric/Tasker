@@ -14,9 +14,9 @@ export default class TagController extends BaseController {
                     return await Tag.query().select("*");
                 }
             },
-            "/tags/{id}": {
+            "/tags/{tagId}": {
                 roles: EVERYONE,
-                paramsValidator: this.idValidator(),
+                paramsValidator: this.idValidator("tagId"),
                 handler: async ({ id }) => {
                     return await Tag.query().findById(id) || this.notFound(id);
                 }
@@ -33,9 +33,9 @@ export default class TagController extends BaseController {
             }
         },
         PUT: {
-            "/tags/{id}": {
+            "/tags/{tagId}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator(),
+                paramsValidator: this.idValidator("tagId"),
                 payloadValidator: Tag.validator,
                 handler: async ({ id, ...body }) => {
                     let tag = await Tag.query()
@@ -46,9 +46,9 @@ export default class TagController extends BaseController {
             }
         },
         DELETE: {
-            "/tags/{id}": {
+            "/tags/{tagId}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.idValidator(),
+                paramsValidator: this.idValidator("tagId"),
                 handler: async ({ id }, h) => {
                     let deleted = await Tag.query().del().where({ id: id });
                     if (deleted) {

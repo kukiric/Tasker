@@ -1,6 +1,6 @@
 import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { AllowedRole, EVERYONE } from "api/models/Role";
-import { DecodedToken } from "api/token";
+import { DecodedToken, AuthData } from "api/token";
 import NullModel from "api/models/NullModel";
 import User from "api/models/User";
 import * as JWT from "jsonwebtoken";
@@ -45,7 +45,13 @@ export default class AuthController extends BaseController {
                         // Gera a nova token
                         let token = JWT.sign(payload, key!, { expiresIn: "30d" });
                         // Retorna a token e os dados do usuário
-                        return { username: user.username, fullname: user.fullname, role: user.role.name, token };
+                        return {
+                            username: user.username,
+                            fullname: user.fullname,
+                            role: user.role.name,
+                            id: user.id,
+                            token
+                        } as AuthData;
                     }
                     // Recusa credenciais inválidos
                     return Boom.unauthorized("Incorrect username or password");
