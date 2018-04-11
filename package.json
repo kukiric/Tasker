@@ -4,7 +4,7 @@
   "description": "",
   "main": "compiled/index.js",
   "scripts": {
-    "build": "tsc -p . && webpack --config web/webpack.config.ts",
+    "build": "tsc -p . && webpack --config web/webpack.config.ts --devtool source-map --optimize-minimize --mode production",
     "start": "node compiled/index.js",
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
