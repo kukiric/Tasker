@@ -15,9 +15,11 @@
             </ul>
             <h2 class="ui dividing sub header">Tarefas</h2>
             <div class="ui bulleted list">
-                <div v-for="task in project.tasks" :key="task.id" class="item">
-                    {{ task.description }} - <em>{{ task.status }}</em>
+                <div v-for="task in project.tasks" :key="task.id" class="item" style="margin-bottom: 1.5em">
+                    <div class="header">{{ task.description }}</div>
+                    <div>{{ task.status }} / {{ task.type }}</div>
                     <div v-if="task.users.length > 0" class="list">
+                        <div class="header" style="margin-bottom: 0.25em">Membros:</div>
                         <div v-for="user in task.users" :key="user.id">
                             <i class="ui user icon"></i> {{ user.fullname }}
                         </div>
@@ -25,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <div v-else style="height: 66vh;"></div>
+        <div v-else style="height: 66vh"></div>
     </div>
 </template>
 
