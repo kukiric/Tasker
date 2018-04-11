@@ -4,13 +4,13 @@ import Vue from "vue";
 const Home = () => import("@/pages/Home.vue");
 const Login = () => import("@/pages/Login.vue");
 const NotFound = () => import("@/pages/NotFound.vue");
-const Project = () => import("@/pages/Project.vue");
+const ProjectDetails = () => import("@/pages/ProjectDetails.vue");
 
 let router = new VueRouter({
     routes: [
         { path: "/", name: "Home", component: Home },
         { path: "/login", name: "Login", component: Login },
-        { path: "/projects/:id", name: "Project", component: Project },
+        { path: "/projects/:projectId", name: "ProjectDetails", component: ProjectDetails, props: true },
         { path: "*", name: "NotFound", component: NotFound }
     ]
 });

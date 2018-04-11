@@ -23,8 +23,10 @@ export default class ProjectController extends BaseController {
             "/projects/{projectId}": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("projectId"),
-                handler: async ({ projectId }) => {
-                    let project = await Project.query().eager("manager").findById(projectId);
+                queryValidator: this.includeValidator(Project.relationMappings),
+                handler: async ({ projectId, include }) => {
+                    let eagerRules: string = include ? "[" + include.replace(",", " ").replace("[", ".[") + "]" : "";
+                    let project = await Project.query().eager(eagerRules).findById(projectId);
                     return project ? project : this.notFound(projectId);
                 }
             },

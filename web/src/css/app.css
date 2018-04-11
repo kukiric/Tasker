@@ -1,0 +1,19 @@
+.ui.attached.menu {
+    margin-bottom: 1em;
+    background-color: white;
+}
+
+@media screen and (max-width: 767px) {
+    .ui.attached.menu {
+        margin-bottom: 0;
+        background-color: white;
+    }
+    .ui.container {
+        margin: 0 !important;
+        border: 0;
+        border-radius: 0;
+    }
+    .computer.only {
+        display: none !important;
+    }
+}

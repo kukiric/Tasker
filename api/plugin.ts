@@ -12,7 +12,7 @@ import * as Joi from "joi";
  * @todo Tratar parâmetros de query
  */
 function encapsulateParams(handler: PathHandler, request: Request, h: ResponseToolkit) {
-    let allParams = Object.assign({}, request.payload, request.params);
+    let allParams = Object.assign({}, request.payload, request.params, request.query);
     return handler(allParams, h, request);
 }
 
@@ -58,7 +58,8 @@ function registerController(server: Server, controller: BaseController) {
             let options: RouteOptions = {
                 validate: {
                     params: route.paramsValidator,
-                    payload: route.payloadValidator
+                    payload: route.payloadValidator,
+                    query: route.queryValidator
                 },
                 tags: ["api", controllerName.replace(regex, "$1 $2")],
                 auth: authRequired && authStrategy

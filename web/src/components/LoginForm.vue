@@ -47,6 +47,7 @@ export default Vue.extend({
                     localStorage.setItem("username", req.data.username);
                     localStorage.setItem("fullname", req.data.fullname);
                     localStorage.setItem("user-role", req.data.role);
+                    localStorage.setItem("user-id", req.data.id);
                     let redirect = this.$route.query.redirect || "/";
                     this.$router.push(redirect);
                 }
@@ -54,7 +55,7 @@ export default Vue.extend({
             catch (err) {
                 this.error = "Usuário ou senha incorreta!";
                 if (err.response) {
-                    console.error(err.response || err.response.data || err.response.details);
+                    console.error(err.response.data);
                 }
                 else {
                     throw err;

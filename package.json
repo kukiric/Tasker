@@ -39,6 +39,7 @@
     "joi": "^13.1.2",
     "jsonwebtoken": "^8.2.0",
     "knex": "^0.14.4",
+    "moment": "^2.22.0",
     "objection": "^1.0.0",
     "pg": "^7.4.1",
     "semantic-ui-css": "^2.3.1",

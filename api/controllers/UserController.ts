@@ -26,7 +26,7 @@ export default class UserController extends BaseController {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("userId"),
                 handler: async ({ userId }) => {
-                    let user = await User.query().eager("projects").findById(userId);
+                    let user = await User.query().eager("projects.[manager]").findById(userId);
                     return user ? user.projects : this.notFound(userId);
                 }
             },

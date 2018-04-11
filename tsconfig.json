@@ -12,12 +12,10 @@
     "listEmittedFiles": true,
     "removeComments": true,
     "baseUrl": ".",
-    "paths": {
-      "@/*": [ "web/src/*" ]
-    }
   },
   "exclude": [
     "node_modules/**/*",
-    "compiled/**/*"
+    "compiled/**/*",
+    "web/**/*"
   ]
 }

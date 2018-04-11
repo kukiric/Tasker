@@ -1,6 +1,6 @@
 import { Lifecycle, Request, ResponseToolkit, RouteOptionsAccess } from "hapi";
 import { AllowedRole } from "api/models/Role";
-import { Model } from "objection";
+import { Model, RelationMappings } from "objection";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
@@ -162,5 +162,20 @@ export default abstract class BaseController {
      */
     protected idValidator(name: string) {
         return this.multiIdValidator(name);
+    }
+
+    /**
+     * Cria um validador que permite somente buscar as relações que existem no modelo-alvo
+     */
+    protected includeValidator(relations: RelationMappings) {
+        // Monta a expressão regular
+        // Exemplo: para uma entidade com as relações a e b:
+        // regex = /(a|b)(,(a|b))*/;
+        let group = Object.keys(relations).join("|");
+        let regex = new RegExp(`(${group})(,(${group}))*`);
+        return {
+            include: Joi.string().regex(regex).optional()
+                .description("Comma separated list of relations to eager-load")
+        };
     }
 }
