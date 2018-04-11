@@ -3,6 +3,7 @@
     "target": "es2017",
     "module": "commonjs",
     "sourceMap": true,
+    "allowJs": true,
     "strict": true,
     "outDir": "compiled/",
     "noImplicitReturns": true,

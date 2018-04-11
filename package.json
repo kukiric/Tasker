@@ -8,7 +8,7 @@
     "start": "node compiled/index.js",
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
-    "dev": "cross-env NODE_ENV=development ts-node --type-check index.ts"
+    "dev": "cross-env NODE_ENV=development ts-node --type-check index.js"
   },
   "author": "",
   "license": "MIT",

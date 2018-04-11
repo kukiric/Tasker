@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch",
             "runtimeExecutable": "node",
-            "program": "${workspaceFolder}/index.ts",
+            "program": "${workspaceFolder}/index.js",
             "protocol": "inspector",
             "env": {
                 "NODE_ENV": "development"
