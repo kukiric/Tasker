@@ -8,8 +8,8 @@
             </tr>
         </thead>
         <tbody>
-            <router-link :to="rowLink(project)" v-for="project in projects" :key="project.id" tag="tr">
-                <td v-if="inProject(project)" title="Você faz parte desse projeto">
+            <router-link :to="{ name: 'Project', params: { projectId: project.id } }" v-for="project in projects" :key="project.id" tag="tr">
+                <td v-if="currentUserIsInProject(project)" title="Você faz parte desse projeto">
                     <i class="yellow star icon"></i>{{ project.name }}
                 </td>
                 <td v-else>

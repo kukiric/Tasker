@@ -22,7 +22,6 @@ const config: Webpack.Configuration = {
     output: {
         publicPath: "dist/",
         path: rel("public/dist/"),
-        chunkFilename: "[name].js",
         filename: "[name].js"
     },
     module: {

@@ -1,7 +1,5 @@
 {
-    "eslint.validate": [
-        "javascript",
-        "typescript",
-        "vue"
-    ]
+    "files.exclude": {
+        "**/node_modules": true
+    }
 }

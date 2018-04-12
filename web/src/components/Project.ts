@@ -5,10 +5,10 @@ export default Vue.extend({
     data() {
         return {
            project: null
-        }
+        };
     },
     props: {
-        projectId: { type: Number, required: true }
+        projectId: [ Number, String ]
     },
     methods: {
         date(date: string) {
@@ -18,6 +18,10 @@ export default Vue.extend({
             let req = await this.$http.get(`/api/projects/${id}?include=users,tasks[users]`);
             this.project = req.data ? req.data : { name: "Ocorreu um erro carregando o projeto" };
         }
+    },
+    beforeRouteUpdate(to, from, next) {
+        next();
+        this.loadProject(this.$route.params.projectId);
     },
     created() {
         this.loadProject(this.$route.params.projectId);

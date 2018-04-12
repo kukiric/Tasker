@@ -10,39 +10,47 @@ export default class UserController extends BaseController {
         GET: {
             "/users": {
                 roles: EVERYONE,
-                handler: async () => {
-                    return await User.query().eager("role");
+                queryValidator: this.includeValidator(User.relationMappings),
+                handler: async ({ include }) => {
+                    return await User.query().eager(this.makeEager(include));
                 }
             },
+
             "/users/{userId}": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("userId"),
-                handler: async ({ userId }) => {
-                    let user = await User.query().eager("role").findById(userId);
+                queryValidator: this.includeValidator(User.relationMappings),
+                handler: async ({ userId, include }) => {
+                    let user = await User.query().eager(this.makeEager(include)).findById(userId);
                     return user ? user : this.notFound(userId);
                 }
             },
+
             "/users/{userId}/projects": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("userId"),
-                handler: async ({ userId }) => {
-                    let user = await User.query().eager("projects.[manager]").findById(userId);
+                queryValidator: this.includeValidator(User.relationMappings),
+                handler: async ({ userId, include }) => {
+                    let user = await User.query().eager(this.makeEager(include)).findById(userId);
                     return user ? user.projects : this.notFound(userId);
                 }
             },
+
             "/users/{userId}/tasks": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("userId"),
-                handler: async ({ userId }) => {
-                    let user = await User.query().eager("tasks.[project]").findById(userId);
+                queryValidator: this.includeValidator(User.relationMappings),
+                handler: async ({ userId, include }) => {
+                    let user = await User.query().eager(this.makeEager(include)).findById(userId);
                     return user ? user.tasks : this.notFound(userId);
                 }
             },
             "/users/{userId}/work_items": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("userId"),
-                handler: async ({ userId }) => {
-                    let user = await User.query().eager("work_items").findById(userId);
+                queryValidator: this.includeValidator(User.relationMappings),
+                handler: async ({ userId, include }) => {
+                    let user = await User.query().eager(this.makeEager(include)).findById(userId);
                     return user ? user.work_items : this.notFound(userId);
                 }
             }

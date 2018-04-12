@@ -28,6 +28,7 @@ export default Vue.extend({
                     localStorage.setItem("user-id", req.data.id);
                     let redirect = this.$route.query.redirect || "/";
                     this.$router.push(redirect);
+                    this.initUserData(this);
                 }
             }
             catch (err) {
