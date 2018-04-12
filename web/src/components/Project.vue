@@ -1,6 +1,6 @@
 <template>
     <div class="ui segment container">
-        <h1 class="ui dividing header">
+        <h1 class="ui header">
             <i class="teal open folder icon"></i>
             <div v-if="project" class="content">
                 <div>{{ project.name }}</div>
@@ -30,30 +30,4 @@
         <div v-else style="height: 66vh"></div>
     </div>
 </template>
-
-<script>
-import Vue from "vue";
-import * as moment from "moment";
-export default Vue.extend({
-    data() {
-        return {
-           project: null
-        }
-    },
-    props: {
-        projectId: { type: Number, required: true }
-    },
-    methods: {
-        date(date) {
-            return moment(date).locale("pt-br").format("LL");
-        },
-        async loadProject(id) {
-            let req = await this.$http.get(`/api/projects/${id}?include=users,tasks[users]`);
-            this.project = req.data ? req.data : { name: "Ocorreu um erro carregando o projeto" };
-        }
-    },
-    created() {
-        this.loadProject(this.$route.params.projectId);
-    }
-});
-</script>
+<script src="./Project.ts" lang="ts"></script>

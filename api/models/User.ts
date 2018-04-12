@@ -21,6 +21,8 @@ export default class User extends Model implements UserStub {
     public projects?: Project[];
     public tasks?: Task[];
     public role?: Role;
+    public created_at!: string;
+    public updated_at!: string;
 
     public static validator = {
         id: Joi.forbidden(),

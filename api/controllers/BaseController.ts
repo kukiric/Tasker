@@ -169,13 +169,31 @@ export default abstract class BaseController {
      */
     protected includeValidator(relations: RelationMappings) {
         // Monta a expressão regular
-        // Exemplo: para uma entidade com as relações a e b:
-        // regex = /(a|b)(,(a|b))*/;
-        let group = Object.keys(relations).join("|");
-        let regex = new RegExp(`(${group})(,(${group}))*`);
+        // Exemplo: para uma entidade com as relações a, b e c:
+        // /^((a|b|c)(\[\w+\])?(,|$))+(?!.)/
+        // Nota: as relações recursivas (filhos, filhos de filhos, etc) não são validadas
+        let relationNameList = Object.keys(relations).join("|");
+        let relationExamples = Object.keys(relations).join(",");
+        let regex = new RegExp(`((${relationNameList})(\[\w+\])?(,|$))+(?!.)/`);
         return {
-            include: Joi.string().regex(regex).optional()
-                .description("Comma separated list of relations to eager-load")
+            include: Joi.string().regex(regex.compile()).optional().example(relationExamples)
+                .description("Comma separated list of relations to eager-load, "
+                           + "with children relations in brackets")
         };
+    }
+
+    /**
+     * Cria uma expressão eager para o objection a partir do parâmetro "include" da rota
+     * Exemplo: "a[b],c" => [a.[b],c]
+     * @see https://vincit.github.io/objection.js/#eager-loading
+     */
+    protected makeEager(include: string) {
+        if (include) {
+            let withSpaces = include.replace(",", " ");
+            let andDots = withSpaces.replace("[", ".[");
+            let inBrackets = `[${andDots}]`;
+            return inBrackets;
+        }
+        return "";
     }
 }

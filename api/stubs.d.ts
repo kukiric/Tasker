@@ -10,6 +10,8 @@ export interface ProjectStub {
     tasks?: TaskStub[];
     users?: UserStub[];
     tags?: TagStub[];
+    created_at: string;
+    updated_at: string;
 }
 
 export interface RoleStub {
@@ -52,6 +54,8 @@ export interface UserStub {
     projects?: ProjectStub[];
     tasks?: TaskStub[];
     role?: RoleStub;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface VersionStub {

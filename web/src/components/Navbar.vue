@@ -8,32 +8,4 @@
         </span>
     </div>
 </template>
-
-<script>
-import Vue from "vue"
-export default Vue.extend({
-    computed: {
-        user() {
-            return {
-                username: localStorage.getItem("username"),
-                fullname: localStorage.getItem("fullname"),
-                role: localStorage.getItem("user-role")
-            };
-        },
-        userIconClass() {
-            let user = this.user;
-            if (user) {
-                if (user.role == "Admin") {
-                    return "ui key icon";
-                }
-                else if (user.role == "Manager") {
-                    return "ui folder icon";
-                }
-                else {
-                    return "ui user icon";
-                }
-            }
-        }
-    }
-});
-</script>
+<script src="./Navbar.ts" lang="ts"></script>

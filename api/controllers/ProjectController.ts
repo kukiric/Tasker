@@ -16,23 +16,26 @@ export default class ProjectController extends BaseController {
         GET: {
             "/projects": {
                 roles: EVERYONE,
-                handler: async () => {
-                    return await Project.query();
+                queryValidator: this.includeValidator(Project.relationMappings),
+                handler: async ({ include }) => {
+                    return await Project.query().eager(this.makeEager(include));
                 }
             },
+
             "/projects/{projectId}": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("projectId"),
                 queryValidator: this.includeValidator(Project.relationMappings),
                 handler: async ({ projectId, include }) => {
-                    let eagerRules: string = include ? "[" + include.replace(",", " ").replace("[", ".[") + "]" : "";
-                    let project = await Project.query().eager(eagerRules).findById(projectId);
+                    let project = await Project.query().eager(this.makeEager(include)).findById(projectId);
                     return project ? project : this.notFound(projectId);
                 }
             },
+
             "/projects/{projectId}/users": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("projectId"),
+                queryValidator: this.includeValidator(Project.relationMappings),
                 handler: async ({ projectId }) => {
                     let taskFilter = (query: QueryBuilder<Project>) => {
                         query.where({ project_id: projectId });
@@ -43,24 +46,31 @@ export default class ProjectController extends BaseController {
                     return project ? project.users : this.notFound(projectId);
                 }
             },
+
             "/projects/{projectId}/tasks": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("projectId"),
-                handler: async ({ projectId }) => {
-                    let project = await Project.query()
-                        .eager("tasks.[users, parent, children, version]")
-                        .findById(projectId);
-                    return project ? project.tasks : this.notFound(projectId);
+                queryValidator: this.includeValidator(Task.relationMappings),
+                handler: async ({ projectId, include }) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    return await Task.query()
+                        .eager(this.makeEager(include))
+                        .where({ project_id: projectId });
                 }
             },
+
             "/projects/{projectId}/tags": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("projectId"),
+                queryValidator: this.includeValidator(Project.relationMappings),
                 handler: async ({ projectId }) => {
                     let project = await Project.query().eager("tags").findById(projectId);
                     return project ? project.tags : this.notFound(projectId);
                 }
             },
+
             "/projects/{projectId}/versions": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("projectId"),
@@ -69,9 +79,11 @@ export default class ProjectController extends BaseController {
                     return project ? project.versions : this.notFound(projectId);
                 }
             },
+
             "/projects/{projectId}/tasks/{taskId}/work_items": {
                 roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
+                queryValidator: this.includeValidator(Project.relationMappings),
                 handler: async ({ projectId, taskId, ...body }, h) => {
                     if (await this.exists(projectId) === false) {
                         return this.notFound(projectId);
@@ -82,6 +94,7 @@ export default class ProjectController extends BaseController {
                 }
             }
         },
+
         POST: {
             "/projects": {
                 roles: [ADMIN, MANAGER],
@@ -92,6 +105,7 @@ export default class ProjectController extends BaseController {
                     return h.response(newProject).code(201);
                 }
             },
+
             "/projects/{projectId}/users": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator("projectId"),
@@ -100,6 +114,7 @@ export default class ProjectController extends BaseController {
                     return this.createRelation(projectId, "users", userId, h);
                 }
             },
+
             "/projects/{projectId}/tags": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator("projectId"),
@@ -108,6 +123,7 @@ export default class ProjectController extends BaseController {
                     return this.createRelation(projectId, "tags", tagId, h);
                 }
             },
+
             "/projects/{projectId}/tasks": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator("projectId"),
@@ -121,6 +137,7 @@ export default class ProjectController extends BaseController {
                     return h.response(newTask).code(201);
                 }
             },
+
             "/projects/{projectId}/versions": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator("projectId"),
@@ -134,6 +151,7 @@ export default class ProjectController extends BaseController {
                     return h.response(newVersion).code(201);
                 }
             },
+
             "/projects/{projectId}/tasks/{taskId}/work_items": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
@@ -162,6 +180,7 @@ export default class ProjectController extends BaseController {
                     return project ? project : this.notFound(projectId);
                 }
             },
+
             "/projects/{projectId}/tasks/{taskId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
@@ -176,6 +195,7 @@ export default class ProjectController extends BaseController {
                     return task ? task : this.childNotFound("Task", projectId, taskId);
                 }
             },
+
             "/projects/{projectId}/version/{versionId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "versionId"),
@@ -190,6 +210,7 @@ export default class ProjectController extends BaseController {
                     return version ? version : this.childNotFound("Version", projectId, versionId);
                 }
             },
+
             "/projects/{projectId}/tasks/{taskId}/work_items/{workId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "taskId", "workId"),
@@ -208,6 +229,7 @@ export default class ProjectController extends BaseController {
                 }
             }
         },
+
         DELETE: {
             "/projects/{projectId}": {
                 roles: [ADMIN, MANAGER],
@@ -220,6 +242,7 @@ export default class ProjectController extends BaseController {
                     return this.notFound(projectId);
                 }
             },
+
             "/projects/{projectId}/users/{userId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
@@ -227,6 +250,7 @@ export default class ProjectController extends BaseController {
                     return this.deleteRelation(projectId, "User", "users", userId, h);
                 }
             },
+
             "/projects/{projectId}/tags/{tagId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "tagId"),
@@ -234,6 +258,7 @@ export default class ProjectController extends BaseController {
                     return this.deleteRelation(projectId, "Tag", "tags", tagId, h);
                 }
             },
+
             "/projects/{projectId}/tasks/{taskId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
@@ -247,6 +272,7 @@ export default class ProjectController extends BaseController {
                     return this.childNotFound("Task", projectId, taskId);
                 }
             },
+
             "/projects/{projectId}/versions/{versionId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "versionId"),
@@ -260,6 +286,7 @@ export default class ProjectController extends BaseController {
                     return this.childNotFound("Version", projectId, versionId);
                 }
             },
+
             "/projects/{projectId}/tasks/{taskId}/work_items/{workId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "taskId", "workId"),

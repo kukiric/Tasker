@@ -10,12 +10,4 @@
         <ProjectTable/>
     </div>
 </template>
-
-<script>
-import Navbar from "@/components/Navbar.vue";
-import ProjectTable from "@/components/ProjectTable.vue";
-import Vue from "vue";
-export default Vue.extend({
-    components: { Navbar, ProjectTable }
-});
-</script>
+<script src="./Home.ts" lang="ts"></script>
