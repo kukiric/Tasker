@@ -1,5 +1,6 @@
 <template>
     <div class="ui container">
+        <ProjectForm :show="showProjectModal" @close="showProjectModal = false"/>
         <!-- Visualização de projetos -->
         <div class="ui raised segment">
             <div style="display: flex; align-items: center; justify-content: space-between">
@@ -10,13 +11,13 @@
                         <div class="sub header">Visão geral</div>
                     </div>
                 </h1>
-                <button class="ui basic green action button" type="button"><i class="white plus icon"></i>Novo</button>
+                <button @click="showProjectModal = true" class="ui basic green action button" type="button"><i class="plus icon"></i>Novo</button>
             </div>
             <hr class="ui fitted divider">
             <ProjectTable/>
         </div>
         <!-- Visualização de usuários -->
-        <div v-if="isAdmin" class="ui raised segment">
+        <div class="ui raised segment">
             <div style="display: flex; align-items: center; justify-content: space-between">
                 <h1 class="ui header">
                     <i class="blue users icon"></i>
@@ -25,7 +26,7 @@
                         <div class="sub header">Visão geral</div>
                     </div>
                 </h1>
-                <button class="ui basic green disabled action button" type="button"><i class="white plus icon"></i>Novo</button>
+                <button class="ui basic green disabled action button" type="button"><i class="plus icon"></i>Novo</button>
             </div>
             <hr class="ui fitted divider">
             <UserTable/>

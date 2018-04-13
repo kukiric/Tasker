@@ -3,15 +3,16 @@
         <!-- Link para o home -->
         <router-link class="header item" to="/">Tasker</router-link>
         <!-- Dropdown de projetos do usuário logado -->
-        <div v-if="user" class="ui simple dropdown item">
-            Meus Projetos <i class="dropdown icon"></i>
-            <div class="ui menu">
-                <router-link tag="div" :to="{ name: 'ProjectView', params: { projectId: project.id } }" v-for="project in projects" :key="project.id" replace class="item">
-                {{ project.name }}
-                </router-link>
+        <sui-dropdown v-if="user" text="Meus Projetos" class="item">
+            <sui-dropdown-menu>
+                <sui-dropdown-item v-for="project in projects" :key="project.id">
+                    <router-link tag="div" :to="{ name: 'ProjectView', params: { projectId: project.id } }">
+                    {{ project.name }}
+                    </router-link>
+                </sui-dropdown-item>
                 <div v-if="projects.length == 0" class="disabled item">Não há nada aqui...</div>
-            </div>
-        </div>
+            </sui-dropdown-menu>
+        </sui-dropdown>
         <div v-if="user" class="right menu">
             <!-- Botão de logoff -->
             <a @click="logout()" class="item"><i class="sign out icon"></i>Sair</a>

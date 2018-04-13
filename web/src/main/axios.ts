@@ -11,14 +11,15 @@ myAxios.interceptors.request.use(config => {
     return config;
 });
 
-// Exibe mensagens de erro em todas as respostas
 if (process.env.NODE_ENV === "development") {
+    // Exibe mensagens de erro em todas as respostas
     myAxios.interceptors.response.use(undefined, err => {
         console.error(err.toString());
         if (err.response) {
             console.error("URL: " + err.config.url);
             console.error(JSON.stringify(err.response.data, null, 4));
         }
+        throw err;
     });
 }
 

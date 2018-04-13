@@ -33,10 +33,17 @@ export default Vue.extend({
         time(timestamp: string) {
             return moment(timestamp).locale("pt-br").format("LLLL");
         },
+        isDue(project: ProjectStub) {
+            return project.status !== "Concluído" && new Date(project.due_date) < new Date();
+        },
+        isDone(project: ProjectStub) {
+            return project.status === "Concluído";
+        },
         currentUserIsInProject(project: ProjectStub) {
-            return project.users!.some(user => {
-                return this.user.id === user.id;
-            });
+            if (this.user && project.users) {
+                return project.users.some(user => this.user.id === user.id);
+            }
+            return false;
         }
     }
 });

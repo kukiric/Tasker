@@ -6,6 +6,10 @@ export default Vue.extend({
         logout() {
             localStorage.clear();
             window.location.reload();
+        },
+        hello() {
+            console.log("Hello");
+            console.log(arguments);
         }
     },
     computed: {
@@ -21,6 +25,20 @@ export default Vue.extend({
         },
         user(): UserStub {
             return this.$store.state.user;
+        },
+        myProjects() {
+            if (this.$store.state.user) {
+                let projects: ProjectStub[] = this.$store.state.user.projects;
+                projects = projects.sort((a, b) => {
+                    return a.name > b.name ? 1 : -1;
+                });
+                return projects.map(p => ({
+                    key: p.id,
+                    text: p.name,
+                    value: p.id
+                }));
+            }
+            return [];
         },
         userIconClass() {
             if (this.user.role) {

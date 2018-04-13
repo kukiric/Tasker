@@ -100,7 +100,8 @@ export default class ProjectController extends BaseController {
                 roles: [ADMIN, MANAGER],
                 payloadValidator: Project.validator,
                 handler: async ({ ...body }, h) => {
-                    let newProject = await Project.query().eager("manager")
+                    let newProject = await Project.query()
+                        .eager("manager").eagerAlgorithm(Model.WhereInEagerAlgorithm)
                         .insert(body).returning("*");
                     return h.response(newProject).code(201);
                 }
@@ -169,13 +170,15 @@ export default class ProjectController extends BaseController {
                 }
             }
         },
+
         PUT: {
             "/projects/{projectId}": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.idValidator("projectId"),
                 payloadValidator: Project.validator,
                 handler: async ({ projectId, ...body }) => {
-                    let project = await Project.query().eager("manager")
+                    let project = await Project.query()
+                        .eager("manager").eagerAlgorithm(Model.WhereInEagerAlgorithm)
                         .update(body).findById(projectId).returning("*").first();
                     return project ? project : this.notFound(projectId);
                 }

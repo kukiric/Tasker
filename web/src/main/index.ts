@@ -40,12 +40,17 @@ Vue.prototype.$http = axios;
 Vue.prototype.initUserData = (vue: Vue) => {
     loadProjects(vue);
     loadUser(vue);
-}
+    loadAllUsers(vue);
+};
 
 // Adiciona o Vuex para gerenciar estados
 import store from "@main/store";
 import Vuex from "vuex";
 Vue.use(Vuex);
+
+// Adiciona os components do semantic-ui-vue
+import SuiVue from "semantic-ui-vue";
+Vue.use(SuiVue);
 
 async function loadProjects(vue: Vue) {
     let userId = localStorage.getItem("user-id");
@@ -54,12 +59,6 @@ async function loadProjects(vue: Vue) {
         if (req.data) {
             vue.$store.commit("setProjects", req.data);
         }
-        else {
-            alert("Request não retornou nada");
-        }
-    }
-    else {
-        alert("ID de usuário inválido");
     }
 }
 
@@ -70,12 +69,13 @@ async function loadUser(vue: Vue) {
         if (req.data) {
             vue.$store.commit("setUser", req.data);
         }
-        else {
-            alert("Request não retornou nada");
-        }
     }
-    else {
-        alert("ID de usuário inválido");
+}
+
+async function loadAllUsers(vue: Vue) {
+    let req = await vue.$http.get(`/api/users?include=role`);
+    if (req.data) {
+        vue.$store.commit("setAllUsers", req.data);
     }
 }
 

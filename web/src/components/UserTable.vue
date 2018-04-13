@@ -1,6 +1,6 @@
 <template>
     <!-- Tabela de projetos -->
-    <table class="ui striped single line celled table">
+    <table class="ui single line celled table">
         <thead class="hidden on mobile">
             <tr>
                 <th>Nome</th>

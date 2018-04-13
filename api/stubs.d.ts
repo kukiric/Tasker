@@ -1,5 +1,5 @@
 export interface ProjectStub {
-    id: number;
+    id?: number;
     name: string;
     due_date: Date;
     status: string;
@@ -9,22 +9,22 @@ export interface ProjectStub {
     tasks?: TaskStub[];
     users?: UserStub[];
     tags?: TagStub[];
-    created_at: string;
-    updated_at: string;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface RoleStub {
-    id: number;
+    id?: number;
     name?: string;
 }
 
 export interface TagStub {
-    id: number;
+    id?: number;
     name: string;
 }
 
 export interface TaskStub {
-    id: number;
+    id?: number;
     description: string;
     due_date?: Date;
     estimate_work_hour?: number;
@@ -43,7 +43,7 @@ export interface TaskStub {
 }
 
 export interface UserStub {
-    id: number;
+    id?: number;
     username: string;
     email: string;
     password: string;
@@ -53,18 +53,18 @@ export interface UserStub {
     projects?: ProjectStub[];
     tasks?: TaskStub[];
     role?: RoleStub;
-    created_at: string;
-    updated_at: string;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface VersionStub {
-    id: number;
+    id?: number;
     name: string;
     type: string;
 }
 
 export interface WorkStub {
-    id: number;
+    id?: number;
     hours: number;
     start_time?: Date;
     end_time?: Date;

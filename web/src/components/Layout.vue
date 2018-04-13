@@ -1,5 +1,5 @@
 <template>
-    <div class="ui wrapper">
+    <div>
         <Navbar/>
         <router-view></router-view>
     </div>
