@@ -9,6 +9,7 @@
                 <router-link tag="div" :to="{ name: 'Project', params: { projectId: project.id } }" v-for="project in projects" :key="project.id" replace class="item">
                 {{ project.name }}
                 </router-link>
+                <div v-if="projects.length == 0" class="disabled item">Não há nada aqui...</div>
             </div>
         </div>
         <div v-if="user" class="right menu">

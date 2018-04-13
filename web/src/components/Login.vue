@@ -1,6 +1,7 @@
 <template>
     <div class="ui container">
         <div style="max-width: 512px; margin: -1px auto">
+            <!-- Tela principal de login -->
             <div class="ui attached segment">
                 <form class="ui form" @submit.prevent="login">
                     <div class="field">
