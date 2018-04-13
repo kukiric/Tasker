@@ -1,6 +1,7 @@
 <template>
+    <!-- Tabela de projetos -->
     <table class="ui striped single line selectable celled table">
-        <thead class="computer only">
+        <thead class="hidden on mobile">
             <tr>
                 <th>Nome</th>
                 <th>Data de criação</th>
@@ -26,4 +27,4 @@
         </tbody>
     </table>
 </template>
-<script src="./ProjectTable.ts" lang="ts"></script>
+<script src="@scripts/ProjectTable.ts" lang="ts"></script>

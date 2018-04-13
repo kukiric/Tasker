@@ -1,15 +1,15 @@
 import VueRouter from "vue-router";
-import Layout from "@/Layout.vue";
+import Layout from "@components/Layout.vue";
 import Vue from "vue";
 
-const Home = () => import("@/pages/Home.vue");
-const NotFound = () => import("@/pages/NotFound.vue");
-const Login = () => import("@/components/Login.vue");
-const Project = () => import("@/components/Project.vue");
+const HomePage = () => import("@components/HomePage.vue");
+const NotFound = () => import("@components/NotFound.vue");
+const Login = () => import("@components/Login.vue");
+const Project = () => import("@components/Project.vue");
 
 let router = new VueRouter({
     routes: [
-        { path: "/", name: "Home", component: Home },
+        { path: "/", name: "Home", component: HomePage },
         { path: "/login", name: "Login", component: Login },
         { path: "/projects/:projectId", name: "Project", component: Project, props: true },
         { path: "*", name: "NotFound", component: NotFound }
@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => {
 Vue.use(VueRouter);
 
 // Adiciona a instância configurada do axios na aplicação
-import axios from "@/axios";
+import axios from "@main/axios";
 Vue.prototype.$http = axios;
 Vue.prototype.initUserData = (vue: Vue) => {
     loadProjects(vue);
@@ -43,7 +43,7 @@ Vue.prototype.initUserData = (vue: Vue) => {
 }
 
 // Adiciona o Vuex para gerenciar estados
-import store from "@/store";
+import store from "@main/store";
 import Vuex from "vuex";
 Vue.use(Vuex);
 

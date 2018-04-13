@@ -10,4 +10,4 @@
         <ProjectTable/>
     </div>
 </template>
-<script src="./Home.ts" lang="ts"></script>
+<script src="@scripts/Home.ts" lang="ts"></script>

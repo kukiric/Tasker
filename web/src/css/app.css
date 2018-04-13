@@ -1,19 +1,39 @@
+.ui.wrapper {
+    width: 100%;
+    height: 100%;
+}
+
 .ui.attached.menu {
     margin-bottom: 1em;
     background-color: white;
 }
 
+.ui.login.area {
+    width: 512px;
+    margin: 128px auto;
+}
+
+@media screen and (max-width: 1199px) {
+    .ui.container {
+        margin: auto 2em !important;
+        width: auto;
+    }
+}
+
 @media screen and (max-width: 767px) {
     .ui.attached.menu {
         margin-bottom: 0;
-        background-color: white;
     }
     .ui.container {
+        border-radius: 0;        
         margin: 0 !important;
         border: 0;
-        border-radius: 0;
     }
-    .computer.only {
+    .ui.login.area {
+        margin: -1px 0;
+        width: 100%;
+    }
+    .hidden.on.mobile {
         display: none !important;
     }
 }

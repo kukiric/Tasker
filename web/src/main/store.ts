@@ -1,5 +1,5 @@
-import Vuex from "vuex";
 import { ProjectStub, UserStub } from "api/stubs";
+import Vuex from "vuex";
 
 export default {
     create() {

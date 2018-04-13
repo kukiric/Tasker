@@ -1,3 +1,4 @@
+import { UserStub } from "api/stubs";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -45,6 +46,9 @@ export default Vue.extend({
     computed: {
         canSubmit(): boolean {
             return this.username.length > 0 && this.password.length >= 6;
+        },
+        user(): UserStub {
+            return this.$store.state.user;
         }
     },
     mounted() {

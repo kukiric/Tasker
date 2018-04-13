@@ -16,8 +16,8 @@ const devServerConfig: WebpackDevServer.Configuration = {
 const config: Webpack.Configuration = {
     mode: "development",
     entry: {
-        index: rel("src/index.ts"),
-        styles: rel("src/styles.ts")
+        index: rel("src/main/index.ts"),
+        styles: rel("src/main/styles.ts")
     },
     output: {
         publicPath: "dist/",
@@ -36,7 +36,10 @@ const config: Webpack.Configuration = {
     resolve: {
         alias: {
             "vue$": "vue/dist/vue.esm.js",
-            "@": rel("src/")
+            "@main": rel("src/main/"),
+            "@scripts": rel("src/scripts/"),
+            "@components": rel("src/components/"),
+            "@css": rel("src/css/")
         },
         extensions: ["*", ".js", ".ts", ".vue", ".json"]
     },

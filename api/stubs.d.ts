@@ -1,4 +1,3 @@
-
 export interface ProjectStub {
     id: number;
     name: string;

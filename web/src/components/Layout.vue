@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="ui wrapper">
         <Navbar/>
         <router-view></router-view>
     </div>
 </template>
-<script src="./Layout.ts" lang="ts"></script>
+<script src="@scripts/Layout.ts" lang="ts"></script>

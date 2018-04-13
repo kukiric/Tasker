@@ -11,7 +11,11 @@ export default Vue.extend({
     computed: {
         projects(): ProjectStub[] {
             if (this.$store.state.user) {
-                return this.$store.state.user.projects;
+                let projects: ProjectStub[] = this.$store.state.user.projects;
+                projects = projects.sort((a, b) => {
+                    return a.name > b.name ? 1 : -1;
+                });
+                return projects;
             }
             return [];
         },

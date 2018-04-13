@@ -22,4 +22,4 @@
         </div>
     </nav>
 </template>
-<script src="./Navbar.ts" lang="ts"></script>
+<script src="@scripts/Navbar.ts" lang="ts"></script>

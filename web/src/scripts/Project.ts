@@ -14,16 +14,18 @@ export default Vue.extend({
         date(date: string) {
             return moment(date).locale("pt-br").format("LL");
         },
-        async loadProject(id: string) {
+        async reloadProject() {
+            let id = this.$route.params.projectId;
             let req = await this.$http.get(`/api/projects/${id}?include=users,tasks[users]`);
             this.project = req.data ? req.data : { name: "Ocorreu um erro carregando o projeto" };
         }
     },
-    beforeRouteUpdate(to, from, next) {
-        next();
-        this.loadProject(this.$route.params.projectId);
+    watch: {
+        "$route.params.projectId": function(to, from) {
+            this.reloadProject();
+        }
     },
-    created() {
-        this.loadProject(this.$route.params.projectId);
+    beforeMount() {
+        this.reloadProject();
     }
 });

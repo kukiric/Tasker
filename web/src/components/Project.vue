@@ -1,5 +1,6 @@
 <template>
     <div class="ui segment container">
+        <!-- Cabeçalho da página -->
         <h1 class="ui header">
             <i class="teal open folder icon"></i>
             <div v-if="project" class="content">
@@ -8,6 +9,7 @@
             </div>
             <div v-else class="content">Carregando...</div>
         </h1>
+        <!-- Informações do projeto -->
         <div style="min-height: 66vh;">
             <div v-if="project">
                 <h2 class="ui dividing sub header">Usuários</h2>
@@ -31,4 +33,4 @@
         </div>
     </div>
 </template>
-<script src="./Project.ts" lang="ts"></script>
+<script src="@scripts/Project.ts" lang="ts"></script>

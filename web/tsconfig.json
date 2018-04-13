@@ -1,14 +1,32 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "node",
-    "outDir": "public/dist/",
-    "paths": {
-      "@/*": [ "web/src/*" ]
-    }
-  },
-  "exclude": [
-    "node_modules/**/*"
-  ]
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "module": "esnext",
+        "moduleResolution": "node",
+        "outDir": "public/dist/",
+        "paths": {
+            "@main/*": [
+                "web/src/main/*"
+            ],
+            "@scripts/*": [
+                "web/src/scripts/*"
+            ],
+            "@components/*": [
+                "web/src/components/*"
+            ],
+            "@css/*": [
+                "web/src/css/*"
+            ]
+        }
+    },
+    "exclude": [
+        "node_modules/**/*",
+        "web/public/dist/**/*",
+        "api/controllers/**/*",
+        "api/models/**/*",
+        "api/plugin.ts",
+        "migrations/**/*",
+        "start/**/*",
+        "index.js"
+    ]
 }

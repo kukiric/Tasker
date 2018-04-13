@@ -1,6 +1,5 @@
 <template>
-    <div class="ui container">
-        <div style="max-width: 512px; margin: -1px auto">
+        <div class="ui login area">
             <!-- Tela principal de login -->
             <div class="ui attached segment">
                 <form class="ui form" @submit.prevent="login">
@@ -15,11 +14,16 @@
                     <button :disabled="!canSubmit" class="ui fluid primary button">Entrar</button>
                 </form>
             </div>
+            <!-- Banner de erro -->
             <div class="ui attached icon error message" v-show="error">
-                <i class="exclamation circle icon"></i>
+                <i class="exclamation triangle icon"></i>
                 <div class="content">{{ error }}</div>
             </div>
+            <!-- Mensagem ao usuário -->
+            <div class="ui attached icon info message" v-show="user && canSubmit">
+                <i class="exclamation info circle icon"></i>
+                <div class="content">Ao prosseguir, você será deslogado da conta atual</div>
+            </div>
         </div>
-    </div>
 </template>
-<script src="./Login.ts" lang="ts"></script>
+<script src="@scripts/Login.ts" lang="ts"></script>

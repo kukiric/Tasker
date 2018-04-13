@@ -45,10 +45,10 @@ async function setupProxy(server: HapiServer) {
 }
 
 export = async function(server: HapiServer) {
-    console.log("Ligando modo de desenvolvimento...");
-    console.log("Iniciando webpack-dev-server em plano de fundo...");
+    console.log("[Devel] Ligando modo de desenvolvimento...");
+    console.log("[Devel] Iniciando webpack-dev-server em plano de fundo...");
     await setupWebpack();
-    console.log("Ativando proxy para o webpack-dev-server...");
+    console.log("[Devel] Ativando proxy para o webpack-dev-server...");
     await setupProxy(server);
-    console.log("Modo de desenvolvimento ativado com sucesso!");
+    console.log("[Devel] Modo de desenvolvimento ativado com sucesso!");
 };
