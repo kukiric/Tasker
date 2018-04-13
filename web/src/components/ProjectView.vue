@@ -1,5 +1,5 @@
 <template>
-    <div class="ui segment container">
+    <div class="ui raised segment container">
         <!-- Cabeçalho da página -->
         <h1 class="ui header">
             <i class="teal open folder icon"></i>
@@ -33,4 +33,4 @@
         </div>
     </div>
 </template>
-<script src="@scripts/Project.ts" lang="ts"></script>
+<script src="@scripts/ProjectView.ts" lang="ts"></script>

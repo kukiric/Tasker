@@ -25,7 +25,7 @@ export default Vue.extend({
             this.reloadProject();
         }
     },
-    beforeMount() {
+    created() {
         this.reloadProject();
     }
 });

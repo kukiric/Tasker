@@ -1,5 +1,5 @@
 <template>
-        <div class="ui login area">
+        <div class="ui raised login area">
             <!-- Tela principal de login -->
             <div class="ui attached segment">
                 <form class="ui form" @submit.prevent="login">

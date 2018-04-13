@@ -2,16 +2,16 @@ import VueRouter from "vue-router";
 import Layout from "@components/Layout.vue";
 import Vue from "vue";
 
-const HomePage = () => import("@components/HomePage.vue");
+const Home = () => import("@components/Home.vue");
 const NotFound = () => import("@components/NotFound.vue");
 const Login = () => import("@components/Login.vue");
-const Project = () => import("@components/Project.vue");
+const ProjectView = () => import("@components/ProjectView.vue");
 
 let router = new VueRouter({
     routes: [
-        { path: "/", name: "Home", component: HomePage },
+        { path: "/", name: "Home", component: Home },
         { path: "/login", name: "Login", component: Login },
-        { path: "/projects/:projectId", name: "Project", component: Project, props: true },
+        { path: "/projects/:projectId", name: "ProjectView", component: ProjectView, props: true },
         { path: "*", name: "NotFound", component: NotFound }
     ]
 });
@@ -49,11 +49,9 @@ Vue.use(Vuex);
 
 async function loadProjects(vue: Vue) {
     let userId = localStorage.getItem("user-id");
-    console.log("Carregando projetos...");
     if (userId) {
         let req = await vue.$http.get(`/api/projects?include=manager,users`);
         if (req.data) {
-            console.log("Setando projetos...");
             vue.$store.commit("setProjects", req.data);
         }
         else {
@@ -67,11 +65,9 @@ async function loadProjects(vue: Vue) {
 
 async function loadUser(vue: Vue) {
     let userId = localStorage.getItem("user-id");
-    console.log("Carregando usuário...");
     if (userId) {
         let req = await vue.$http.get(`/api/users/${userId}?include=role,projects,tasks`);
         if (req.data) {
-            console.log("Setando usuário...");
             vue.$store.commit("setUser", req.data);
         }
         else {

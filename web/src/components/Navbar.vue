@@ -6,7 +6,7 @@
         <div v-if="user" class="ui simple dropdown item">
             Meus Projetos <i class="dropdown icon"></i>
             <div class="ui menu">
-                <router-link tag="div" :to="{ name: 'Project', params: { projectId: project.id } }" v-for="project in projects" :key="project.id" replace class="item">
+                <router-link tag="div" :to="{ name: 'ProjectView', params: { projectId: project.id } }" v-for="project in projects" :key="project.id" replace class="item">
                 {{ project.name }}
                 </router-link>
                 <div v-if="projects.length == 0" class="disabled item">Não há nada aqui...</div>
