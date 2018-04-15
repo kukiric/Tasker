@@ -5,7 +5,10 @@
             <i class="teal open folder icon"></i>
             <div v-if="project" class="content">
                 <div>{{ project.name }}</div>
-                <div class="sub header">{{ date(project.created_at) }}</div>
+                <div class="sub header" :class="{ red: isLate }">
+                    <i v-if="isLate" class="clock icon"></i>
+                    <span>{{ date(project.created_at) }} - {{ date(project.due_date) }}</span>
+                </div>
             </div>
             <div v-else class="content">Carregando...</div>
         </h1>

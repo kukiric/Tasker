@@ -24,6 +24,10 @@
     padding-right: 1em;
 }
 
+.red.sub.header {
+    color: #db2828 !important;
+}
+
 @media screen and (max-width: 1199px) {
     .ui.container {
         margin: auto 2em !important;

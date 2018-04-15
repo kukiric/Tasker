@@ -33,7 +33,7 @@ export default Vue.extend({
         time(timestamp: string) {
             return moment(timestamp).locale("pt-br").format("LLLL");
         },
-        isDue(project: ProjectStub) {
+        isLate(project: ProjectStub) {
             return project.status !== "Concluído" && new Date(project.due_date) < new Date();
         },
         isDone(project: ProjectStub) {

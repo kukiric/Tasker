@@ -30,7 +30,8 @@ export default class Project extends Model implements ProjectStub {
         name: Joi.string().required().example("Projeto Exemplo"),
         due_date: Joi.date().required().example("2018-12-31"),
         status: Joi.string().only(Project.validStatuses).required(),
-        manager_id: Joi.number().optional().example(1)
+        manager_id: Joi.number().optional().example(1),
+        created_at: Joi.date().optional().example("2018-03-01")
     };
 
     public static get relationMappings(): RelationMappings {

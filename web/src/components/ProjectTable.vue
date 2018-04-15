@@ -13,7 +13,7 @@
         <tbody>
             <router-link :to="{ name: 'ProjectView', params: { projectId: project.id } }"
                     v-for="project in projects" :key="project.id"
-                    tag="tr" :class="{ negative: isDue(project), positive: isDone(project) }">
+                    tag="tr" :class="{ negative: isLate(project), positive: isDone(project) }">
                 <td v-if="currentUserIsInProject(project)" title="Você faz parte desse projeto">
                     <i class="yellow star icon"></i>{{ project.name }}
                 </td>
