@@ -2,7 +2,6 @@ import { Config } from "knex";
 import "dotenv/config";
 
 module.exports = {
-
     client: process.env.DB_CLIENT,
     connection: {
         host: process.env.DB_HOST,

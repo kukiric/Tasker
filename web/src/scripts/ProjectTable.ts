@@ -28,13 +28,13 @@ export default Vue.extend({
     },
     methods: {
         date(timestamp: string) {
-            return moment(timestamp).locale("pt-br").format("LL");
+            return moment(timestamp).format("LL");
         },
         time(timestamp: string) {
-            return moment(timestamp).locale("pt-br").format("LLLL");
+            return moment(timestamp).format("LLLL");
         },
         isLate(project: ProjectStub) {
-            return project.status !== "Concluído" && new Date(project.due_date) < new Date();
+            return project.status !== "Concluído" && moment().isAfter(project.due_date, "day");
         },
         isDone(project: ProjectStub) {
             return project.status === "Concluído";

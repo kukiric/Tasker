@@ -12,10 +12,10 @@ export default Vue.extend({
     },
     methods: {
         date(timestamp: string) {
-            return moment(timestamp).locale("pt-br").format("LL");
+            return moment(timestamp).format("LL");
         },
         time(timestamp: string) {
-            return moment(timestamp).locale("pt-br").format("LLLL");
+            return moment(timestamp).format("LLLL");
         },
         userIconClass(role: RoleStub) {
             if (role) {

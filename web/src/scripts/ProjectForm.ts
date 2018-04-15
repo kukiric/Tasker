@@ -46,7 +46,7 @@ export default Vue.extend({
             let project: ProjectStub = {
                 name: this.form.name,
                 status: this.form.status,
-                due_date: new Date(this.form.due_date),
+                due_date: moment(this.form.due_date).toDate(),
                 manager_id: this.$store.state.user.id
             };
             try {

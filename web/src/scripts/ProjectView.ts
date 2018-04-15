@@ -15,7 +15,7 @@ export default Vue.extend({
     },
     methods: {
         date(date: string) {
-            return moment(date).locale("pt-br").format("LL");
+            return moment(date).format("LL");
         },
         async reloadProject() {
             let id = this.$route.params.projectId;
@@ -25,7 +25,9 @@ export default Vue.extend({
     },
     computed: {
         isLate(): null | boolean {
-            return this.project && new Date(this.project.due_date) < new Date();
+            return this.project
+                && this.project.status !== "Concluído"
+                && moment().isAfter(this.project.due_date, "day");
         }
     },
     watch: {

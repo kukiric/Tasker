@@ -4,6 +4,7 @@ import Version from "api/models/Version";
 import Task from "api/models/Task";
 import User from "api/models/User";
 import Tag from "api/models/Tag";
+import * as moment from "moment";
 import * as Joi from "joi";
 
 export default class Project extends Model implements ProjectStub {
@@ -88,7 +89,7 @@ export default class Project extends Model implements ProjectStub {
     }
 
     public $formatJson(json: Pojo) {
-        // Remove todos os IDs de joins para deixar o JSON mais limpo
+        // Remove o ID de join do manager
         delete json.manager_id;
         return super.$formatJson(json);
     }
