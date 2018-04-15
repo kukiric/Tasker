@@ -1,5 +1,6 @@
 function panic(err) {
     console.error(`\nUncaught ${err.stack}`);
+    console.error(`\n${err.toString()}`);
     process.exit(1);
 }
 

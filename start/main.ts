@@ -1,5 +1,5 @@
 import { startServer } from "start/server";
-import { testDB } from "start/db";
+import { setupDB } from "start/db";
 
 // Encapsula a função de start para não receber parâmetros
 let boot = async() => {
@@ -13,8 +13,5 @@ if (process.env.NODE_ENV === "development") {
     };
 }
 
-// Testa a conexão do banco de dados e inicia a aplicação
-testDB().then(boot).catch(err => {
-    console.error(err.stack);
-    process.exit(1);
-});
+// Testa a conexão com o banco de dados e inicia a aplicação
+setupDB().then(boot);
