@@ -23,9 +23,6 @@ export default Vue.extend({
         gravatar(email: string) {
             return `https://www.gravatar.com/avatar/${md5(email)}?s=32&d=identicon`;
         },
-        async removeUser(user: UserStub) {
-            await this.$http.delete(`/api/projects/${this.projectId}/users/${user.id}`);
-        },
         async reloadProject() {
             let id = this.$route.params.projectId;
             let req = await this.$http.get(`/api/projects/${id}?include=users[role],tasks[users]`);

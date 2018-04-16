@@ -1,5 +1,6 @@
-import Vue from "vue";
 import { ProjectStub, UserStub } from "api/stubs";
+import { mapState } from "vuex";
+import Vue from "vue";
 
 export default Vue.extend({
     methods: {
@@ -9,18 +10,11 @@ export default Vue.extend({
         }
     },
     computed: {
-        projects(): ProjectStub[] {
-            if (this.$store.state.user) {
-                let projects: ProjectStub[] = this.$store.state.user.projects;
-                projects = projects.sort((a, b) => {
-                    return a.name! > b.name! ? 1 : -1;
-                });
-                return projects;
-            }
-            return [];
-        },
         user(): UserStub {
-            return this.$store.state.user;
+            return this.$store.state.currentUser;
+        },
+        projects(): ProjectStub[] {
+            return this.$store.state.currentUser.projects;
         },
         myProjects() {
             if (this.$store.state.user) {

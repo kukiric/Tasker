@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- Barra lateral -->
-        <!-- <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">
+        <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">
             <sui-button class="left attached side button" icon="bars" @click="showSidebar = !showSidebar"/>
             <div class="item">
                 <h1 class="ui header">Membros</h1>
@@ -13,12 +13,12 @@
                             <div class="description">{{ user.email }}</div>
                         </div>
                         <div class="right floated content">
-                            <a><sui-icon color="red" name="delete" @click.prevent="removeUser(user)"/></a>
+                            <a><sui-icon color="red" name="delete" title="Remover" @click.prevent="removeUser(user)"/></a>
                         </div>
                     </div>
                 </div>
             </div>
-        </sui-sidebar> -->
+        </sui-sidebar>
         <div class="ui raised segment container">
             <!-- Cabeçalho da página -->
             <h1 class="ui header">

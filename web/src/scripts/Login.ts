@@ -39,13 +39,15 @@ export default Vue.extend({
                     this.error = "Erro de servidor: nenhuma token retornada";
                 }
                 else {
+                    this.$store.commit("reset");
                     localStorage.setItem("api-token", token);
                     localStorage.setItem("username", req.data.username);
                     localStorage.setItem("fullname", req.data.fullname);
                     localStorage.setItem("user-role", req.data.role);
                     localStorage.setItem("user-id", req.data.id);
                     let redirect = this.$route.query.redirect || "/";
-                    window.location.href = redirect;
+                    this.$router.push(redirect);
+                    this.initUserData(this);
                 }
             }
             catch (err) {

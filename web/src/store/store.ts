@@ -5,36 +5,39 @@ export default {
     create() {
         return new Vuex.Store({
             state: {
-                projects: [],
-                users: [],
-                user: null
+                allProjects: [],
+                currentProject: [],
+                allUsers: [],
+                currentUser: null
             } as {
-                projects: ProjectStub[],
-                users: UserStub[],
-                user: UserStub | null
+                allProjects: ProjectStub[],
+                currentProject: ProjectStub,
+                allUsers: UserStub[],
+                currentUser: UserStub | null
             },
             mutations: {
                 setProjects(state, projects: ProjectStub[]) {
-                    state.projects = projects.sort((a, b) => {
+                    state.allProjects = projects.sort((a, b) => {
                         return a.name! > b.name! ? 1 : -1;
                     });
                 },
                 appendProject(state, project: ProjectStub) {
-                    state.projects = state.projects.concat(project).sort((a, b) => {
+                    state.allProjects = state.allProjects.concat(project).sort((a, b) => {
                         return a.name! > b.name! ? 1 : -1;
                     });
                 },
                 setAllUsers(state, users: UserStub[]) {
-                    state.users = users.sort((a, b) => {
+                    state.allUsers = users.sort((a, b) => {
                         return a.fullname! > b.fullname! ? 1 : -1;
                     });
                 },
                 setUser(state, user: UserStub) {
-                    state.user = user;
+                    state.currentUser = user;
                 },
                 reset(state) {
-                    state.projects = [];
-                    state.user = null;
+                    state.allProjects = [];
+                    state.currentUser = null;
+                    state.allUsers = [];
                 }
             }
         });

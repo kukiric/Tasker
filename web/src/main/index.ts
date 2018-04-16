@@ -44,7 +44,7 @@ Vue.prototype.initUserData = (vue: Vue) => {
 };
 
 // Adiciona o Vuex para gerenciar estados
-import store from "@main/store";
+import store from "@store/store";
 import Vuex from "vuex";
 Vue.use(Vuex);
 
