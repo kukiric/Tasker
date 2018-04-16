@@ -26,13 +26,18 @@ export default class Project extends Model implements ProjectStub {
 
     public static validStatuses = ["Novo", "Em andamento", "Concluído"];
 
+    public static userValidator = {
+        id: Joi.number().required().example(1)
+    };
+
     public static validator = {
         id: Joi.forbidden(),
         name: Joi.string().required().example("Projeto Exemplo"),
         due_date: Joi.date().required().example("2018-12-31"),
         status: Joi.string().only(Project.validStatuses).required(),
         manager_id: Joi.number().optional().example(1),
-        created_at: Joi.date().optional().example("2018-03-01")
+        created_at: Joi.date().optional().example("2018-03-01"),
+        users: Joi.array().items(Project.userValidator).optional()
     };
 
     public static get relationMappings(): RelationMappings {

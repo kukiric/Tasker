@@ -1,8 +1,8 @@
 export interface ProjectStub {
     id?: number;
-    name: string;
-    due_date: Date;
-    status: string;
+    name?: string;
+    due_date?: Date;
+    status?: string;
     manager_id?: number;
     manager?: UserStub;
     versions?: VersionStub;
@@ -20,16 +20,16 @@ export interface RoleStub {
 
 export interface TagStub {
     id?: number;
-    name: string;
+    name?: string;
 }
 
 export interface TaskStub {
     id?: number;
-    description: string;
+    description?: string;
     due_date?: Date;
     estimate_work_hour?: number;
-    type: string;
-    status: string;
+    type?: string;
+    status?: string;
     progress?: number;
     project_id?: number;
     parent_id?: number;
@@ -44,10 +44,10 @@ export interface TaskStub {
 
 export interface UserStub {
     id?: number;
-    username: string;
-    email: string;
-    password: string;
-    fullname: string;
+    username?: string;
+    email?: string;
+    password?: string;
+    fullname?: string;
     role_id?: number;
     work_items?: WorkStub[];
     projects?: ProjectStub[];
@@ -59,13 +59,13 @@ export interface UserStub {
 
 export interface VersionStub {
     id?: number;
-    name: string;
-    type: string;
+    name?: string;
+    type?: string;
 }
 
 export interface WorkStub {
     id?: number;
-    hours: number;
+    hours?: number;
     start_time?: Date;
     end_time?: Date;
     task_id?: number;

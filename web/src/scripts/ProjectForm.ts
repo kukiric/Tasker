@@ -6,19 +6,15 @@ export default Vue.extend({
     data() {
         return {
             isShowing: false,
-            allUsers: [],
             form: {
                 name: "",
-                users: [],
                 status: "Novo",
-                due_date: moment().format("YYYY-MM-DD")
+                due_date: moment().add(1, "week").format("YYYY-MM-DD")
             }
         } as {
             isShowing: boolean,
-            allUsers: any[],
             form: {
                 name: string,
-                users: any[],
                 status: string,
                 due_date: string
             }
@@ -28,13 +24,6 @@ export default Vue.extend({
         show: Boolean
     },
     methods: {
-        updateUsers() {
-            let users: UserStub[] = this.$store.state.users;
-            if (users && Array.isArray(users)) {
-                this.allUsers = users.map(user => this.convertUser(user));
-                console.log(this.allUsers);
-            }
-        },
         convertUser(user: UserStub) {
             return {
                 key: user.id,
@@ -43,16 +32,21 @@ export default Vue.extend({
             };
         },
         async send() {
-            let project: ProjectStub = {
-                name: this.form.name,
-                status: this.form.status,
-                due_date: moment(this.form.due_date).toDate(),
-                manager_id: this.$store.state.user.id
-            };
+            if (!this.canSubmit) {
+                return;
+            }
             try {
+                let currentUser: UserStub = this.$store.state.user;
+                let project: ProjectStub = {
+                    name: this.form.name,
+                    status: this.form.status,
+                    due_date: moment(this.form.due_date).toDate(),
+                    users: [{ id: currentUser.id }],
+                    manager_id: currentUser.id
+                };
                 let req = await this.$http.post("/api/projects", project);
                 this.$store.commit("appendProject", req.data);
-                this.isShowing = false;
+                this.$router.push({ name: "ProjectView", params: { projectId: req.data.id } });
             }
             catch (err) {
                 alert(err.toString());
@@ -61,7 +55,9 @@ export default Vue.extend({
     },
     computed: {
         canSubmit(): boolean {
-            return this.form && this.form.name.length > 0 && this.form.users.length > 0;
+            let nameIsFilled = this.form.name.length > 0
+            let isDueDateValid = moment(this.form.due_date).isSameOrAfter(moment(), "day");
+            return nameIsFilled && isDueDateValid;
         },
         statuses(): any[] {
             return [
@@ -76,19 +72,13 @@ export default Vue.extend({
         }
     },
     watch: {
-        "show": function(val) {
+        show: function(val) {
             this.isShowing = val;
         },
-        "isShowing": function(val) {
+        isShowing: function(val) {
             if (!val) {
                 this.$emit("close");
             }
-        },
-        "$store.state.users": function(val) {
-            this.updateUsers();
         }
-    },
-    created() {
-        this.updateUsers();
     }
 });

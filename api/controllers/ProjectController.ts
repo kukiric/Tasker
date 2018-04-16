@@ -100,9 +100,12 @@ export default class ProjectController extends BaseController {
                 roles: [ADMIN, MANAGER],
                 payloadValidator: Project.validator,
                 handler: async ({ ...body }, h) => {
-                    let newProject = await Project.query()
-                        .eager("manager").eagerAlgorithm(Model.WhereInEagerAlgorithm)
-                        .insert(body).returning("*");
+                    let newProject = await this.inTransaction(async (trx) => {
+                        return await Project.query(trx)
+                            .eager("[manager, users]")
+                            .eagerAlgorithm(Model.WhereInEagerAlgorithm)
+                            .insertGraph(body, { relate: true }).returning("*");
+                    });
                     return h.response(newProject).code(201);
                 }
             },

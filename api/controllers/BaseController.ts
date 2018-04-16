@@ -1,6 +1,6 @@
 import { Lifecycle, Request, ResponseToolkit, RouteOptionsAccess } from "hapi";
+import { Model, RelationMappings, transaction } from "objection";
 import { AllowedRole } from "api/models/Role";
-import { Model, RelationMappings } from "objection";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
@@ -189,11 +189,15 @@ export default abstract class BaseController {
      */
     protected makeEager(include: string) {
         if (include) {
-            let withSpaces = include.replace(",", " ");
-            let andDots = withSpaces.replace("[", ".[");
+            let withSpaces = include.replace(/,/g, " ");
+            let andDots = withSpaces.replace(/\[/g, ".[");
             let inBrackets = `[${andDots}]`;
             return inBrackets;
         }
         return "";
+    }
+
+    protected async inTransaction<T>(callback: (trx: any) => Promise<T>) {
+        return await transaction(this.modelClass.knex(), callback);
     }
 }

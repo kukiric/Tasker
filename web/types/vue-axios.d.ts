@@ -3,7 +3,7 @@ import { AxiosInstance } from "axios";
 declare module "vue/types/vue" {
     interface Vue {
         $http: AxiosInstance;
-        // UGLY HACK
+        // @todo UGLY HACK
         initUserData: (vue: Vue) => void;
     }
 }

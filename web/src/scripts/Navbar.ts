@@ -17,7 +17,7 @@ export default Vue.extend({
             if (this.$store.state.user) {
                 let projects: ProjectStub[] = this.$store.state.user.projects;
                 projects = projects.sort((a, b) => {
-                    return a.name > b.name ? 1 : -1;
+                    return a.name! > b.name! ? 1 : -1;
                 });
                 return projects;
             }
@@ -30,7 +30,7 @@ export default Vue.extend({
             if (this.$store.state.user) {
                 let projects: ProjectStub[] = this.$store.state.user.projects;
                 projects = projects.sort((a, b) => {
-                    return a.name > b.name ? 1 : -1;
+                    return a.name! > b.name! ? 1 : -1;
                 });
                 return projects.map(p => ({
                     key: p.id,
