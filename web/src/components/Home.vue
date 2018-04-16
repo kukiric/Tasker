@@ -1,5 +1,5 @@
 <template>
-    <div class="ui container">
+    <div v-if="isAdminOrManager" class="ui container">
         <ProjectForm :show="showProjectModal" @close="showProjectModal = false"/>
         <!-- Visualização de projetos -->
         <div class="ui raised segment">

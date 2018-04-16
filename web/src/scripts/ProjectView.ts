@@ -1,13 +1,16 @@
-import { ProjectStub } from "api/stubs";
+import { ProjectStub, UserStub } from "api/stubs";
 import * as moment from "moment";
+import * as md5 from "md5";
 import Vue from "vue";
 
 export default Vue.extend({
     data() {
         return {
-           project: null
+           project: null,
+           showSidebar: false
         } as {
-            project: ProjectStub | null
+            project: ProjectStub | null,
+            showSidebar: boolean
         };
     },
     props: {
@@ -17,9 +20,15 @@ export default Vue.extend({
         date(date: string) {
             return moment(date).format("LL");
         },
+        gravatar(email: string) {
+            return `https://www.gravatar.com/avatar/${md5(email)}?s=32&d=identicon`;
+        },
+        async removeUser(user: UserStub) {
+            await this.$http.delete(`/api/projects/${this.projectId}/users/${user.id}`);
+        },
         async reloadProject() {
             let id = this.$route.params.projectId;
-            let req = await this.$http.get(`/api/projects/${id}?include=users,tasks[users]`);
+            let req = await this.$http.get(`/api/projects/${id}?include=users[role],tasks[users]`);
             this.project = req.data ? req.data : { name: "Ocorreu um erro carregando o projeto" };
         }
     },

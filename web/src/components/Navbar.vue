@@ -1,5 +1,5 @@
 <template>
-    <nav class="ui attached menu">
+    <sui-menu role="nav" class="attached stackable" ref="navbar">
         <!-- Link para o home -->
         <router-link class="header item" to="/">Tasker</router-link>
         <!-- Dropdown de projetos do usuário logado -->
@@ -21,6 +21,6 @@
                 <i :class=userIconClass></i>{{ user.fullname }}
             </router-link>
         </div>
-    </nav>
+    </sui-menu>
 </template>
 <script src="@scripts/Navbar.ts" lang="ts"></script>

@@ -11,6 +11,15 @@ export default Vue.extend({
             showProjectModal: false
         };
     },
+    computed: {
+        isAdminOrManager() {
+            let user: UserStub = this.$store.state.user;
+            if (user && user.role) {
+                return user.role.name === "Admin" || user.role.name === "Manager";
+            }
+            return false;
+        }
+    },
     mounted() {
         this.showProjectModal = false;
     }

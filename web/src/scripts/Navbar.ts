@@ -6,10 +6,6 @@ export default Vue.extend({
         logout() {
             localStorage.clear();
             window.location.reload();
-        },
-        hello() {
-            console.log("Hello");
-            console.log(arguments);
         }
     },
     computed: {

@@ -57,9 +57,11 @@ export default class UserController extends BaseController {
         },
         POST: {
             "/users": {
-                roles: [ADMIN],
+                authRequired: false,
                 payloadValidator: User.validator,
                 handler: async ({ ...body }, h) => {
+                    // Cria todo usuário como membro comum
+                    body.role_id = 3;
                     let newUser = await User.query().eager("role")
                         .insert(body).returning("*").first();
                     return h.response(newUser).code(201);

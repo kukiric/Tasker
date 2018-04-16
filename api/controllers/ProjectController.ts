@@ -251,7 +251,7 @@ export default class ProjectController extends BaseController {
 
             "/projects/{projectId}/users/{userId}": {
                 roles: [ADMIN, MANAGER],
-                paramsValidator: this.multiIdValidator("projectId", "taskId"),
+                paramsValidator: this.multiIdValidator("projectId", "userId"),
                 handler: async ({ projectId, userId }, h) => {
                     return this.deleteRelation(projectId, "User", "users", userId, h);
                 }

@@ -11,8 +11,18 @@
                         <label for="password">Senha</label>
                         <input name="password" v-model="password" type="password" autocomplete="off">
                     </div>
-                    <button :disabled="!canSubmit" class="ui fluid primary button">Entrar</button>
+                    <div v-if="registering" class="field">
+                        <label for="fullname">Nome Completo</label>
+                        <input name="fullname" v-model="fullname" autocomplete="off">
+                    </div>
+                    <div v-if="registering" class="field">
+                        <label for="email">E-mail</label>
+                        <input name="email" v-model="email" type="email" autocomplete="off">
+                    </div>
+                    <button :disabled="!canSubmit" class="ui fluid primary button">{{ primaryAction }}</button>
                 </form>
+                <hr class="ui divider">
+                <a href="#" @click.prevent="registering = !registering">{{ modeText }}</a>
             </div>
             <!-- Banner de erro -->
             <div class="ui attached icon error message" v-show="error">
