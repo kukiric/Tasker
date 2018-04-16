@@ -17,6 +17,7 @@
                         </div>
                     </div>
                 </div>
+                <sui-button color="green" fluid icon="plus" content="Adicionar"/>
             </div>
         </sui-sidebar>
         <div class="ui raised segment container">

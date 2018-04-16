@@ -27,9 +27,15 @@ export default Vue.extend({
             let id = this.$route.params.projectId;
             let req = await this.http.get(`/api/projects/${id}?include=users[role],tasks[users]`);
             this.project = req.data ? req.data : { name: "Ocorreu um erro carregando o projeto" };
+        },
+        async addUser(user: any) {
+            console.log(user);
         }
     },
     computed: {
+        allUsers(): any[] {
+            return this.store.state.allUsers;
+        },
         isLate(): null | boolean {
             return this.project
                 && this.project.status !== "Concluído"
