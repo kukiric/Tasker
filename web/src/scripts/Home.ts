@@ -12,15 +12,12 @@ export default Vue.extend({
         };
     },
     computed: {
-        isAdminOrManager() {
-            let user: UserStub = this.$store.state.currentUser;
+        isAdminOrManager(): boolean {
+            let user = this.store.state.currentUser;
             if (user && user.role) {
                 return user.role.name === "Admin" || user.role.name === "Manager";
             }
             return false;
         }
-    },
-    mounted() {
-        this.showProjectModal = false;
     }
 });

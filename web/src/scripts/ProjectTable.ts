@@ -5,7 +5,7 @@ import Vue from "vue";
 export default Vue.extend({
     computed: {
         projects(): ProjectStub[] {
-            let projects: ProjectStub[] = this.$store.state.allProjects;
+            let projects: ProjectStub[] = this.store.state.allProjects;
             if (this.user) {
                 projects = projects.sort((a, b) => {
                     // Manda os projetos do usuário atual para o topo
@@ -23,7 +23,7 @@ export default Vue.extend({
             return projects;
         },
         user(): UserStub {
-            return this.$store.state.currentUser;
+            return this.store.state.currentUser!;
         }
     },
     methods: {

@@ -25,7 +25,7 @@ export default Vue.extend({
         },
         async reloadProject() {
             let id = this.$route.params.projectId;
-            let req = await this.$http.get(`/api/projects/${id}?include=users[role],tasks[users]`);
+            let req = await this.http.get(`/api/projects/${id}?include=users[role],tasks[users]`);
             this.project = req.data ? req.data : { name: "Ocorreu um erro carregando o projeto" };
         }
     },

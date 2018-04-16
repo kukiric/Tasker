@@ -36,17 +36,19 @@ export default Vue.extend({
                 return;
             }
             try {
-                let currentUser: UserStub = this.$store.state.user;
-                let project: ProjectStub = {
-                    name: this.form.name,
-                    status: this.form.status,
-                    due_date: moment(this.form.due_date).toDate(),
-                    users: [{ id: currentUser.id }],
-                    manager_id: currentUser.id
-                };
-                let req = await this.$http.post("/api/projects", project);
-                this.$store.commit("appendProject", req.data);
-                this.$router.push({ name: "ProjectView", params: { projectId: req.data.id } });
+                let currentUser = this.store.state.currentUser;
+                if (currentUser) {
+                    let project: ProjectStub = {
+                        name: this.form.name,
+                        status: this.form.status,
+                        due_date: moment(this.form.due_date).toDate(),
+                        users: [{ id: currentUser.id }],
+                        manager_id: currentUser.id
+                    };
+                    let req = await this.http.post("/api/projects", project);
+                    this.$store.commit("appendProject", req.data);
+                    this.$router.push({ name: "ProjectView", params: { projectId: req.data.id } });
+                }
             }
             catch (err) {
                 alert(err.toString());

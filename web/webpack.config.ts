@@ -39,13 +39,12 @@ const config: Webpack.Configuration = {
             "@main": rel("src/main/"),
             "@scripts": rel("src/scripts/"),
             "@components": rel("src/components/"),
-            "@store": rel("src/store"),
             "@css": rel("src/css/")
         },
         extensions: ["*", ".js", ".ts", ".vue", ".json"]
     },
     devServer: devServerConfig,
-    devtool: "eval"
+    devtool: "cheap-module-source-map"
 };
 
 export default config;

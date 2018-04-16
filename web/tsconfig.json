@@ -14,9 +14,6 @@
             "@components/*": [
                 "web/src/components/*"
             ],
-            "@store/*": [
-                "web/src/store/*"
-            ],
             "@css/*": [
                 "web/src/css/*"
             ]

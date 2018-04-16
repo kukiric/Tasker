@@ -11,14 +11,15 @@ export default Vue.extend({
     },
     computed: {
         user(): UserStub {
-            return this.$store.state.currentUser;
+            return this.store.state.currentUser!;
         },
         projects(): ProjectStub[] {
-            return this.$store.state.currentUser.projects;
+            return this.store.state.currentUser!.projects!;
         },
-        myProjects() {
-            if (this.$store.state.user) {
-                let projects: ProjectStub[] = this.$store.state.user.projects;
+        myProjects(): any[] {
+            let currentUser = this.store.state.currentUser;
+            if (currentUser) {
+                let projects = currentUser.projects!;
                 projects = projects.sort((a, b) => {
                     return a.name! > b.name! ? 1 : -1;
                 });

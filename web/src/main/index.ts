@@ -36,7 +36,7 @@ Vue.use(VueRouter);
 
 // Adiciona a instância configurada do axios na aplicação
 import axios from "@main/axios";
-Vue.prototype.$http = axios;
+Vue.prototype.http = axios;
 Vue.prototype.initUserData = (vue: Vue) => {
     loadProjects(vue);
     loadUser(vue);
@@ -44,7 +44,7 @@ Vue.prototype.initUserData = (vue: Vue) => {
 };
 
 // Adiciona o Vuex para gerenciar estados
-import store from "@store/store";
+import createStore from "@main/store";
 import Vuex from "vuex";
 Vue.use(Vuex);
 
@@ -55,9 +55,9 @@ Vue.use(SuiVue);
 async function loadProjects(vue: Vue) {
     let userId = localStorage.getItem("user-id");
     if (userId) {
-        let req = await vue.$http.get(`/api/projects?include=manager,users`);
+        let req = await vue.http.get(`/api/projects?include=manager,users`);
         if (req.data) {
-            vue.$store.commit("setProjects", req.data);
+            vue.$store.commit("setAllProjects", req.data);
         }
     }
 }
@@ -65,29 +65,33 @@ async function loadProjects(vue: Vue) {
 async function loadUser(vue: Vue) {
     let userId = localStorage.getItem("user-id");
     if (userId) {
-        let req = await vue.$http.get(`/api/users/${userId}?include=role,projects,tasks`);
+        let req = await vue.http.get(`/api/users/${userId}?include=role,projects,tasks`);
         if (req.data) {
-            vue.$store.commit("setUser", req.data);
+            vue.$store.commit("setCurrentUser", req.data);
         }
     }
 }
 
 async function loadAllUsers(vue: Vue) {
-    let req = await vue.$http.get(`/api/users?include=role`);
+    let req = await vue.http.get(`/api/users?include=role`);
     if (req.data) {
         vue.$store.commit("setAllUsers", req.data);
     }
 }
 
+const store = createStore();
+Vue.prototype.store = store;
+
 // Cria e monta a aplicação no documento
 let app = new Vue({
     el: "#app",
+    store: store,
     router: router,
-    store: store.create(),
     components: { Layout },
     template: "<Layout/>",
     beforeMount() {
         if (localStorage.getItem("api-token")) {
+            // @ts-ignore
             this.initUserData(this);
         }
     }
