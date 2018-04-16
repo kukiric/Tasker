@@ -5,11 +5,9 @@
         <!-- Dropdown de projetos do usuário logado -->
         <sui-dropdown v-if="user" text="Meus Projetos" class="item">
             <sui-dropdown-menu>
-                <sui-dropdown-item v-for="project in projects" :key="project.id">
-                    <router-link tag="div" :to="{ name: 'ProjectView', params: { projectId: project.id } }">
+                <router-link tag="div" class="item" :to="{ name: 'ProjectView', params: { projectId: project.id } }" v-for="project in projects" :key="project.id">
                     {{ project.name }}
-                    </router-link>
-                </sui-dropdown-item>
+                </router-link>
                 <div v-if="projects.length == 0" class="disabled item">Não há nada aqui...</div>
             </sui-dropdown-menu>
         </sui-dropdown>
