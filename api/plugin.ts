@@ -1,7 +1,7 @@
 import { Plugin, Server, Request, ResponseToolkit} from "hapi";
 import { ServerRegisterOptions, RouteOptions, RouteOptionsAccess } from "hapi";
 import BaseController, { PathHandler, RouteMapping, Route } from "api/controllers/BaseController";
-import { AllowedRole, getRoleName } from "./models/Role";
+import { RoleType, getRoleName } from "./models/Role";
 import { DecodedToken } from "./token";
 import * as assert from "assert";
 import * as Boom from "boom";
@@ -20,7 +20,7 @@ function encapsulateParams(handler: PathHandler, request: Request, h: ResponseTo
  * Transforma uma lista de role IDs (ex. [1, 2]) em um array de roles para
  * o Hapi (ex. ["1", "2"]), eliminando listas vazias
  */
-function stringifyRoles(roles?: AllowedRole | AllowedRole[]): string[] | false {
+function stringifyRoles(roles?: RoleType | RoleType[]): string[] | false {
     if (!roles) {
         return false;
     }

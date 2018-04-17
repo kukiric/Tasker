@@ -1,5 +1,5 @@
+import { RoleStub, RoleType } from "api/stubs";
 import { Model } from "objection";
-import { RoleStub } from "api/stubs";
 
 export default class Role extends Model implements RoleStub {
     public static tableName = "role";
@@ -7,16 +7,18 @@ export default class Role extends Model implements RoleStub {
     public name?: string;
 }
 
-// Valores do banco de dados
-export const ADMIN = 1;
-export const MANAGER = 2;
-export const TEAM_MEMBER = 3;
-export type AllowedRole = 1 | 2 | 3;
-export const EVERYONE: AllowedRole[] = [ADMIN, MANAGER, TEAM_MEMBER];
-export function getRoleName(id: AllowedRole) {
+// Re-definição dos tipos de usuário para uso interno da API
+export type RoleType = RoleType;
+export const ADMIN = RoleType.ADMIN;
+export const MANAGER = RoleType.MANAGER;
+export const TEAM_MEMBER = RoleType.TEAM_MEMBER;
+export const EVERYONE: RoleType[] = [ADMIN, MANAGER, TEAM_MEMBER];
+
+export function getRoleName(id: RoleType) {
     switch (id) {
         case 1: return "ADMIN";
         case 2: return "MANAGER";
         case 3: return "TEAM_MEMBER";
+        default: throw new Error("Invalid enumeration value: " + id);
     }
 }

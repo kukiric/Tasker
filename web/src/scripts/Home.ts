@@ -13,7 +13,7 @@ export default Vue.extend({
     },
     computed: {
         isAdminOrManager(): boolean {
-            let user = this.store.state.currentUser;
+            let user = this.g.state.currentUser;
             if (user && user.role) {
                 return user.role.name === "Admin" || user.role.name === "Manager";
             }

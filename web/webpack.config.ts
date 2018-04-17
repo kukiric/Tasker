@@ -39,7 +39,8 @@ const config: Webpack.Configuration = {
             "@main": rel("src/main/"),
             "@scripts": rel("src/scripts/"),
             "@components": rel("src/components/"),
-            "@css": rel("src/css/")
+            "@css": rel("src/css/"),
+            "api": rel("../api")
         },
         extensions: ["*", ".js", ".ts", ".vue", ".json"]
     },

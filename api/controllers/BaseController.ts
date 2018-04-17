@@ -1,6 +1,6 @@
 import { Lifecycle, Request, ResponseToolkit, RouteOptionsAccess } from "hapi";
 import { Model, RelationMappings, transaction } from "objection";
-import { AllowedRole } from "api/models/Role";
+import { RoleType } from "api/models/Role";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
@@ -53,7 +53,7 @@ interface RouteWithAuth extends BaseRoute {
     /**
      * Roles permitidos a acessar essa rota
      */
-    roles: AllowedRole[];
+    roles: RoleType[];
 }
 
 interface RouteWithoutAuth extends BaseRoute {

@@ -1,4 +1,4 @@
-import { AllowedRole } from "api/models/Role";
+import { RoleType } from "api/models/Role";
 
 /**
  * Token assinada e codificada pelo JWT
@@ -10,16 +10,16 @@ export type EncodedToken = string;
  */
 export interface DecodedToken {
     uid: number;
-    role?: AllowedRole;
+    role?: RoleType;
 }
 
 /**
  * Objeto retornado do AuthController com token e dados do usuário
  */
 export interface AuthData {
-    username: string,
-    fullname: string,
-    role: string,
-    id: number,
-    token: string
+    username: string;
+    fullname: string;
+    role: string;
+    id: number;
+    token: string;
 }

@@ -6,11 +6,7 @@ import Vue from "vue";
 export default Vue.extend({
     data() {
         return {
-           project: null,
            showSidebar: false
-        } as {
-            project: ProjectStub | null,
-            showSidebar: boolean
         };
     },
     props: {
@@ -24,17 +20,21 @@ export default Vue.extend({
             return `https://www.gravatar.com/avatar/${md5(email)}?s=32&d=identicon`;
         },
         async reloadProject() {
-            let id = this.$route.params.projectId;
-            let req = await this.http.get(`/api/projects/${id}?include=users[role],tasks[users]`);
-            this.project = req.data ? req.data : { name: "Ocorreu um erro carregando o projeto" };
+            await this.g.dispatch("fetchProject", this.projectId);
         },
-        async addUser(user: any) {
-            console.log(user);
+        async addUser(user: UserStub) {
+            await this.g.dispatch("sendUser", user);
+        },
+        async removeUser(user: UserStub) {
+            await this.g.dispatch("deleteUser", user);
         }
     },
     computed: {
         allUsers(): any[] {
-            return this.store.state.allUsers;
+            return this.g.state.allUsers;
+        },
+        project(): ProjectStub | null {
+            return this.g.state.currentProject;
         },
         isLate(): null | boolean {
             return this.project

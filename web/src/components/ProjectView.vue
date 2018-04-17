@@ -6,18 +6,26 @@
             <div class="item">
                 <h1 class="ui header">Membros</h1>
                 <div class="ui middle aligned relaxed list" v-if="project">
-                    <div class="item"  v-for="user in project.users" v-if="user.role" :key="user.id">
-                        <img class="ui avatar image" :src="gravatar(user.email)"/>
+                    <div class="item"  v-for="user in project.users" :key="user.id">
+                        <sui-image avatar :src="gravatar(user.email)"/>
                         <div class="content">
                             <div class="header">{{ user.fullname }}</div>
                             <div class="description">{{ user.email }}</div>
                         </div>
-                        <div class="right floated content">
+                        <div v-if="user.id != g.state.currentUser.id" class="right floated content">
                             <a><sui-icon color="red" name="delete" title="Remover" @click.prevent="removeUser(user)"/></a>
                         </div>
                     </div>
                 </div>
-                <sui-button color="green" fluid icon="plus" content="Adicionar"/>
+                <sui-dropdown v-if="g.getters.userIsManager" fluid selection class="green button">
+                    Adicionar
+                    <sui-dropdown-menu>
+                        <sui-dropdown-item v-for="user in g.getters.usersNotInProject" :key="user.id" @click="addUser(user)">
+                            <sui-image avatar :src="gravatar(user.email)"/>
+                            {{ user.fullname }}
+                        </sui-dropdown-item>
+                    </sui-dropdown-menu>
+                </sui-dropdown>
             </div>
         </sui-sidebar>
         <div class="ui raised segment container">

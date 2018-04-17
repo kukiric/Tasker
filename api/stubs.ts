@@ -71,3 +71,10 @@ export interface WorkStub {
     task_id?: number;
     user_id?: number;
 }
+
+// Valores do banco de dados
+export enum RoleType {
+    ADMIN = 1,
+    MANAGER = 2,
+    TEAM_MEMBER = 3
+}

@@ -79,8 +79,8 @@ async function loadAllUsers(vue: Vue) {
     }
 }
 
-const store = createStore();
-Vue.prototype.store = store;
+const store = createStore(axios);
+Vue.prototype.g = store;
 
 // Cria e monta a aplicação no documento
 let app = new Vue({

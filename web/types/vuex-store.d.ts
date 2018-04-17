@@ -3,6 +3,6 @@ import Vuex, { Store } from "vuex";
 
 declare module "vue/types/vue" {
     interface Vue {
-        store: ReturnType<typeof createStore>;
+        g: ReturnType<typeof createStore>;
     }
 }

@@ -1,5 +1,5 @@
 import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
-import { AllowedRole, EVERYONE } from "api/models/Role";
+import { RoleType, EVERYONE } from "api/models/Role";
 import { DecodedToken, AuthData } from "api/token";
 import NullModel from "api/models/NullModel";
 import User from "api/models/User";
@@ -40,7 +40,7 @@ export default class AuthController extends BaseController {
                         // Cria os dados da JWT
                         let payload: DecodedToken = {
                             uid: user.id,
-                            role: user.role.id as AllowedRole
+                            role: user.role.id as RoleType
                         };
                         // Gera a nova token
                         let token = JWT.sign(payload, key!, { expiresIn: "30d" });

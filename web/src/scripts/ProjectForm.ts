@@ -36,7 +36,7 @@ export default Vue.extend({
                 return;
             }
             try {
-                let currentUser = this.store.state.currentUser;
+                let currentUser = this.g.state.currentUser;
                 if (currentUser) {
                     let project: ProjectStub = {
                         name: this.form.name,

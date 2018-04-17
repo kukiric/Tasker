@@ -39,7 +39,7 @@ export default Vue.extend({
                     this.error = "Erro de servidor: nenhuma token retornada";
                 }
                 else {
-                    this.store.commit("reset");
+                    this.g.commit("reset");
                     localStorage.setItem("api-token", token);
                     localStorage.setItem("username", req.data.username);
                     localStorage.setItem("fullname", req.data.fullname);
@@ -70,7 +70,7 @@ export default Vue.extend({
     },
     computed: {
         user(): UserStub {
-            return this.store.state.currentUser!;
+            return this.g.state.currentUser!;
         },
         primaryAction(): string {
             if (this.registering) {
