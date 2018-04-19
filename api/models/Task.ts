@@ -1,5 +1,5 @@
 import { Model, RelationMappings, Pojo } from "objection";
-import { TaskStub } from "api/stubs";
+import { TaskStub, TaskStatus, TaskType } from "api/stubs";
 import Project from "api/models/Project";
 import Version from "api/models/Version";
 import Work from "api/models/Work";
@@ -14,8 +14,8 @@ export default class Task extends Model implements TaskStub {
     public description!: string;
     public due_date?: Date;
     public estimate_work_hour?: number;
-    public type!: string;
-    public status!: string;
+    public type!: TaskType;
+    public status!: TaskStatus;
     public progress?: number;
     public project_id?: number;
     public parent_id?: number;
@@ -27,8 +27,8 @@ export default class Task extends Model implements TaskStub {
     public work_items?: Work[];
     public users?: User[];
 
-    public static validTypes = ["Bug", "Funcionalidade"];
-    public static validStatuses = ["Nova", "Atribuída", "Em Desenvolvimento", "Requer Teste", "Concluída"];
+    public static validTypes: string[] = Object.values(TaskType);
+    public static validStatuses: string[] = Object.values(TaskStatus);
 
     public static validator = {
         id: Joi.forbidden(),

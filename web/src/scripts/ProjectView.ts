@@ -1,9 +1,11 @@
+import ProjectContents from "@components/ProjectContents.vue";
 import { ProjectStub, UserStub } from "api/stubs";
 import * as moment from "moment";
 import * as md5 from "md5";
 import Vue from "vue";
 
 export default Vue.extend({
+    components: { ProjectContents },
     data() {
         return {
            showSidebar: false

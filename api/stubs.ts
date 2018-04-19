@@ -28,8 +28,8 @@ export interface TaskStub {
     description?: string;
     due_date?: Date;
     estimate_work_hour?: number;
-    type?: string;
-    status?: string;
+    type?: TaskType;
+    status?: TaskStatus;
     progress?: number;
     project_id?: number;
     parent_id?: number;
@@ -73,6 +73,19 @@ export interface WorkStub {
 }
 
 // Valores do banco de dados
+export enum TaskType {
+    BUG = "Bug",
+    FEATURE = "Funcionalidade"
+}
+
+export enum TaskStatus {
+    NEW = "Nova",
+    ASSIGNED = "Atribuída",
+    IN_PROGRESS = "Em Desenvolvimento",
+    TESTING = "Requer Teste",
+    DONE = "Concluída"
+}
+
 export enum RoleType {
     ADMIN = 1,
     MANAGER = 2,

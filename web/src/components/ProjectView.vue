@@ -12,7 +12,7 @@
                             <div class="header">{{ user.fullname }}</div>
                             <div class="description">{{ user.email }}</div>
                         </div>
-                        <div v-if="user.id != g.state.currentUser.id" class="right floated content">
+                        <div v-if="g.getters.userIsManager && user.id != g.state.currentUser.id" class="right floated content">
                             <a><sui-icon color="red" name="delete" title="Remover" @click.prevent="removeUser(user)"/></a>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
                 </sui-dropdown>
             </div>
         </sui-sidebar>
-        <div class="ui raised segment container">
+        <div class="ui raised attached segment">
             <!-- Cabeçalho da página -->
             <h1 class="ui header">
                 <i class="teal open folder icon"></i>
@@ -41,27 +41,11 @@
                 </div>
                 <div v-else class="content">Carregando...</div>
             </h1>
-            <!-- Informações do projeto -->
-            <div style="min-height: 66vh;">
-                <div v-if="project">
-                    <h2 class="ui dividing sub header">Usuários</h2>
-                    <ul class="ui bulleted list">
-                        <li v-for="user in project.users" :key="user.id" class="item">{{ user.fullname }} - {{ user.email }}</li>
-                    </ul>
-                    <h2 class="ui dividing sub header">Tarefas</h2>
-                    <div class="ui bulleted list">
-                        <div v-for="task in project.tasks" :key="task.id" class="item" style="margin-bottom: 1.5em">
-                            <div class="header">{{ task.description }}</div>
-                            <div>{{ task.status }} / {{ task.type }}</div>
-                            <div v-if="task.users.length > 0" class="list">
-                                <div class="header" style="margin-bottom: 0.25em">Membros:</div>
-                                <div v-for="user in task.users" :key="user.id">
-                                    <i class="ui user icon"></i> {{ user.fullname }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        </div>
+        <!-- Informações do projeto -->
+        <div class="project area">
+            <div v-if="project">
+                <ProjectContents v-model="project"/>
             </div>
         </div>
     </div>
