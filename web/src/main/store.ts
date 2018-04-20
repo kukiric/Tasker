@@ -12,7 +12,7 @@ export default function createStore(http: AxiosInstance) {
             currentUser: null
         } as {
             allProjects: ProjectStub[],
-            currentProject: ProjectStub | null,
+            currentProject: ProjectStub & { error?: boolean } | null,
             allUsers: UserStub[],
             currentUser: UserStub | null
         },
@@ -31,7 +31,7 @@ export default function createStore(http: AxiosInstance) {
             },
             usersNotInProject(state) {
                 const project = state.currentProject;
-                if (project && project.users) {
+                if (project && project.error && project.users) {
                     return state.allUsers.filter(u1 => {
                         return project.users!.some(u2 => u1.id === u2.id) === false;
                     });
@@ -95,7 +95,7 @@ export default function createStore(http: AxiosInstance) {
                     g.commit("setCurrentProject", req.data);
                 }
                 catch (err) {
-                    g.commit("setCurrentProject", null);
+                    g.commit("setCurrentProject", { error: true });
                 }
             },
             async sendUser(g, user: UserStub) {

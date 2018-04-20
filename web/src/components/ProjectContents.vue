@@ -10,6 +10,10 @@
                         <div><b>Tipo:</b> {{ task.type }}</div>
                         <div><b>Status:</b> {{ task.status }}</div>
                     </sui-card-description>
+                    <div v-if="task.users.length > 0">
+                        <br>
+                        <sui-image v-for="user in task.users" :key="user.id" avatar :src="gravatar(user.email)" :title="user.fullname"/>
+                    </div>
                 </sui-card-content>
                 <sui-card-content extra>
                     <sui-list v-if="task.work_items && task.work_items.length > 0">

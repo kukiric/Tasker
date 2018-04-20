@@ -1,5 +1,6 @@
 <template>
-    <div v-if="g.state.currentProject">
+    <NotFound v-if="project && project.error"/>
+    <div v-else>
         <!-- Barra lateral -->
         <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">
             <sui-button class="left attached side button" icon="bars" @click="showSidebar = !showSidebar"/>
@@ -49,6 +50,5 @@
             </div>
         </div>
     </div>
-    <NotFound v-else/>
 </template>
 <script src="@scripts/ProjectView.ts" lang="ts"></script>
