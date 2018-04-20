@@ -3,6 +3,7 @@
         <sui-card-group v-for="task in g.getters.rootTasks" :key="task.id">
             <sui-card v-for="(task, index) in taskGroup(task)" :key="task.id" :class="[getColorForStatus(task), { first: index === 0 }]">
                 <sui-card-content>
+                    <a class="right floated"><sui-icon color="red" name="close" style="margin-right: -0.25em"/></a>
                     <sui-card-header><sui-icon :name="getIconForStatus(task)"/>{{ task.description }}</sui-card-header>
                     <sui-card-meta>Entrega: {{ date(task.due_date) }} - {{ task.estimate_work_hour }} Horas</sui-card-meta>
                     <sui-card-description>
@@ -19,7 +20,15 @@
                     <sui-progress size="small" :color="getColorForStatus(task)" :percent="task.progress * 100" class="project"/>
                 </sui-card-content>
             </sui-card>
+            <sui-card>
+                <sui-button basic primary content="Nova sub-tarefa..." style="height: 100%"/>
+            </sui-card>
         </sui-card-group>
+        <!-- <sui-card-group> -->
+            <sui-card style="height: 12em">
+                <sui-button basic primary icon="add" content="Novo grupo de tarefas..." style="height: 100%"/>
+            </sui-card>
+        <!-- </sui-card-group> -->
     </div>
 </template>
 <script src="@scripts/ProjectContents.ts" lang="ts"></script>
