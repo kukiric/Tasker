@@ -31,7 +31,7 @@ export default function createStore(http: AxiosInstance) {
             },
             usersNotInProject(state) {
                 const project = state.currentProject;
-                if (project && project.error && project.users) {
+                if (project && project.users) {
                     return state.allUsers.filter(u1 => {
                         return project.users!.some(u2 => u1.id === u2.id) === false;
                     });
