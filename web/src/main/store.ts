@@ -90,8 +90,13 @@ export default function createStore(http: AxiosInstance) {
         actions: {
             async fetchProject(g, projectId: number) {
                 const taskIncludes = "tasks[parent,users,work_items,children]";
-                let req = await http.get(`/api/projects/${projectId}?include=users[role],${taskIncludes}`);
-                g.commit("setCurrentProject", req.data);
+                try {
+                    let req = await http.get(`/api/projects/${projectId}?include=users[role],${taskIncludes}`);
+                    g.commit("setCurrentProject", req.data);
+                }
+                catch (err) {
+                    g.commit("setCurrentProject", null);
+                }
             },
             async sendUser(g, user: UserStub) {
                 if (g.state.currentProject) {

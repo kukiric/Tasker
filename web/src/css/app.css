@@ -75,7 +75,7 @@ body {
     visibility: visible;
     top: calc(50% - 0.5em);
     transform: scale(4.0);
-    content: "\F105";
+    content: "\F105"; /* Caractere '>' (angle-right) */
     color: lightgray;
 }
 
