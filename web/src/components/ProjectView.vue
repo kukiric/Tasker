@@ -45,7 +45,7 @@
         <!-- Informações do projeto -->
         <div class="project area">
             <div v-if="project">
-                <ProjectContents v-model="project"/>
+                <ProjectContents/>
             </div>
         </div>
     </div>

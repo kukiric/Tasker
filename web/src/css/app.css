@@ -63,6 +63,30 @@ body {
     margin: 1em;
 }
 
+.ui.first.card {
+    margin-right: 3em;
+}
+
+.ui.first.card::after {
+    font-family: "Icons";
+    position: absolute;
+    right: -2em;
+    height: initial;
+    visibility: visible;
+    top: calc(50% - 0.5em);
+    transform: scale(4.0);
+    content: "\F105";
+    color: lightgray;
+}
+
+.ui.project.progress.small {
+    margin-bottom: 0.5em;
+}
+
+.ui.project.progress .bar {
+    min-width: 0;
+}
+
 @media screen and (max-width: 1199px) {
     .ui.container {
         margin: auto 2em !important;

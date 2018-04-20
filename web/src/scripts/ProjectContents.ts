@@ -4,7 +4,7 @@ import Vue from "vue";
 
 export default Vue.extend({
     props: {
-        value: Object
+        value: [Object]
     },
     computed: {
         project(): ProjectStub {
@@ -14,6 +14,12 @@ export default Vue.extend({
     methods: {
         date(date: string) {
             return moment(date).format("LL");
+        },
+        taskGroup(task: TaskStub) {
+            if (task.children) {
+                return [task].concat(task.children);
+            }
+            return [];
         },
         getColorForStatus(task: TaskStub) {
             switch (task.status) {

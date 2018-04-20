@@ -1,6 +1,7 @@
 import { ProjectStub, UserStub, RoleType } from "api/stubs";
 import { AxiosInstance } from "axios";
 import Vuex from "vuex";
+import ProjectContents from "@scripts/ProjectContents";
 
 export default function createStore(http: AxiosInstance) {
     return new Vuex.Store({
@@ -34,6 +35,13 @@ export default function createStore(http: AxiosInstance) {
                     return state.allUsers.filter(u1 => {
                         return project.users!.some(u2 => u1.id === u2.id) === false;
                     });
+                }
+                return [];
+            },
+            rootTasks(state) {
+                const project = state.currentProject;
+                if (project && project.tasks) {
+                    return project.tasks.filter(task => task.parent == null);
                 }
                 return [];
             }
@@ -81,7 +89,8 @@ export default function createStore(http: AxiosInstance) {
         },
         actions: {
             async fetchProject(g, projectId: number) {
-                let req = await http.get(`/api/projects/${projectId}?include=users[role],tasks[users,work_items]`);
+                const taskIncludes = "tasks[parent,users,work_items,children]";
+                let req = await http.get(`/api/projects/${projectId}?include=users[role],${taskIncludes}`);
                 g.commit("setCurrentProject", req.data);
             },
             async sendUser(g, user: UserStub) {
