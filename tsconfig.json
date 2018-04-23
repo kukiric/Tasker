@@ -9,13 +9,14 @@
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "suppressImplicitAnyIndexErrors": true,
-        "listEmittedFiles": true,
         "removeComments": true,
-        "baseUrl": ".",
+        "baseUrl": "."
     },
     "exclude": [
         "node_modules/**/*",
+        "migrations/**/*",
         "compiled/**/*",
+        "knexfile.ts",
         "web/**/*"
     ]
 }
