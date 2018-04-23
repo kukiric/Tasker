@@ -89,7 +89,7 @@ export default function createStore(http: AxiosInstance) {
         },
         actions: {
             async fetchProject(g, projectId: number) {
-                const taskIncludes = "tasks[parent,users,work_items,children]";
+                const taskIncludes = "tasks[parent,users,work_items,children[users,work_items]]";
                 try {
                     let req = await http.get(`/api/projects/${projectId}?include=users[role],${taskIncludes}`);
                     g.commit("setCurrentProject", req.data);
