@@ -59,7 +59,7 @@ export default Vue.extend({
     },
     computed: {
         canSubmit(): boolean {
-            let nameIsFilled = this.form.name.length > 0
+            let nameIsFilled = this.form.name.length > 0;
             let isDueDateValid = moment(this.form.due_date).isSameOrAfter(moment(), "day");
             return nameIsFilled && isDueDateValid;
         },

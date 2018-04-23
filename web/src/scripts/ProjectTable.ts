@@ -1,5 +1,5 @@
 import { ProjectStub, UserStub } from "api/stubs";
-import * as moment from "moment";
+import utils from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -16,15 +16,7 @@ export default Vue.extend({
         }
     },
     methods: {
-        date(timestamp: string) {
-            return moment(timestamp).format("LL");
-        },
-        time(timestamp: string) {
-            return moment(timestamp).format("LLLL");
-        },
-        isLate(project: ProjectStub) {
-            return project.status !== "Concluído" && moment().isAfter(project.due_date, "day");
-        },
+        ...utils,
         isDone(project: ProjectStub) {
             return project.status === "Concluído";
         },

@@ -35,8 +35,8 @@
                 <i class="teal open folder icon"></i>
                 <div v-if="project" class="content">
                     <div>{{ project.name }}</div>
-                    <div class="sub header" :class="{ red: isLate }">
-                        <i v-if="isLate" class="clock icon"></i>
+                    <div class="sub header" :class="{ red: isLate(project) }">
+                        <i v-if="isLate(project)" class="clock icon"></i>
                         <span>{{ date(project.created_at) }} - {{ date(project.due_date) }}</span>
                     </div>
                 </div>

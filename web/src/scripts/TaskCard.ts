@@ -1,6 +1,5 @@
 import { ProjectStub, TaskStub, TaskStatus } from "api/stubs";
-import * as moment from "moment";
-import * as md5 from "md5";
+import utils from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -9,12 +8,7 @@ export default Vue.extend({
         isFirst: Boolean
     },
     methods: {
-        date(date: string) {
-            return moment(date).format("LL");
-        },
-        gravatar(email: string) {
-            return `https://www.gravatar.com/avatar/${md5(email)}?s=32&d=identicon`;
-        },
+        ...utils,
         getColorForStatus(task: TaskStub) {
             switch (task.status) {
                 case TaskStatus.NEW: return "yellow";
