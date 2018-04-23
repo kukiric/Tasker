@@ -68,6 +68,7 @@ export async function startServer(webpackHook?: (server: HapiServer) => void) {
     }
     else {
         console.log("Registrando caminho para arquivos estáticos...");
+        await server.register({ plugin: require("inert"), once: true });
         server.route({
             method: "GET",
             path: "/{path*}",
