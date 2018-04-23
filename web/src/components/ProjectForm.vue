@@ -1,5 +1,5 @@
 <template>
-    <sui-modal v-model="isShowing" :closable="false">
+    <sui-modal v-model="isShowing" animation="fade down">
         <sui-modal-header>Criar novo projeto</sui-modal-header>
         <sui-modal-content>
             <sui-form id="modal-form" @submit.prevent="send">

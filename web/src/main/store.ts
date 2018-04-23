@@ -1,7 +1,8 @@
-import { ProjectStub, UserStub, RoleType } from "api/stubs";
+import { ProjectStub, UserStub, RoleType, TaskStub } from "api/stubs";
 import { AxiosInstance } from "axios";
 import Vuex from "vuex";
-import ProjectContents from "@scripts/ProjectContents";
+
+const taskIncludes = "parent,users,work_items,children[users,work_items]";
 
 export default function createStore(http: AxiosInstance) {
     return new Vuex.Store({
@@ -89,9 +90,8 @@ export default function createStore(http: AxiosInstance) {
         },
         actions: {
             async fetchProject(g, projectId: number) {
-                const taskIncludes = "tasks[parent,users,work_items,children[users,work_items]]";
                 try {
-                    let req = await http.get(`/api/projects/${projectId}?include=users[role],${taskIncludes}`);
+                    let req = await http.get(`/api/projects/${projectId}?include=users[role],tasks[${taskIncludes}]`);
                     g.commit("setCurrentProject", req.data);
                 }
                 catch (err) {
@@ -102,6 +102,25 @@ export default function createStore(http: AxiosInstance) {
                 if (g.state.currentProject) {
                     let req = await http.post(`/api/projects/${g.state.currentProject.id}/users`, { userId: user.id });
                     g.commit("addUser", user);
+                }
+            },
+            async createTaskGroup(g) {
+                if (g.state.currentProject) {
+                    let req = await http.post(`/api/projects/${g.state.currentProject.id}/tasks`, {
+                        description: "Nova tarefa",
+                        estimate_work_hour: 10,
+                        progress: Math.random(),
+                        status: "Nova",
+                        type: "Funcionalidade",
+                        due_date: new Date()
+                    });
+                    g.dispatch("fetchProject", g.state.currentProject.id);
+                }
+            },
+            async deleteTask(g, task: TaskStub) {
+                if (g.state.currentProject) {
+                    let req = await http.delete(`/api/projects/${g.state.currentProject.id}/tasks/${task.id}`);
+                    g.dispatch("fetchProject", g.state.currentProject.id);
                 }
             },
             async deleteUser(g, user: UserStub) {

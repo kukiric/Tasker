@@ -2,6 +2,8 @@ import { ProjectStub, UserStub } from "api/stubs";
 import * as moment from "moment";
 import Vue from "vue";
 
+const defaultDate = moment().add(1, "week").format("YYYY-MM-DD");
+
 export default Vue.extend({
     data() {
         return {
@@ -9,7 +11,7 @@ export default Vue.extend({
             form: {
                 name: "",
                 status: "Novo",
-                due_date: moment().add(1, "week").format("YYYY-MM-DD")
+                due_date: defaultDate
             }
         } as {
             isShowing: boolean,
@@ -74,12 +76,14 @@ export default Vue.extend({
         }
     },
     watch: {
-        show: function(val) {
-            this.isShowing = val;
+        show: function(value) {
+            this.isShowing = value;
         },
-        isShowing: function(val) {
-            if (!val) {
+        isShowing: function(value) {
+            if (!value) {
                 this.$emit("close");
+                this.form.name = "";
+                this.form.due_date = defaultDate;
             }
         }
     }

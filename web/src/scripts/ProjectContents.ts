@@ -25,6 +25,12 @@ export default Vue.extend({
             }
             return [];
         },
+        createTaskGroup() {
+            this.g.dispatch("createTaskGroup");
+        },
+        deleteTask(task: TaskStub) {
+            this.g.dispatch("deleteTask", task);
+        },
         getColorForStatus(task: TaskStub) {
             switch (task.status) {
                 case TaskStatus.NEW: return "yellow";
