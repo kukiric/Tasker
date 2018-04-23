@@ -1,6 +1,7 @@
 import * as WebpackDevServer from "webpack-dev-server";
 import * as Webpack from "webpack";
 import * as path from "path";
+import "dotenv/config";
 
 function rel(relativePath: string) {
     return path.join(__dirname, relativePath);
@@ -44,6 +45,11 @@ const config: Webpack.Configuration = {
         },
         extensions: ["*", ".js", ".ts", ".vue", ".json"]
     },
+    plugins: [
+        new Webpack.DefinePlugin({
+            BASE_URL: JSON.stringify(process.env.BASE_URL)
+        })
+    ],
     devServer: devServerConfig,
     devtool: "cheap-module-source-map"
 };

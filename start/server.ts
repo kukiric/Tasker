@@ -28,7 +28,7 @@ function handleValidationError(request: Request, h: ResponseToolkit, err: any): 
     return boom;
 }
 
-// Configura o servidor do HAPI
+// Configura o servidor do Hapi
 const server = new HapiServer({
     host: process.env.HOST || process.env.ADDRESS,
     address: process.env.ADDRESS,

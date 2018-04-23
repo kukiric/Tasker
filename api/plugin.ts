@@ -108,6 +108,7 @@ export default {
             sortEndpoints: "method",
             expanded: "none",
             jsonEditor: false,
+            basePath: process.env.BASE_URL,
             info: {
                 title: this.name + " Documentation",
                 description: "An API made with Hapi.js - https://github.com/kukiric/tasker",

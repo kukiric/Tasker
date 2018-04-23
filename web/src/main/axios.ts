@@ -1,6 +1,9 @@
 import axios from "axios";
 
-let myAxios = axios.create();
+let myAxios = axios.create({
+    // Variável global definida pelo Webpack
+    baseURL: BASE_URL
+});
 
 // Insere a token em todas as requisições para a API local
 myAxios.interceptors.request.use(config => {
