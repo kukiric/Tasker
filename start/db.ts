@@ -11,15 +11,22 @@ async function testConnection(): Promise<void> {
     await db.raw(`select 1+1 as result;`);
 }
 
+async function queryTable(tableName: string): Promise<void> {
+    await db.raw(`select * from ${tableName} limit 1;`);
+}
+
 async function testModelTables(): Promise<void> {
-    const modelDir = "api/models/";
-    let modelFiles = fs.readdirSync(modelDir);
+    const extRegex = /\.js$|\.ts$/;
+    const modelDir = path.join(__dirname, "../api/models/");
+    let modelFiles = fs.readdirSync(modelDir).filter(f => extRegex.test(f));
     for (let file of modelFiles) {
         /* tslint:disable */
         let model: Object = require(path.join(modelDir, file)).default;
         if (model.hasOwnProperty("tableName")) {
             let tableName = model["tableName"];
+            process.stdout.write(`Verificando se a tabela "${tableName}" existe... `);
             await db.raw(`select * from ${tableName} limit 1;`);
+            process.stdout.write(`Ok!\n`);
         }
         /* tslint:enable */
     }
