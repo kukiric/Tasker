@@ -3,25 +3,14 @@ import * as moment from "moment";
 import Vue from "vue";
 
 export default Vue.extend({
+    data() {
+        return {
+            projects: []
+        } as {
+            projects: ProjectStub[] | { error: boolean }
+        };
+    },
     computed: {
-        projects(): ProjectStub[] {
-            let projects: ProjectStub[] = this.g.state.allProjects;
-            if (this.user) {
-                projects = projects.sort((a, b) => {
-                    // Manda os projetos do usuário atual para o topo
-                    let inA = this.currentUserIsInProject(a);
-                    let inB = this.currentUserIsInProject(b);
-                    if (!inA && inB) {
-                        return 1;
-                    }
-                    if (inA && !inB) {
-                        return -1;
-                    }
-                    return 0;
-                });
-            }
-            return projects;
-        },
         user(): UserStub {
             return this.g.state.currentUser!;
         }
@@ -44,6 +33,25 @@ export default Vue.extend({
                 return project.users.some(user => this.user.id === user.id);
             }
             return false;
+        },
+        async fetchProjects() {
+            let userId = localStorage.getItem("user-id");
+            if (userId) {
+                try {
+                    let req = await this.http.get(`/api/projects?include=manager,users`);
+                    let projects: ProjectStub[] = req.data;
+                    // Ordena os projetos alfabeticamente
+                    this.projects = projects.sort((a, b) => {
+                        return a.name! > b.name! ? 1 : -1;
+                    });
+                }
+                catch (err) {
+                    this.projects = { error: true };
+                }
+            }
         }
+    },
+    created() {
+        this.fetchProjects();
     }
 });

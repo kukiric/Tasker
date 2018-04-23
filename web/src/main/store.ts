@@ -7,15 +7,13 @@ const taskIncludes = "parent,users,work_items,children[users,work_items]";
 export default function createStore(http: AxiosInstance) {
     return new Vuex.Store({
         state: {
-            allProjects: [],
             currentProject: null,
-            allUsers: [],
-            currentUser: null
+            currentUser: null,
+            allUsers: []
         } as {
-            allProjects: ProjectStub[],
             currentProject: ProjectStub & { error?: boolean } | null,
-            allUsers: UserStub[],
-            currentUser: UserStub | null
+            currentUser: UserStub | null,
+            allUsers: UserStub[]
         },
         getters: {
             userIsAdmin(state) {
@@ -26,9 +24,8 @@ export default function createStore(http: AxiosInstance) {
                 const user = state.currentUser;
                 return user && user.role && user.role.id! <= RoleType.MANAGER;
             },
-            userIsUnlocked(state) {
-                const user = state.currentUser;
-                return user && user.role != null;
+            projectId(state) {
+                return state.currentProject && state.currentProject.id;
             },
             usersNotInProject(state) {
                 const project = state.currentProject;
@@ -42,22 +39,15 @@ export default function createStore(http: AxiosInstance) {
             rootTasks(state) {
                 const project = state.currentProject;
                 if (project && project.tasks) {
-                    return project.tasks.filter(task => task.parent == null);
+                    // Busca somente as tarefas sem pai
+                    let rootTasks = project.tasks.filter(task => task.parent == null);
+                    // Ordena elas por ID
+                    return rootTasks.sort((a, b) => a.id! - b.id!);
                 }
                 return [];
             }
         },
         mutations: {
-            setAllProjects(state, projects: ProjectStub[]) {
-                state.allProjects = projects.sort((a, b) => {
-                    return a.name! > b.name! ? 1 : -1;
-                });
-            },
-            appendProject(state, project: ProjectStub) {
-                state.allProjects = state.allProjects.concat(project).sort((a, b) => {
-                    return a.name! > b.name! ? 1 : -1;
-                });
-            },
             setCurrentProject(state, project: ProjectStub) {
                 state.currentProject = project;
             },
@@ -82,10 +72,9 @@ export default function createStore(http: AxiosInstance) {
                 state.currentUser = user;
             },
             reset(state) {
-                state.allProjects = [];
                 state.currentProject = null;
-                state.allUsers = [];
                 state.currentUser = null;
+                state.allUsers = [];
             }
         },
         actions: {
@@ -98,10 +87,16 @@ export default function createStore(http: AxiosInstance) {
                     g.commit("setCurrentProject", { error: true });
                 }
             },
-            async sendUser(g, user: UserStub) {
+            async addUser(g, user: UserStub) {
                 if (g.state.currentProject) {
                     let req = await http.post(`/api/projects/${g.state.currentProject.id}/users`, { userId: user.id });
                     g.commit("addUser", user);
+                }
+            },
+            async removeUser(g, user: UserStub) {
+                if (g.state.currentProject) {
+                    let req = await http.delete(`/api/projects/${g.state.currentProject.id}/users/${user.id}`);
+                    g.commit("removeUser", user);
                 }
             },
             async createTaskGroup(g) {
@@ -121,12 +116,6 @@ export default function createStore(http: AxiosInstance) {
                 if (g.state.currentProject) {
                     let req = await http.delete(`/api/projects/${g.state.currentProject.id}/tasks/${task.id}`);
                     g.dispatch("fetchProject", g.state.currentProject.id);
-                }
-            },
-            async deleteUser(g, user: UserStub) {
-                if (g.state.currentProject) {
-                    let req = await http.delete(`/api/projects/${g.state.currentProject.id}/users/${user.id}`);
-                    g.commit("removeUser", user);
                 }
             }
         }

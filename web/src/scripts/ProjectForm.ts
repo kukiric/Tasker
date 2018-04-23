@@ -40,11 +40,11 @@ export default Vue.extend({
             try {
                 let currentUser = this.g.state.currentUser;
                 if (currentUser) {
-                    let project: ProjectStub = {
+                    let project: Partial<ProjectStub> = {
                         name: this.form.name,
                         status: this.form.status,
                         due_date: moment(this.form.due_date).toDate(),
-                        users: [{ id: currentUser.id }],
+                        users: [ { id: currentUser.id } ],
                         manager_id: currentUser.id
                     };
                     let req = await this.http.post("/api/projects", project);

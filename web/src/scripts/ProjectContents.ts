@@ -19,7 +19,7 @@ export default Vue.extend({
         gravatar(email: string) {
             return `https://www.gravatar.com/avatar/${md5(email)}?s=32&d=identicon`;
         },
-        taskGroup(task: TaskStub) {
+        taskGroup(task: Partial<TaskStub>) {
             if (task.children) {
                 return [task].concat(task.children);
             }

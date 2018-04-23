@@ -1,6 +1,9 @@
 <template>
+    <div v-if="projects.error">
+        <h3 class="ui red header">Ocorreu um erro tentando acessar o servidor</h3>
+    </div>
     <!-- Tabela de projetos -->
-    <table class="ui single line selectable celled table">
+    <table v-else class="ui single line selectable celled table">
         <thead class="hidden on mobile">
             <tr>
                 <th>Nome</th>

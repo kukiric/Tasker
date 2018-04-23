@@ -1,71 +1,71 @@
 export interface ProjectStub {
-    id?: number;
-    name?: string;
-    due_date?: Date;
-    status?: string;
+    id: number;
+    name: string;
+    due_date: Date;
+    status: string;
     manager_id?: number;
-    manager?: UserStub;
-    versions?: VersionStub;
-    tasks?: TaskStub[];
-    users?: UserStub[];
-    tags?: TagStub[];
+    manager?: Partial<UserStub>;
+    versions?: Partial<VersionStub>;
+    tasks?: Partial<TaskStub>[];
+    users?: Partial<UserStub>[];
+    tags?: Partial<TagStub>[];
     created_at?: string;
     updated_at?: string;
 }
 
 export interface RoleStub {
-    id?: number;
-    name?: string;
+    id: number;
+    name: string;
 }
 
 export interface TagStub {
-    id?: number;
-    name?: string;
+    id: number;
+    name: string;
 }
 
 export interface TaskStub {
-    id?: number;
-    description?: string;
-    due_date?: Date;
-    estimate_work_hour?: number;
-    type?: TaskType;
-    status?: TaskStatus;
-    progress?: number;
+    id: number;
+    description: string;
+    due_date: Date;
+    estimate_work_hour: number;
+    type: TaskType;
+    status: TaskStatus;
+    progress: number;
     project_id?: number;
     parent_id?: number;
     version_id?: number;
-    project?: ProjectStub;
-    parent?: TaskStub;
-    children?: TaskStub[];
-    version?: VersionStub;
-    work_items?: WorkStub[];
-    users?: UserStub[];
+    project?: Partial<ProjectStub>;
+    parent?: Partial<TaskStub>;
+    children?: Partial<TaskStub>[];
+    version?: Partial<VersionStub>;
+    work_items?: Partial<WorkStub>[];
+    users?: Partial<UserStub>[];
 }
 
 export interface UserStub {
-    id?: number;
-    username?: string;
-    email?: string;
-    password?: string;
-    fullname?: string;
+    id: number;
+    username: string;
+    email: string;
+    password: string;
+    fullname: string;
     role_id?: number;
     work_items?: WorkStub[];
     projects?: ProjectStub[];
     tasks?: TaskStub[];
-    role?: RoleStub;
+    role?: Partial<RoleStub>;
     created_at?: string;
     updated_at?: string;
 }
 
 export interface VersionStub {
-    id?: number;
-    name?: string;
-    type?: string;
+    id: number;
+    name: string;
+    type: string;
 }
 
 export interface WorkStub {
-    id?: number;
-    hours?: number;
+    id: number;
+    hours: number;
     start_time?: Date;
     end_time?: Date;
     task_id?: number;

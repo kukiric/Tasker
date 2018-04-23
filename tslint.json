@@ -16,6 +16,7 @@
         "arrow-parens": false,
         "prefer-const": false,
         "no-console": false,
+        "array-type": false,
         "one-line": false,
         "forin": false
     },

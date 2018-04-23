@@ -3,7 +3,7 @@
     <div v-else>
         <!-- Barra lateral -->
         <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">
-            <sui-button class="left attached side button" icon="bars" @click="showSidebar = !showSidebar"/>
+            <sui-button class="left attached side button" color="blue" icon="users" @click="showSidebar = !showSidebar"/>
             <div class="item">
                 <h1 class="ui header">Membros</h1>
                 <div class="ui middle aligned relaxed list" v-if="project">
@@ -29,8 +29,8 @@
                 </sui-dropdown>
             </div>
         </sui-sidebar>
-        <div class="ui raised attached segment">
-            <!-- Cabeçalho da página -->
+        <!-- Cabeçalho da página -->
+        <div class="ui sticky raised attached segment">
             <h1 class="ui header">
                 <i class="teal open folder icon"></i>
                 <div v-if="project" class="content">

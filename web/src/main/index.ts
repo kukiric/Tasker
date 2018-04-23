@@ -53,13 +53,7 @@ import SuiVue from "semantic-ui-vue";
 Vue.use(SuiVue);
 
 async function loadProjects(vue: Vue) {
-    let userId = localStorage.getItem("user-id");
-    if (userId) {
-        let req = await vue.http.get(`/api/projects?include=manager,users`);
-        if (req.data) {
-            vue.$store.commit("setAllProjects", req.data);
-        }
-    }
+
 }
 
 async function loadUser(vue: Vue) {
