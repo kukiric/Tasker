@@ -3,6 +3,11 @@ import utils from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
+    data() {
+        return {
+            editMode: false
+        };
+    },
     props: {
         task: Object,
         isFirst: Boolean
