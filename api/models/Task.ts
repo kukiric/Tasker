@@ -33,7 +33,7 @@ export default class Task extends Model implements TaskStub {
 
     public static validator = {
         id: Joi.forbidden(),
-        description: Joi.string().required().example("Tarefa Exemplo"),
+        title: Joi.string().required().example("Tarefa Exemplo"),
         due_date: Joi.date().optional().example("2018-06-30"),
         estimate_work_hour: Joi.number().optional().example(16),
         type: Joi.string().only(Task.validTypes).required().example("Funcionalidade"),
@@ -41,7 +41,12 @@ export default class Task extends Model implements TaskStub {
         progress: Joi.number().optional().example(0.25),
         project_id: Joi.number().forbidden(),
         parent_id: Joi.number().optional(),
-        version_id: Joi.number().optional()
+        version_id: Joi.number().optional(),
+        description: Joi.string()
+            .max(16380)
+            .required()
+            .example("Descrição da tarefa")
+            .description("Accepts GitHub Flavored Markdown - See https://github.github.com/gfm/")
     };
 
     public static get relationMappings(): RelationMappings {
