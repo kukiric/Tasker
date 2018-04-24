@@ -14,7 +14,7 @@
             </tr>
         </thead>
         <tbody>
-            <router-link :to="{ name: 'ProjectView', params: { projectId: project.id } }"
+            <router-link :to="{ name: 'Project', params: { projectId: project.id } }"
                     v-for="project in projects" :key="project.id"
                     tag="tr" :class="{ negative: isLate(project), positive: isDone(project) }">
                 <td>{{ project.name }}</td>
@@ -27,4 +27,4 @@
         </tbody>
     </table>
 </template>
-<script src="@scripts/ProjectTable.ts" lang="ts"></script>
+<script src="./ProjectTable.ts" lang="ts"></script>

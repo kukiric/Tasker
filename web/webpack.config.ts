@@ -1,3 +1,4 @@
+import * as CopyWebpackPlugin from "copy-webpack-plugin";
 import * as WebpackDevServer from "webpack-dev-server";
 import * as Webpack from "webpack";
 import * as path from "path";
@@ -5,6 +6,10 @@ import "dotenv/config";
 
 function rel(relativePath: string) {
     return path.join(__dirname, relativePath);
+}
+
+function out(relativePath: string) {
+    return path.join(rel("../dist"), relativePath);
 }
 
 const devServerConfig: WebpackDevServer.Configuration = {
@@ -22,7 +27,7 @@ const config: Webpack.Configuration = {
     },
     output: {
         publicPath: "dist/",
-        path: rel("public/dist/"),
+        path: out("public/dist/"),
         filename: "[name].js"
     },
     module: {
@@ -39,7 +44,7 @@ const config: Webpack.Configuration = {
             "vue$": "vue/dist/vue.esm.js",
             "@main": rel("src/main/"),
             "@scripts": rel("src/scripts/"),
-            "@components": rel("src/components/"),
+            "@": rel("src/components/"),
             "@css": rel("src/css/"),
             "api": rel("../api")
         },
@@ -48,7 +53,10 @@ const config: Webpack.Configuration = {
     plugins: [
         new Webpack.DefinePlugin({
             BASE_URL: JSON.stringify(process.env.BASE_URL)
-        })
+        }),
+        new CopyWebpackPlugin([
+            { from: rel("public/index.html"), to: out("public/public.html") }
+        ])
     ],
     devServer: devServerConfig,
     devtool: "cheap-module-source-map"

@@ -1,10 +1,10 @@
 import { ProjectStub, TaskStub, TaskStatus } from "api/stubs";
-import TaskCard from "@components/TaskCard.vue";
+import ProjectTaskCard from "@/project/ProjectTaskCard.vue";
 import utils from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
-    components: { TaskCard },
+    components: { ProjectTaskCard },
     props: {
         project: Object
     },

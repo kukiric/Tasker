@@ -53,4 +53,4 @@
         </div>
     </div>
 </template>
-<script src="@scripts/ProjectView.ts" lang="ts"></script>
+<script src="./ProjectPage.ts" lang="ts"></script>

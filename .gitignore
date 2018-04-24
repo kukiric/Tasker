@@ -2,8 +2,7 @@
 node_modules/
 
 # Javascript compilado
-compiled/
-web/public/dist
+dist/
 
 # Configurações locais
 .env

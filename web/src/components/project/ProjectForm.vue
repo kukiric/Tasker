@@ -19,4 +19,4 @@
         </sui-modal-actions>
     </sui-modal>
 </template>
-<script src="@scripts/ProjectForm.ts" lang="ts"></script>
+<script src="./ProjectForm.ts" lang="ts"></script>

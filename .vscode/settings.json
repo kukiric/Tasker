@@ -1,4 +1,7 @@
 {
+    "files.associations": {
+        "*.vue": "html"
+    },
     "files.exclude": {
         "**/node_modules": true
     }

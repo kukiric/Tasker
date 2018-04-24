@@ -2,10 +2,10 @@
   "name": "tasker",
   "version": "1.0.0",
   "description": "",
-  "main": "compiled/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p . && webpack --config web/webpack.config.ts --devtool source-map --optimize-minimize --mode production --progress",
-    "start": "node compiled/index.js",
+    "start": "node dist/index.js",
     "migrate:latest": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
     "dev": "cross-env NODE_ENV=development ts-node --type-check index.js"
@@ -15,6 +15,7 @@
   "dependencies": {
     "@types/bcrypt": "^1.0.0",
     "@types/boom": "^7.2.0",
+    "@types/copy-webpack-plugin": "^4.4.1",
     "@types/dotenv": "^4.0.3",
     "@types/h2o2": "^5.4.6",
     "@types/hapi": "^17.0.10",
@@ -29,6 +30,7 @@
     "axios": "^0.18.0",
     "bcrypt": "^1.0.3",
     "boom": "^7.2.0",
+    "copy-webpack-plugin": "^4.5.1",
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.11",
     "dotenv": "^5.0.1",

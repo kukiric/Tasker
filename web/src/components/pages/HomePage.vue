@@ -33,4 +33,4 @@
         </div>
     </div>
 </template>
-<script src="@scripts/Home.ts" lang="ts"></script>
+<script src="./HomePage.ts" lang="ts"></script>

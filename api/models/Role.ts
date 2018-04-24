@@ -4,7 +4,7 @@ import { Model } from "objection";
 export default class Role extends Model implements RoleStub {
     public static tableName = "role";
     public id!: number;
-    public name?: string;
+    public name!: string;
 }
 
 // Re-definição dos tipos de usuário para uso interno da API

@@ -8,7 +8,7 @@ import * as md5 from "md5";
  */
 export default {
     isLate(project: ProjectStub) {
-        return project.status !== "Concluído" && moment().isAfter(project.due_date, "day");
+        return project.status !== "Concluído" && moment("now").isAfter(project.due_date, "day");
     },
     date(date: string) {
         return moment(date).format("LL");

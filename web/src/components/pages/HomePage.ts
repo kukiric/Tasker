@@ -1,11 +1,11 @@
-import ProjectTable from "@components/ProjectTable.vue";
-import ProjectForm from "@components/ProjectForm.vue";
-import UserTable from "@components/UserTable.vue";
+import ProjectTable from "@/project/ProjectTable.vue";
+import ProjectForm from "@/project/ProjectForm.vue";
+import UserTable from "@/user/UserTable.vue";
 import { UserStub } from "api/stubs";
 import Vue from "vue";
 
 export default Vue.extend({
-    components: { ProjectTable, UserTable, ProjectForm },
+    components: { ProjectTable, ProjectForm, UserTable },
     data() {
         return {
             showProjectModal: false

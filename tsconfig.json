@@ -5,7 +5,7 @@
         "sourceMap": true,
         "allowJs": true,
         "strict": true,
-        "outDir": "compiled/",
+        "outDir": "dist/",
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "suppressImplicitAnyIndexErrors": true,
@@ -14,9 +14,7 @@
     },
     "exclude": [
         "node_modules/**/*",
-        "migrations/**/*",
-        "compiled/**/*",
-        "knexfile.ts",
+        "dist/**/*",
         "web/**/*"
     ]
 }

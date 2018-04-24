@@ -24,4 +24,4 @@
         </tbody>
     </table>
 </template>
-<script src="@scripts/UserTable.ts" lang="ts"></script>
+<script src="./UserTable.ts" lang="ts"></script>

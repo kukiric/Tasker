@@ -36,4 +36,4 @@
             </div>
         </div>
 </template>
-<script src="@scripts/Login.ts" lang="ts"></script>
+<script src="./LoginPage.ts" lang="ts"></script>

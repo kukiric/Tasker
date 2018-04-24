@@ -4,4 +4,4 @@
         <router-view></router-view>
     </div>
 </template>
-<script src="@scripts/Layout.ts" lang="ts"></script>
+<script src="./Layout.ts" lang="ts"></script>

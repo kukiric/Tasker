@@ -1,11 +1,11 @@
-import ProjectContents from "@components/ProjectContents.vue";
 import { ProjectStub, UserStub } from "api/stubs";
-import NotFound from "@components/NotFound.vue";
+import ProjectOverview from "@/project/ProjectOverview.vue";
+import ErrorPage from "@/pages/ErrorPage.vue";
 import utils from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
-    components: { ProjectContents, NotFound },
+    components: { ProjectOverview, ErrorPage },
     data() {
         return {
            showSidebar: false

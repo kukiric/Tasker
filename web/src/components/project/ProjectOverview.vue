@@ -13,4 +13,4 @@
         </sui-card-group>
     </div>
 </template>
-<script src="@scripts/ProjectContents.ts" lang="ts"></script>
+<script src="./ProjectOverview.ts" lang="ts"></script>

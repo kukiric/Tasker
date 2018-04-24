@@ -65,4 +65,4 @@
         </sui-card-content>
     </sui-card>
 </template>
-<script src="@scripts/TaskCard.ts" lang="ts"></script>
+<script src="./ProjectTaskCard.ts" lang="ts"></script>
