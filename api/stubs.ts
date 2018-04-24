@@ -25,15 +25,16 @@ export interface TagStub {
 
 export interface TaskStub {
     id: number;
-    description: string;
-    due_date: Date;
-    estimate_work_hour: number;
+    title: string;
+    due_date?: Date;
+    estimate_work_hour?: number;
     type: TaskType;
     status: TaskStatus;
     progress: number;
     project_id?: number;
     parent_id?: number;
     version_id?: number;
+    description: string;
     project?: Partial<ProjectStub>;
     parent?: Partial<TaskStub>;
     children?: Partial<TaskStub>[];

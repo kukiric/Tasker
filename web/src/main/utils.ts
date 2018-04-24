@@ -1,6 +1,7 @@
+import { ProjectStub } from "api/stubs";
+import * as marked from "marked";
 import * as moment from "moment";
 import * as md5 from "md5";
-import { ProjectStub } from "api/stubs";
 
 /**
  * Métodos utilitários usados em todo o projeto
@@ -17,5 +18,8 @@ export default {
     },
     gravatar(email: string) {
         return `https://www.gravatar.com/avatar/${md5(email)}?s=32&d=identicon`;
+    },
+    md(source: string) {
+        return marked(source, { gfm: true, sanitize: true });
     }
 };

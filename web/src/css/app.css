@@ -93,6 +93,10 @@ body {
     min-width: 0;
 }
 
+.justified.text {
+    text-justify: distribute;
+}
+
 @media screen and (max-width: 1199px) {
     .ui.container {
         margin: auto 2em !important;

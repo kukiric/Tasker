@@ -11,15 +11,16 @@ export default class Task extends Model implements TaskStub {
     public static tableName = "task";
 
     public id!: number;
-    public description!: string;
+    public title!: string;
     public due_date?: Date;
     public estimate_work_hour?: number;
     public type!: TaskType;
     public status!: TaskStatus;
-    public progress?: number;
+    public progress!: number;
     public project_id?: number;
     public parent_id?: number;
     public version_id?: number;
+    public description!: string;
     public project?: Project;
     public parent?: Task;
     public children?: Task[];
