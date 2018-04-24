@@ -55,7 +55,7 @@ const config: Webpack.Configuration = {
             BASE_URL: JSON.stringify(process.env.BASE_URL)
         }),
         new CopyWebpackPlugin([
-            { from: rel("public/index.html"), to: out("public/public.html") }
+            { from: rel("public/index.html"), to: out("public/index.html") }
         ])
     ],
     devServer: devServerConfig,

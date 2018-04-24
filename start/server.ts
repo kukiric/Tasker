@@ -1,6 +1,7 @@
 import { Server as HapiServer, Request, ResponseToolkit, Lifecycle } from "hapi";
 import apiPlugin from "api/plugin";
 import * as Boom from "boom";
+import * as path from "path";
 
 // Trata erros internos genéricos
 function handleInternalError(request: Request, h: ResponseToolkit, err: any): Lifecycle.ReturnValue {
@@ -67,6 +68,7 @@ export async function startServer(webpackHook?: (server: HapiServer) => void) {
         await webpackHook(server);
     }
     else {
+        const staticPath = path.resolve(__dirname, "../public");
         console.log("Registrando caminho para arquivos estáticos...");
         await server.register({ plugin: require("inert"), once: true });
         server.route({
@@ -74,10 +76,11 @@ export async function startServer(webpackHook?: (server: HapiServer) => void) {
             path: "/{path*}",
             handler: {
                 directory: {
-                    path: "web/public"
+                    path: staticPath
                 }
             }
         });
+        console.log("Servindo arquivos estáticos a partir de: " + staticPath);
     }
     console.log("Iniciando a aplicação...");
     await server.start();
