@@ -20,10 +20,10 @@ export default Vue.extend({
             await this.g.dispatch("fetchProject", this.projectId);
         },
         async addUser(user: UserStub) {
-            await this.g.dispatch("sendUser", user);
+            await this.g.dispatch("addUser", user);
         },
         async removeUser(user: UserStub) {
-            await this.g.dispatch("deleteUser", user);
+            await this.g.dispatch("removeUser", user);
         }
     },
     computed: {

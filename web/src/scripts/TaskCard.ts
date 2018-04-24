@@ -1,4 +1,4 @@
-import { ProjectStub, TaskStub, TaskStatus } from "api/stubs";
+import { ProjectStub, TaskStub, TaskStatus, UserStub } from "api/stubs";
 import utils from "@main/utils";
 import Vue from "vue";
 
@@ -11,6 +11,21 @@ export default Vue.extend({
     props: {
         task: Object,
         isFirst: Boolean
+    } as {
+        task: () => TaskStub,
+        isFirst: () => boolean
+    },
+    computed: {
+        usersNotInTask(): Partial<UserStub>[] {
+            let project = this.g.state.currentProject;
+            if (project && project.users) {
+                let users = project.users;
+                return users.filter(u1 => {
+                    return this.task.users!.some(u2 => u1.id === u2.id) === false;
+                });
+            }
+            return [];
+        }
     },
     methods: {
         ...utils,
@@ -33,6 +48,12 @@ export default Vue.extend({
                 case TaskStatus.DONE: return "green check";
                 default: return "";
             }
+        },
+        addUser(user: UserStub) {
+            this.g.dispatch("addUserToTask", { task: this.task, user: user });
+        },
+        removeUser(user: UserStub) {
+            this.g.dispatch("removeUserFromTask", { task: this.task, user: user });
         }
     }
 });

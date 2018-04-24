@@ -116,7 +116,15 @@ export default abstract class BaseController {
      * Cria um relacionamento entre esse objeto (id) e outro (otherId)
      */
     protected async createRelation(id: any, other: string, otherId: any, h: ResponseToolkit) {
-        let self = await this.modelClass.query().findById(id);
+        return this.createRelationThrough(id, other, otherId, this.modelClass, h);
+    }
+
+    /**
+     * Cria um relacionamento entre esse objeto (id) e outro (otherId), através de um modelo específico
+     */
+    // tslint:disable-next-line:max-line-length
+    protected async createRelationThrough(id: any, other: string, otherId: any, model: typeof Model, h: ResponseToolkit) {
+        let self = await model.query().findById(id);
         if (self) {
             let relation = await self.$relatedQuery(other).relate(otherId);
             return h.response(relation).code(201);
@@ -128,7 +136,15 @@ export default abstract class BaseController {
      * Remove o relacionamento entre esse objeto (id) e outro (otherId)
      */
     protected async deleteRelation(id: any, entity: string, relation: string, otherId: any, h: ResponseToolkit) {
-        let self = await this.modelClass.query().findById(id);
+        return this.deleteRelationThrough(id, entity, relation, otherId, this.modelClass, h);
+    }
+
+    /**
+     * Remove o relacionamento entre esse objeto (id) e outro (otherId), através de um modelo específico
+     */
+    // tslint:disable-next-line:max-line-length
+    protected async deleteRelationThrough(id: any, entity: string, relation: string, otherId: any, model: typeof Model, h: ResponseToolkit) {
+        let self = await model.query().findById(id);
         if (self) {
             let deleted = await self.$relatedQuery(relation).unrelate().where({ id: otherId });
             if (deleted) {

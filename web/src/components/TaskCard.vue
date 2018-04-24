@@ -26,17 +26,32 @@
         </sui-card-content>
         <sui-card-content extra>
             <!-- Usuários -->
-            <div v-if="task.users.length > 0">
-                <br>
+            <div v-if="editMode">
+                <a v-for="user in task.users" :key="user.id" @click="removeUser(user)">
+                    <sui-image avatar :src="gravatar(user.email)" :title="'Remover ' + user.fullname"/>
+                </a>
+            </div>
+            <div v-else-if="task.users.length > 0">
                 <sui-image v-for="user in task.users" :key="user.id" avatar :src="gravatar(user.email)" :title="user.fullname"/>
             </div>
+            <!-- Botão para adicionar usuários -->
+            <sui-dropdown v-if="editMode" icon="plus" class="basic fluid button" :class="{ disabled: usersNotInTask.length == 0 }">
+                Adicionar Usuário
+                <sui-dropdown-menu>
+                    <sui-dropdown-item v-for="user in usersNotInTask" :key="user.id" @click="addUser(user)">
+                        <sui-image avatar :src="gravatar(user.email)"/>
+                        {{ user.fullname }}
+                    </sui-dropdown-item>
+                </sui-dropdown-menu>
+            </sui-dropdown>
+            <br>
             <!-- Itens de trabalho (horas) -->
             <sui-list v-if="task.work_items && task.work_items.length > 0">
                 <sui-list-item v-for="(work, index) in task.work_items" :key="work.id">
                     <sui-icon disabled color="blue" name="right arrow"/>Trabalho {{ index + 1 }}: {{ work.hours }} Horas
                 </sui-list-item>
             </sui-list>
-            <!-- Percentagem concluída -->
+            <!-- Porcentagem concluída -->
             <input v-if="editMode" style="width: 100%" type="range" min="0" max="1" step="any" v-model="task.progress">
             <sui-progress size="small" :color="getColorForStatus(task)" :percent="task.progress * 100" class="project"/>
         </sui-card-content>

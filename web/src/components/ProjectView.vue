@@ -5,6 +5,7 @@
         <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">
             <sui-button class="left attached side button" color="blue" icon="users" @click="showSidebar = !showSidebar"/>
             <div class="item">
+                <!-- Lista de membros do projeto -->
                 <h1 class="ui header">Membros</h1>
                 <div class="ui middle aligned relaxed list" v-if="project">
                     <div class="item"  v-for="user in project.users" :key="user.id">
@@ -18,6 +19,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- Botão de adicionar usuários no projeto -->
                 <sui-dropdown v-if="g.getters.userIsManager" fluid selection class="green button">
                     Adicionar
                     <sui-dropdown-menu>

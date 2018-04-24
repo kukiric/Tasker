@@ -63,6 +63,16 @@ export default function createStore(http: AxiosInstance) {
                     });
                 }
             },
+            addUserToTask(state, { task, user }: { task: TaskStub, user: UserStub }) {
+                if (task.users) {
+                    task.users.push(user);
+                }
+            },
+            removeUserFromTask(state, { task, user }: { task: TaskStub, user: UserStub }) {
+                if (task.users) {
+                    task.users = task.users.filter(u => u.id !== user.id);
+                }
+            },
             setAllUsers(state, users: UserStub[]) {
                 state.allUsers = users.sort((a, b) => {
                     return a.fullname! > b.fullname! ? 1 : -1;
@@ -88,25 +98,53 @@ export default function createStore(http: AxiosInstance) {
                 }
             },
             async addUser(g, user: UserStub) {
-                if (g.state.currentProject) {
-                    let req = await http.post(`/api/projects/${g.state.currentProject.id}/users`, { userId: user.id });
+                let project = g.state.currentProject;
+                if (project) {
+                    let req = await http.post(`/api/projects/${project.id}/users`, { userId: user.id });
                     g.commit("addUser", user);
                 }
             },
             async removeUser(g, user: UserStub) {
-                if (g.state.currentProject) {
-                    let req = await http.delete(`/api/projects/${g.state.currentProject.id}/users/${user.id}`);
+                let project = g.state.currentProject;
+                if (project) {
+                    let req = await http.delete(`/api/projects/${project.id}/users/${user.id}`);
                     g.commit("removeUser", user);
+                    // Também remove o usuário de cada tarefa do projeto
+                    // FIXME: operação custosa (fazer no servidor em versão futura)
+                    if (project.tasks) {
+                        for (let task of project.tasks) {
+                            if (task.users && task.users.some(u => u.id === user.id)) {
+                                g.dispatch("removeUserFromTask", { task, user });
+                            }
+                        }
+                    }
+                }
+            },
+            async addUserToTask(g, { task, user }: { task: TaskStub, user: UserStub }) {
+                let project = g.state.currentProject;
+                if (project && task) {
+                    let req = await http.post(`/api/projects/${project.id}/tasks/${task.id}/users`, {
+                        userId: user.id
+                    });
+                    g.commit("addUserToTask", { task, user });
+                }
+            },
+            async removeUserFromTask(g, { task, user }: { task: TaskStub, user: UserStub }) {
+                let project = g.state.currentProject;
+                if (project && task) {
+                    let req = await http.delete(`/api/projects/${project.id}/tasks/${task.id}/users/${user.id}`);
+                    g.commit("removeUserFromTask", { task, user });
                 }
             },
             async createTaskGroup(g) {
                 if (g.state.currentProject) {
                     let req = await http.post(`/api/projects/${g.state.currentProject.id}/tasks`, {
-                        description: "Nova tarefa",
+                        title: "Nova tarefa",
                         estimate_work_hour: 10,
                         progress: Math.random(),
                         status: "Nova",
                         type: "Funcionalidade",
+                        description: "Descrição",
                         due_date: new Date()
                     });
                     g.dispatch("fetchProject", g.state.currentProject.id);

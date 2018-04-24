@@ -156,6 +156,24 @@ export default class ProjectController extends BaseController {
                 }
             },
 
+            "/projects/{projectId}/tasks/{taskId}/users": {
+                roles: [ADMIN, MANAGER],
+                paramsValidator: this.multiIdValidator("projectId", "taskId"),
+                payloadValidator: this.multiIdValidator("userId"),
+                handler: async ({ projectId, taskId, userId }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    if (await this.exists(taskId, Task) === false) {
+                        return this.childNotFound("Task", projectId, taskId);
+                    }
+                    if (await this.exists(userId, User) === false) {
+                        return this.childNotFound("User", projectId, userId);
+                    }
+                    return this.createRelationThrough(taskId, "users", userId, Task, h);
+                }
+            },
+
             "/projects/{projectId}/tasks/{taskId}/work_items": {
                 roles: [ADMIN, MANAGER],
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
@@ -290,6 +308,20 @@ export default class ProjectController extends BaseController {
                         return h.response().code(204);
                     }
                     return this.childNotFound("Version", projectId, versionId);
+                }
+            },
+
+            "/projects/{projectId}/tasks/{taskId}/users/{userId}": {
+                roles: [ADMIN, MANAGER],
+                paramsValidator: this.multiIdValidator("projectId", "taskId", "userId"),
+                handler: async ({ projectId, taskId, userId }, h) => {
+                    if (await this.exists(projectId) === false) {
+                        return this.notFound(projectId);
+                    }
+                    if (await this.exists(taskId, Task) === false) {
+                        return this.childNotFound("Task", projectId, taskId);
+                    }
+                    return this.deleteRelationThrough(taskId, "User", "users", userId, Task, h);
                 }
             },
 
