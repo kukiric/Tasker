@@ -6,7 +6,7 @@ let boot = async() => {
     startServer();
 };
 
-// Inclui o hook de modo de desenvolvimento se apropriado
+// Inclui o hook de modo de desenvolvimento
 if (process.env.NODE_ENV === "development") {
     boot = async() => {
         startServer(require("start/webpack"));
