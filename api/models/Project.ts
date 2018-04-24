@@ -1,5 +1,5 @@
 import { Model, RelationMappings, Pojo } from "objection";
-import { ProjectStub } from "api/stubs";
+import { ProjectStub, ProjectStatus } from "api/stubs";
 import Version from "api/models/Version";
 import Task from "api/models/Task";
 import User from "api/models/User";
@@ -24,7 +24,7 @@ export default class Project extends Model implements ProjectStub {
     public created_at!: string;
     public updated_at!: string;
 
-    public static validStatuses = ["Novo", "Em andamento", "Concluído"];
+    public static validStatuses = Object.values(ProjectStatus);
 
     public static userValidator = {
         id: Joi.number().required().example(1)

@@ -74,6 +74,12 @@ export interface WorkStub {
 }
 
 // Valores do banco de dados
+export enum ProjectStatus {
+    NEW = "Novo",
+    IN_PROGRESS = "Em andamento",
+    DONE = "Concluído"
+}
+
 export enum TaskType {
     BUG = "Bug",
     FEATURE = "Funcionalidade"
@@ -82,8 +88,8 @@ export enum TaskType {
 export enum TaskStatus {
     NEW = "Nova",
     ASSIGNED = "Atribuída",
-    IN_PROGRESS = "Em Desenvolvimento",
-    TESTING = "Requer Teste",
+    IN_PROGRESS = "Em desenvolvimento",
+    TESTING = "Requer teste",
     DONE = "Concluída"
 }
 
