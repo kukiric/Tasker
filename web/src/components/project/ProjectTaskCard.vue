@@ -44,7 +44,6 @@
                     </sui-dropdown-item>
                 </sui-dropdown-menu>
             </sui-dropdown>
-            <br>
             <!-- Itens de trabalho (horas) -->
             <sui-list v-if="task.work_items && task.work_items.length > 0">
                 <sui-list-item v-for="(work, index) in task.work_items" :key="work.id">
