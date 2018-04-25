@@ -12,7 +12,7 @@ export default class UserController extends BaseController {
                 roles: EVERYONE,
                 queryValidator: this.includeValidator(User.relationMappings),
                 handler: async ({ include }) => {
-                    return await User.query().eager(this.makeEager(include));
+                    return await User.query().eager(this.makeEagerString(include));
                 }
             },
 
@@ -21,7 +21,7 @@ export default class UserController extends BaseController {
                 paramsValidator: this.idValidator("userId"),
                 queryValidator: this.includeValidator(User.relationMappings),
                 handler: async ({ userId, include }) => {
-                    let user = await User.query().eager(this.makeEager(include)).findById(userId);
+                    let user = await User.query().eager(this.makeEagerString(include)).findById(userId);
                     return user ? user : this.notFound(userId);
                 }
             },
@@ -31,7 +31,7 @@ export default class UserController extends BaseController {
                 paramsValidator: this.idValidator("userId"),
                 queryValidator: this.includeValidator(User.relationMappings),
                 handler: async ({ userId, include }) => {
-                    let user = await User.query().eager(this.makeEager(include)).findById(userId);
+                    let user = await User.query().eager(this.makeEagerString(include)).findById(userId);
                     return user ? user.projects : this.notFound(userId);
                 }
             },
@@ -41,7 +41,7 @@ export default class UserController extends BaseController {
                 paramsValidator: this.idValidator("userId"),
                 queryValidator: this.includeValidator(User.relationMappings),
                 handler: async ({ userId, include }) => {
-                    let user = await User.query().eager(this.makeEager(include)).findById(userId);
+                    let user = await User.query().eager(this.makeEagerString(include)).findById(userId);
                     return user ? user.tasks : this.notFound(userId);
                 }
             },
@@ -50,7 +50,7 @@ export default class UserController extends BaseController {
                 paramsValidator: this.idValidator("userId"),
                 queryValidator: this.includeValidator(User.relationMappings),
                 handler: async ({ userId, include }) => {
-                    let user = await User.query().eager(this.makeEager(include)).findById(userId);
+                    let user = await User.query().eager(this.makeEagerString(include)).findById(userId);
                     return user ? user.work_items : this.notFound(userId);
                 }
             }

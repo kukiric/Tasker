@@ -18,7 +18,7 @@ export default class ProjectController extends BaseController {
                 roles: EVERYONE,
                 queryValidator: this.includeValidator(Project.relationMappings),
                 handler: async ({ include }) => {
-                    return await Project.query().eager(this.makeEager(include));
+                    return await this.eagerQuery(include);
                 }
             },
 
@@ -27,7 +27,7 @@ export default class ProjectController extends BaseController {
                 paramsValidator: this.idValidator("projectId"),
                 queryValidator: this.includeValidator(Project.relationMappings),
                 handler: async ({ projectId, include }) => {
-                    let project = await Project.query().eager(this.makeEager(include)).findById(projectId);
+                    let project = await this.eagerQuery(include).findById(projectId);
                     return project ? project : this.notFound(projectId);
                 }
             },
@@ -56,7 +56,7 @@ export default class ProjectController extends BaseController {
                         return this.notFound(projectId);
                     }
                     return await Task.query()
-                        .eager(this.makeEager(include))
+                        .eager(this.makeEagerString(include))
                         .where({ project_id: projectId });
                 }
             },

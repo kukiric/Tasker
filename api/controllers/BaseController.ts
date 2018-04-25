@@ -182,19 +182,21 @@ export default abstract class BaseController {
 
     /**
      * Cria um validador que permite somente buscar as relações que existem no modelo-alvo
+     * BUG: A validação não é recursiva, permitindo qualquer valor entre colchetes
      */
     protected includeValidator(relations: RelationMappings) {
         // Monta a expressão regular
         // Exemplo: para uma entidade com as relações a, b e c:
-        // /^((a|b|c)(\[\w+\])?(,|$))+(?!.)/
-        // Nota: as relações recursivas (filhos, filhos de filhos, etc) não são validadas
+        // /^((a|b|c)(\[.+\])?(,|$))+(?!.)/
         let relationNameList = Object.keys(relations).join("|");
-        let relationExamples = Object.keys(relations).join(",");
-        let regex = new RegExp(`((${relationNameList})(\[\w+\])?(,|$))+(?!.)/`);
+        let relationExamples = Object.keys(relations).join(", ");
+        let regex = new RegExp(`^((${relationNameList})(\\[.+\\])?(,|$))+(?!.)`);
+        console.log(regex);
         return {
-            include: Joi.string().regex(regex.compile()).optional().example(relationExamples)
+            include: Joi.string().regex(regex).optional().example("a[b],c[d[e,f,g]]")
                 .description("Comma separated list of relations to eager-load, "
-                           + "with children relations in brackets")
+                           + "with children relations in brackets.\n\n"
+                           + "Allowed relations for this model: " + relationExamples)
         };
     }
 
@@ -203,16 +205,35 @@ export default abstract class BaseController {
      * Exemplo: "a[b],c" => [a.[b],c]
      * @see https://vincit.github.io/objection.js/#eager-loading
      */
-    protected makeEager(include: string) {
+    protected makeEagerString(include?: string) {
         if (include) {
-            let withSpaces = include.replace(/,/g, " ");
-            let andDots = withSpaces.replace(/\[/g, ".[");
-            let inBrackets = `[${andDots}]`;
-            return inBrackets;
+            // Troca as vírgulas do parâmetro por espaços
+            include = include.replace(/,/g, " ");
+            // Insere pontos se necessário
+            include = include.replace(/\[/g, ".[");
+            // Envolve toda a expressão em colchetes
+            include = `[${include}]`;
+            // Remove as vírgulas no final para evitar erros
+            include = include.replace(/,+$/, "");
+            // Retorna a string transformada
+            return include;
         }
         return "";
     }
 
+    /**
+     * Gera uma eager query a partir de um modelo com includes automáticos
+     *
+     * BUG: a função permite carregar relações com profundidade arbitrária,
+     * permitindo realizar DDOS no servidor
+     */
+    protected eagerQuery(include: string, modelClass = this.modelClass) {
+        return modelClass.query().eager(this.makeEagerString(include));
+    }
+
+    /**
+     * Executa um trecho de código dentro de uma transação com o banco de dados
+     */
     protected async inTransaction<T>(callback: (trx: any) => Promise<T>) {
         return await transaction(this.modelClass.knex(), callback);
     }
