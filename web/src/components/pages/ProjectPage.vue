@@ -39,7 +39,7 @@
                     <div>{{ project.name }}</div>
                     <div class="sub header" :class="{ red: isLate(project) }">
                         <i v-if="isLate(project)" class="clock icon"></i>
-                        <span>{{ date(project.created_at) }} - {{ date(project.due_date) }}</span>
+                        <span>{{ project.status }}: {{ date(project.created_at) }} - {{ date(project.due_date) }}</span>
                     </div>
                 </div>
                 <div v-else class="content">Carregando...</div>

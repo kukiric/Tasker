@@ -56,7 +56,7 @@
         </sui-card-content>
         <!-- Ações de edição -->
         <sui-card-content extra v-if="editMode">
-            <div style="display: flex; flex-direction: row; justify-content: space-between; with: 100%">
+            <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%">
                 <sui-button color="red" icon="trash"></sui-button>
                 <sui-button color="grey" basic fluid icon="cancel" @click="editMode = false">Cancelar</sui-button>
                 <sui-button color="green" icon="check"></sui-button>

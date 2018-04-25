@@ -1,5 +1,6 @@
 import VueRouter from "vue-router";
 import Layout from "@/Layout.vue";
+import * as moment from "moment";
 import Vue from "vue";
 
 // Carrega as páginas dinâmicamente para o Webpack separar os bundles
@@ -37,28 +38,10 @@ router.beforeEach((to, from, next) => {
 // Adiciona o router na aplicação
 Vue.use(VueRouter);
 
-// Adiciona a instância configurada do axios na aplicação
-import axios from "@main/axios";
-Vue.prototype.http = axios;
-Vue.prototype.initUserData = (vue: Vue) => {
-    loadProjects(vue);
-    loadUser(vue);
-    loadAllUsers(vue);
-};
+// Seta a região do moment.js
+moment.locale("pt-br");
 
-// Adiciona o Vuex para gerenciar estados
-import createStore from "@main/store";
-import Vuex from "vuex";
-Vue.use(Vuex);
-
-// Adiciona os components do semantic-ui-vue
-import SuiVue from "semantic-ui-vue";
-Vue.use(SuiVue);
-
-async function loadProjects(vue: Vue) {
-
-}
-
+// Define as funções de carregar dados globais (temp)
 async function loadUser(vue: Vue) {
     let userId = localStorage.getItem("user-id");
     if (userId) {
@@ -75,6 +58,24 @@ async function loadAllUsers(vue: Vue) {
         vue.$store.commit("setAllUsers", req.data);
     }
 }
+
+// Adiciona a instância configurada do axios na aplicação
+import axios from "@main/axios";
+Vue.prototype.http = axios;
+Vue.prototype.initUserData = (vue: Vue) => {
+    loadUser(vue);
+    loadAllUsers(vue);
+};
+
+// Adiciona o Vuex para gerenciar estados
+import createStore from "@main/store";
+import Vuex from "vuex";
+Vue.use(Vuex);
+
+// Adiciona os components do semantic-ui-vue
+import SuiVue from "semantic-ui-vue";
+import { isMoment } from "moment";
+Vue.use(SuiVue);
 
 const store = createStore(axios);
 Vue.prototype.g = store;

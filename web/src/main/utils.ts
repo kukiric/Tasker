@@ -11,7 +11,7 @@ export default {
         return project.status !== "Concluído" && moment("now").isAfter(project.due_date, "day");
     },
     date(date: string) {
-        return moment(date).format("LL");
+        return moment(date).format("L");
     },
     time(timestamp: string) {
         return moment(timestamp).format("LLLL");
