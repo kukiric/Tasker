@@ -85,6 +85,15 @@ body {
     color: lightgray;
 }
 
+.ui.card .text {
+    max-height: 12em;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: justify;
+    text-justify: inter-word;
+    padding-right: 0.5em;
+}
+
 .ui.project.progress {
     margin-bottom: 0.5em;
     overflow: hidden;
