@@ -1,7 +1,7 @@
 <template>
     <div>
         <sui-card-group v-for="task in g.getters.rootTasks" :key="task.id">
-            <TaskCard v-for="(subtask, index) in getTaskTree(task)" :key="subtask.id" :task="subtask" :isFirst="index === 0"/>
+            <ProjectTaskCard v-for="(subtask, index) in getTaskTree(task)" :key="subtask.id" :task="subtask" :isFirst="index === 0"/>
             <sui-card>
                 <sui-button basic primary content="Nova sub-tarefa..." style="height: 100%"/>
             </sui-card>

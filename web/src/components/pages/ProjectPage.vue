@@ -48,7 +48,7 @@
         <!-- Informações do projeto -->
         <div class="project area">
             <div v-if="project">
-                <ProjectContents :project="project"/>
+                <ProjectOverview :project="project"/>
             </div>
         </div>
     </div>
