@@ -52,8 +52,8 @@
                 </sui-list-item>
             </sui-list>
             <!-- Porcentagem concluída -->
-            <input v-if="editMode" style="width: 100%" type="range" min="0" max="1" step="any" v-model="task.progress">
-            <sui-progress size="small" :color="getColorForStatus(task)" :percent="task.progress * 100" class="project"/>
+            <input v-if="editMode" style="width: 100%" type="range" min="0" max="1" step="0.05" v-model="task.progress">
+            <sui-progress :color="getColorForStatus(task)" progress :percent="progress" :class="{ project: true, low: progress <= 15 }"/>
         </sui-card-content>
         <!-- Ações de edição -->
         <sui-card-content extra v-if="editMode">

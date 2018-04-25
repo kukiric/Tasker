@@ -16,6 +16,9 @@ export default Vue.extend({
         isFirst: () => boolean
     },
     computed: {
+        progress(): number {
+            return Math.floor(this.task.progress * 100);
+        },
         usersNotInTask(): Partial<UserStub>[] {
             let project = this.g.state.currentProject;
             if (project && project.users) {
