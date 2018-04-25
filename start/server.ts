@@ -4,7 +4,7 @@ import * as Boom from "boom";
 import * as path from "path";
 
 // Trata erros internos genéricos
-function handleInternalError(request: Request, h: ResponseToolkit, err: any): Lifecycle.ReturnValue {
+function handleInternalError(request: Request, h: ResponseToolkit, err?: Error): Lifecycle.ReturnValue {
     let error = err ? err : request.response as any;
     let statusCode = error.output ? error.output.statusCode : error.statusCode;
     // Erro no banco
@@ -18,6 +18,10 @@ function handleInternalError(request: Request, h: ResponseToolkit, err: any): Li
             }
         });
         return boom;
+    }
+    // Erro criado manualmente
+    else if (error.isBoom && error.code) {
+        return Boom.boomify(error, { statusCode: error.code });
     }
     return h.continue;
 }

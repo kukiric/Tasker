@@ -187,11 +187,10 @@ export default abstract class BaseController {
     protected includeValidator(relations: RelationMappings) {
         // Monta a expressão regular
         // Exemplo: para uma entidade com as relações a, b e c:
-        // /^((a|b|c)(\[.+\])?(,|$))+(?!.)/
+        // /^((a|b|c)(\[[\[\]\w,]+\])?(,|$))+(?!.)/
         let relationNameList = Object.keys(relations).join("|");
         let relationExamples = Object.keys(relations).join(", ");
-        let regex = new RegExp(`^((${relationNameList})(\\[.+\\])?(,|$))+(?!.)`);
-        console.log(regex);
+        let regex = new RegExp(`^((${relationNameList})(\\[[\\[\\]\\w,]+\\])?(,|$))+(?!.)`);
         return {
             include: Joi.string().regex(regex).optional().example("a[b],c[d[e,f,g]]")
                 .description("Comma separated list of relations to eager-load, "
@@ -223,11 +222,33 @@ export default abstract class BaseController {
 
     /**
      * Gera uma eager query a partir de um modelo com includes automáticos
-     *
-     * BUG: a função permite carregar relações com profundidade arbitrária,
-     * permitindo realizar DDOS no servidor
      */
-    protected eagerQuery(include: string, modelClass = this.modelClass) {
+    protected eagerQuery(include?: string, modelClass = this.modelClass, maxDepth = 3) {
+        // Verifica a profundidade da pilha de operação de inclusão
+        if (include && maxDepth > 0) {
+            // Monta uma pseudo-pilha para contar os colchetes
+            let stackSize = 0;
+            // Monta um array de colchetes para contagem dos mesmos
+            let brackets = include.split("").filter(ch => ch === "[" || ch === "]");
+            // Verifica se a pilha foi estourada por muitas aberturas sucessivas
+            let overflow = brackets.some(b => {
+                if (b === "[") {
+                    ++stackSize;
+                }
+                else {
+                    --stackSize;
+                }
+                return stackSize >= maxDepth;
+            });
+            // Joga o erro para fora se a profundidade máxima for excedida
+            // TODO: tratar em um lugar mais prático (eg. dentro do ciclo de validação do Hapi)
+            if (overflow) {
+                let err = new Error(`Max eager query include depth of ${maxDepth} exceeded!`);
+                Object.assign(err, { code: 400 });
+                throw err;
+            }
+        }
+        // Retorna a expressão transformada para o formado do Objection.js
         return modelClass.query().eager(this.makeEagerString(include));
     }
 
