@@ -32,7 +32,7 @@ export default Vue.extend({
             return "red dont icon";
         },
         async getUsers() {
-            let req = await this.http.get("/api/users?include=role");
+            let req = await this.$http.get("/api/users?include=role");
             let users: UserStub[] = req.data;
             return users || [];
         }

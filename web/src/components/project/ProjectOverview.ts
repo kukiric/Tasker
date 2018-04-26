@@ -1,5 +1,5 @@
 import { ProjectStub, TaskStub, TaskStatus } from "api/stubs";
-import ProjectTaskCard from "@/project/ProjectTaskCard.vue";
+import ProjectTaskCard from "@components/project/ProjectTaskCard.vue";
 import utils from "@main/utils";
 import Vue from "vue";
 
@@ -17,10 +17,10 @@ export default Vue.extend({
             return [];
         },
         createTaskGroup() {
-            this.g.dispatch("createTaskGroup");
+            this.$store.dispatch("createTaskGroup");
         },
         deleteTask(task: TaskStub) {
-            this.g.dispatch("deleteTask", task);
+            this.$store.dispatch("deleteTask", task);
         }
     }
 });

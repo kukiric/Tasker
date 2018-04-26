@@ -20,10 +20,10 @@ export default Vue.extend({
             return Math.floor(this.task.progress * 100);
         },
         usersNotInTask(): Partial<UserStub>[] {
-            let project = this.g.state.currentProject;
+            let project = this.$store.state.currentProject;
             if (project && project.users) {
                 let users = project.users;
-                return users.filter(u1 => {
+                return users.filter((u1: UserStub) => {
                     return this.task.users!.some(u2 => u1.id === u2.id) === false;
                 });
             }
@@ -53,10 +53,10 @@ export default Vue.extend({
             }
         },
         addUser(user: UserStub) {
-            this.g.dispatch("addUserToTask", { task: this.task, user: user });
+            this.$store.dispatch("addUserToTask", { task: this.task, user: user });
         },
         removeUser(user: UserStub) {
-            this.g.dispatch("removeUserFromTask", { task: this.task, user: user });
+            this.$store.dispatch("removeUserFromTask", { task: this.task, user: user });
         }
     }
 });

@@ -1,42 +1,5 @@
-import VueRouter from "vue-router";
-import Layout from "@/Layout.vue";
 import * as moment from "moment";
 import Vue from "vue";
-
-// Carrega as páginas dinâmicamente para o Webpack separar os bundles
-const HomePage = () => import("@/pages/HomePage.vue");
-const ErrorPage = () => import("@/pages/ErrorPage.vue");
-const LoginPage = () => import("@/pages/LoginPage.vue");
-const ProjectPage = () => import("@/pages/ProjectPage.vue");
-
-// Define as rotas da aplicação
-let router = new VueRouter({
-    routes: [
-        { path: "/", name: "Home", component: HomePage },
-        { path: "/login", name: "Login", component: LoginPage },
-        { path: "/projects/:projectId", name: "Project", component: ProjectPage, props: true },
-        { path: "*", name: "Error", component: ErrorPage }
-    ]
-});
-
-// Redireciona o usuário para a página de login se ele não tiver uma token
-router.beforeEach((to, from, next) => {
-    let token = localStorage.getItem("api-token");
-    if (!token && to.name !== "Login") {
-        if (to.path !== "/") {
-            next(`/login?redirect=${to.path}`);
-        }
-        else {
-            next(`/login`);
-        }
-    }
-    else {
-        next();
-    }
-});
-
-// Adiciona o router na aplicação
-Vue.use(VueRouter);
 
 // Seta a região do moment.js
 moment.locale("pt-br");
@@ -45,7 +8,7 @@ moment.locale("pt-br");
 async function loadUser(vue: Vue) {
     let userId = localStorage.getItem("user-id");
     if (userId) {
-        let req = await vue.http.get(`/api/users/${userId}?include=role,projects,tasks`);
+        let req = await vue.$http.get(`/api/users/${userId}?include=role,projects,tasks`);
         if (req.data) {
             vue.$store.commit("setCurrentUser", req.data);
         }
@@ -53,7 +16,7 @@ async function loadUser(vue: Vue) {
 }
 
 async function loadAllUsers(vue: Vue) {
-    let req = await vue.http.get(`/api/users?include=role`);
+    let req = await vue.$http.get(`/api/users?include=role`);
     if (req.data) {
         vue.$store.commit("setAllUsers", req.data);
     }
@@ -61,7 +24,7 @@ async function loadAllUsers(vue: Vue) {
 
 // Adiciona a instância configurada do axios na aplicação
 import axios from "@main/axios";
-Vue.prototype.http = axios;
+Vue.prototype.$http = axios;
 Vue.prototype.initUserData = (vue: Vue) => {
     loadUser(vue);
     loadAllUsers(vue);
@@ -78,7 +41,14 @@ import { isMoment } from "moment";
 Vue.use(SuiVue);
 
 const store = createStore(axios);
-Vue.prototype.g = store;
+
+import VueRouter from "vue-router";
+import router from "@main/router";
+
+// Adiciona o plugin do router na aplicação
+Vue.use(VueRouter);
+
+import Layout from "@components/Layout.vue";
 
 // Cria e monta a aplicação no documento
 let app = new Vue({

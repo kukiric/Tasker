@@ -14,16 +14,16 @@
                             <div class="header">{{ user.fullname }}</div>
                             <div class="description">{{ user.email }}</div>
                         </div>
-                        <div v-if="g.getters.userIsManager && user.id != g.state.currentUser.id" class="right floated content">
+                        <div v-if="$store.getters.userIsManager && user.id != $store.state.currentUser.id" class="right floated content">
                             <a><sui-icon color="red" name="delete" title="Remover" @click.prevent="removeUser(user)"/></a>
                         </div>
                     </div>
                 </div>
                 <!-- Botão de adicionar usuários no projeto -->
-                <sui-dropdown v-if="g.getters.userIsManager" fluid selection class="green button">
+                <sui-dropdown v-if="$store.getters.userIsManager" fluid selection class="green button">
                     Adicionar
                     <sui-dropdown-menu>
-                        <sui-dropdown-item v-for="user in g.getters.usersNotInProject" :key="user.id" @click="addUser(user)">
+                        <sui-dropdown-item v-for="user in $store.getters.usersNotInProject" :key="user.id" @click="addUser(user)">
                             <sui-image avatar :src="gravatar(user.email)"/>
                             {{ user.fullname }}
                         </sui-dropdown-item>

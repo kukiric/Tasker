@@ -11,7 +11,7 @@
             "@scripts/*": [
                 "web/src/scripts/*"
             ],
-            "@/*": [
+            "@components/*": [
                 "web/src/components/*"
             ],
             "@css/*": [

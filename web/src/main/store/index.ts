@@ -9,10 +9,12 @@ export default function createStore(http: AxiosInstance) {
         state: {
             currentProject: null,
             currentUser: null,
+            allProjects: [],
             allUsers: []
         } as {
             currentProject: ProjectStub & { error?: boolean } | null,
             currentUser: UserStub | null,
+            allProjects: ProjectStub[],
             allUsers: UserStub[]
         },
         getters: {

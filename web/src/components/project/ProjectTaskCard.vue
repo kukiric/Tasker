@@ -64,4 +64,10 @@
         </sui-card-content>
     </sui-card>
 </template>
+<style scoped>
+    div.ui.button.dropdown {
+        text-align: center;
+        margin: 0.5em 0;
+    }
+</style>
 <script src="./ProjectTaskCard.ts" lang="ts"></script>

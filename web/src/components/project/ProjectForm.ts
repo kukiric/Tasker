@@ -38,7 +38,7 @@ export default Vue.extend({
                 return;
             }
             try {
-                let currentUser = this.g.state.currentUser;
+                let currentUser = this.$store.state.currentUser;
                 if (currentUser) {
                     let project: Partial<ProjectStub> = {
                         name: this.form.name,
@@ -47,7 +47,7 @@ export default Vue.extend({
                         users: [ { id: currentUser.id } ],
                         manager_id: currentUser.id
                     };
-                    let req = await this.http.post("/api/projects", project);
+                    let req = await this.$http.post("/api/projects", project);
                     this.$store.commit("appendProject", req.data);
                     this.$router.push({ name: "ProjectView", params: { projectId: req.data.id } });
                 }

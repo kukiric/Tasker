@@ -1,6 +1,6 @@
-import ProjectTable from "@/project/ProjectTable.vue";
-import ProjectForm from "@/project/ProjectForm.vue";
-import UserTable from "@/user/UserTable.vue";
+import ProjectTable from "@components/project/ProjectTable.vue";
+import ProjectForm from "@components/project/ProjectForm.vue";
+import UserTable from "@components/user/UserTable.vue";
 import { UserStub } from "api/stubs";
 import Vue from "vue";
 
@@ -13,7 +13,7 @@ export default Vue.extend({
     },
     computed: {
         isAdminOrManager(): boolean {
-            let user = this.g.state.currentUser;
+            let user = this.$store.state.currentUser;
             if (user && user.role) {
                 return user.role.name === "Admin" || user.role.name === "Manager";
             }

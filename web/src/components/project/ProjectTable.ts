@@ -12,7 +12,7 @@ export default Vue.extend({
     },
     computed: {
         user(): UserStub {
-            return this.g.state.currentUser!;
+            return this.$store.state.currentUser!;
         }
     },
     methods: {
@@ -30,7 +30,7 @@ export default Vue.extend({
             let userId = localStorage.getItem("user-id");
             if (userId) {
                 try {
-                    let req = await this.http.get(`/api/projects?include=manager,users`);
+                    let req = await this.$http.get(`/api/projects?include=manager,users`);
                     let projects: ProjectStub[] = req.data;
                     // Ordena os projetos alfabeticamente
                     this.projects = projects.sort((a, b) => {

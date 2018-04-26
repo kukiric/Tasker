@@ -44,7 +44,7 @@ const config: Webpack.Configuration = {
             "vue$": "vue/dist/vue.esm.js",
             "@main": rel("src/main/"),
             "@scripts": rel("src/scripts/"),
-            "@": rel("src/components/"),
+            "@components": rel("src/components/"),
             "@css": rel("src/css/"),
             "api": rel("../api")
         },

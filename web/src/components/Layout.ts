@@ -1,4 +1,4 @@
-import Navbar from "@/misc/Navbar.vue";
+import Navbar from "@components/misc/Navbar.vue";
 import Vue from "vue";
 
 export default Vue.extend({
