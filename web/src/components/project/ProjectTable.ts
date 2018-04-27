@@ -26,24 +26,13 @@ export default Vue.extend({
             }
             return false;
         },
-        async fetchProjects() {
-            let userId = localStorage.getItem("user-id");
-            if (userId) {
-                try {
-                    let req = await this.$http.get(`/api/projects?include=manager,users`);
-                    let projects: ProjectStub[] = req.data;
-                    // Ordena os projetos alfabeticamente
-                    this.projects = projects.sort((a, b) => {
-                        return a.name! > b.name! ? 1 : -1;
-                    });
-                }
-                catch (err) {
-                    this.projects = { error: true };
-                }
-            }
+        async loadProjects(): Promise<ProjectStub[]> {
+            let req = await this.$http.get(`/api/projects?include=manager`);
+            let projects = req.data as ProjectStub[];
+            return projects.sort((a, b) => a.name > b.name ? 1 : -1);
         }
     },
     created() {
-        this.fetchProjects();
+        this.loadProjects().then(projects => this.projects = projects);
     }
 });

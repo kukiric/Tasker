@@ -41,5 +41,6 @@ export default Vue.extend({
     },
     created() {
         this.reloadProject();
+        this.$store.dispatch("ensureAllUsersLoaded");
     }
 });

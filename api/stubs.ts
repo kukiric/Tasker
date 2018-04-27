@@ -98,3 +98,24 @@ export enum RoleType {
     MANAGER = 2,
     TEAM_MEMBER = 3
 }
+
+/**
+ * Token JWT assinada
+ */
+export type EncodedToken = string;
+
+/**
+ * Token JWT decodificada
+ */
+export interface DecodedToken {
+    uid: number;
+    role: RoleType;
+}
+
+/**
+ * Objeto retornado do AuthController com token e dados do usuário
+ */
+export interface AuthResponse {
+    user: UserStub;
+    token: string;
+}

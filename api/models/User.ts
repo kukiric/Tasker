@@ -90,7 +90,9 @@ export default class User extends Model implements UserStub {
         // Remove informações sensíveis
         delete json.password;
         // Remove IDs de joins
-        delete json.role_id;
+        if (json.role) {
+            delete json.role_id;
+        }
         return super.$formatJson(json);
     }
 }

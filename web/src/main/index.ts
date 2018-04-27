@@ -1,7 +1,7 @@
 import * as moment from "moment";
 import Vue from "vue";
 
-// Seta a região do moment.js
+// Define a região do moment.js
 moment.locale("pt-br");
 
 // Define as funções de carregar dados globais (temp)
@@ -22,14 +22,6 @@ async function loadAllUsers(vue: Vue) {
     }
 }
 
-// Adiciona a instância configurada do axios na aplicação
-import axios from "@main/axios";
-Vue.prototype.$http = axios;
-Vue.prototype.initUserData = (vue: Vue) => {
-    loadUser(vue);
-    loadAllUsers(vue);
-};
-
 // Adiciona o Vuex para gerenciar estados
 import createStore from "@main/store";
 import Vuex from "vuex";
@@ -40,13 +32,14 @@ import SuiVue from "semantic-ui-vue";
 import { isMoment } from "moment";
 Vue.use(SuiVue);
 
+import createAxios from "@main/axios";
+const axios = createAxios(() => store);
 const store = createStore(axios);
+Vue.prototype.$http = axios;
 
 import VueRouter from "vue-router";
-import router from "@main/router";
-
-// Adiciona o plugin do router na aplicação
-Vue.use(VueRouter);
+import createRouter from "@main/router";
+const router = createRouter(Vue, store);
 
 import Layout from "@components/Layout.vue";
 
@@ -56,11 +49,5 @@ let app = new Vue({
     store: store,
     router: router,
     components: { Layout },
-    template: "<Layout/>",
-    beforeMount() {
-        if (localStorage.getItem("api-token")) {
-            // @ts-ignore
-            this.initUserData(this);
-        }
-    }
+    template: "<Layout/>"
 });

@@ -1,4 +1,4 @@
-import { UserStub } from "api/stubs";
+import { UserStub, AuthResponse } from "api/stubs";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -6,23 +6,38 @@ export default Vue.extend({
         return {
             username: "",
             password: "",
+            password2: "",
             fullname: "",
             email: "",
             error: "",
+            info: "",
             registering: false
         };
     },
     methods: {
         refocus() {
-            let ref = this.$refs.autofocus;
+            let ref = this.$refs.usernameField;
             if (ref instanceof HTMLInputElement) {
                 ref.focus();
             }
         },
         async login() {
             try {
+                // Limpa as mensagens
                 this.error = "";
+                this.info = "";
+                // Cria um novo usuário
                 if (this.registering) {
+                    // Verifica se a senha tem o comprimento mínimo (6)
+                    if (this.password.length < 6) {
+                        this.error = "A sua senha deve conter pelo menos 6 caracteres!";
+                    }
+                    // Verifica se as duas senhas são iguais
+                    if (this.password !== this.password2) {
+                        this.error = "As senhas fornecidas são diferentes!";
+                        return;
+                    }
+                    // Envia a requisição
                     await this.$http.post("/api/users", {
                         username: this.username,
                         password: this.password,
@@ -30,35 +45,41 @@ export default Vue.extend({
                         email: this.email
                     });
                 }
+                // Tenta logar no usuário
                 let req = await this.$http.post("/api/auth", {
                     username: this.username,
                     password: this.password
                 });
-                let token = req.data.token;
-                if (!token) {
-                    this.error = "Erro de servidor: nenhuma token retornada";
+                let response = req.data as AuthResponse;
+                // Grava a token retornada
+                if (response.token) {
+                    // Limpa os dados do usuário anterior
+                    this.$store.commit("reset");
+                    this.info = "Entrando...";
+                    try {
+                        // Busca os dados do usuário, usando a token da resposta
+                        await this.$store.dispatch("loadUser", response);
+                        // Retorna o usuário para a página que ele tentou acessar antes de estar logado
+                        let redirect = this.$route.query.redirect || "/";
+                        this.$router.push(redirect);
+                    }
+                    catch (err) {
+                        this.error = "Não foi possível carregar os dados do usuário, tente novamente mais tarde.";
+                    }
                 }
                 else {
-                    this.$store.commit("reset");
-                    localStorage.setItem("api-token", token);
-                    localStorage.setItem("username", req.data.username);
-                    localStorage.setItem("fullname", req.data.fullname);
-                    localStorage.setItem("user-role", req.data.role);
-                    localStorage.setItem("user-id", req.data.id);
-                    let redirect = this.$route.query.redirect || "/";
-                    this.$router.push(redirect);
-                    // @ts-ignore
-                    this.initUserData(this);
+                    this.error = "Erro de servidor: nenhuma token retornada!";
                 }
             }
             catch (err) {
                 if (this.registering) {
                     this.error = "Informações inválidas! Provavelmente já existe um "
-                               + "usuário com esse nome, ou o email fornecido não existe.";
+                               + "usuário com esse nome, ou o email fornecido é invalido.";
                 }
                 else {
                     this.error = "Usuário ou senha incorreta!";
                 }
+                // Imprime a resposta do erro
                 if (err.response) {
                     console.error(err.response.data);
                 }
@@ -70,34 +91,23 @@ export default Vue.extend({
     },
     computed: {
         user(): UserStub {
-            return this.$store.state.currentUser!;
+            return this.$store.state.currentUser;
         },
         primaryAction(): string {
-            if (this.registering) {
-                return "Criar nova conta";
-            }
-            else {
-                return "Entrar";
-            }
+            return this.registering ?  "Criar nova conta" : "Entrar";
         },
-        modeText(): string {
-            if (this.registering) {
-                return "Já tenho uma conta";
-            }
-            else {
-                return "Não tenho uma conta ainda";
-            }
-        },
-        canSubmit(): boolean {
-            return this.username.length > 0 && this.password.length >= 6;
+        changeModeText(): string {
+            return this.registering ? "Já tenho uma conta" : "Não tenho uma conta ainda";
         }
     },
     watch: {
-        registering: function(val) {
+        // Foca automaticamente de volta no campo do usuário ao trocar o modo entre entrar e registrar
+        registering: function() {
             this.refocus();
         }
     },
     mounted() {
         this.refocus();
+        this.info = this.user ? "Ao prosseguir, você será deslogado da conta atual" : "";
     }
 });

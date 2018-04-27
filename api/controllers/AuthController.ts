@@ -1,6 +1,6 @@
 import BaseController, { RouteDefinitions } from "api/controllers/BaseController";
 import { RoleType, EVERYONE } from "api/models/Role";
-import { DecodedToken, AuthData } from "api/token";
+import { AuthResponse, DecodedToken } from "api/stubs";
 import NullModel from "api/models/NullModel";
 import User from "api/models/User";
 import * as JWT from "jsonwebtoken";
@@ -37,21 +37,16 @@ export default class AuthController extends BaseController {
                     // Busca o usuário e checa suas credenciais
                     let user = await User.query().eager("role").findOne({ username });
                     if (user && user.role && await bcrypt.compare(password, user.password)) {
-                        // Cria os dados da JWT
+                        // Monta os dados da JWT
                         let payload: DecodedToken = {
                             uid: user.id,
-                            role: user.role.id as RoleType
+                            role: user.role.id
                         };
                         // Gera a nova token
                         let token = JWT.sign(payload, key!, { expiresIn: "30d" });
                         // Retorna a token e os dados do usuário
-                        return {
-                            username: user.username,
-                            fullname: user.fullname,
-                            role: user.role.name,
-                            id: user.id,
-                            token
-                        } as AuthData;
+                        let response: AuthResponse = { user, token };
+                        return response;
                     }
                     // Recusa credenciais inválidos
                     return Boom.unauthorized("Incorrect username or password");

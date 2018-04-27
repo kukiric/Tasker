@@ -1,5 +1,5 @@
 <template>
-    <NotFound v-if="project && project.error"/>
+    <ErrorPage v-if="project && project.error"/>
     <div v-else>
         <!-- Barra lateral -->
         <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">

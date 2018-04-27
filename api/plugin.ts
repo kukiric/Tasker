@@ -1,8 +1,8 @@
 import { Plugin, Server, Request, ResponseToolkit} from "hapi";
 import { ServerRegisterOptions, RouteOptions, RouteOptionsAccess } from "hapi";
 import BaseController, { PathHandler, RouteMapping, Route } from "api/controllers/BaseController";
-import { RoleType, getRoleName } from "./models/Role";
-import { DecodedToken } from "./token";
+import { RoleType, getRoleName } from "api/models/Role";
+import { DecodedToken } from "./stubs";
 import * as assert from "assert";
 import * as Boom from "boom";
 import * as Joi from "joi";

@@ -31,6 +31,7 @@
             <hr class="ui fitted divider">
             <UserTable/>
         </div>
+        <br><br>
     </div>
 </template>
 <script src="./HomePage.ts" lang="ts"></script>
