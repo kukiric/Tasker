@@ -1,8 +1,10 @@
 import { ProjectStub, TaskStub, TaskStatus, UserStub } from "api/stubs";
+import EditableText from "@components/misc/EditableText.vue";
 import utils from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
+    components: { EditableText },
     data() {
         return {
             editMode: false
@@ -57,6 +59,9 @@ export default Vue.extend({
         },
         removeUser(user: UserStub) {
             this.$store.dispatch("removeUserFromTask", { task: this.task, user: user });
+        },
+        updateTask() {
+            this.$store.dispatch("updateTask", this.task);
         }
     }
 });

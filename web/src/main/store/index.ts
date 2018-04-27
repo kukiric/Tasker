@@ -188,6 +188,13 @@ export default function createStore(http: AxiosInstance) {
                     store.dispatch("fetchProject", store.state.currentProject.id);
                 }
             },
+            async updateTask(store, task: TaskStub) {
+                if (store.state.currentProject) {
+                    let id = task.id;
+                    delete task.id;
+                    let req = await http.put(`/api/projects/${store.state.currentProject.id}/tasks/${id}`, task);
+                }
+            },
             async deleteTask(store, task: TaskStub) {
                 if (store.state.currentProject) {
                     let req = await http.delete(`/api/projects/${store.state.currentProject.id}/tasks/${task.id}`);

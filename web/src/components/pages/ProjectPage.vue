@@ -1,6 +1,7 @@
 <template>
     <ErrorPage v-if="project && project.error"/>
     <div v-else>
+        <div class="background"></div>
         <!-- Barra lateral -->
         <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">
             <sui-button class="left attached side button" color="blue" icon="users" @click="showSidebar = !showSidebar"/>
@@ -53,4 +54,14 @@
         </div>
     </div>
 </template>
+<style>
+    .background {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-image: url("https://picsum.photos/1920/1080?random");
+        background-repeat: no-repeat;
+        z-index: -1000;
+    }
+</style>
 <script src="./ProjectPage.ts" lang="ts"></script>

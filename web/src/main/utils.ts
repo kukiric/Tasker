@@ -19,6 +19,9 @@ export default {
     gravatar(email: string) {
         return `https://www.gravatar.com/avatar/${md5(email)}?s=32&d=identicon`;
     },
+    picsum(hash: string) {
+        
+    },
     md(source: string) {
         return marked(source, { gfm: true, sanitize: true });
     }

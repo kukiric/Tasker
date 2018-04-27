@@ -7,8 +7,7 @@
             </div>
             <!-- Título -->
             <sui-card-header><sui-icon :name="getIconForStatus(task)"/>
-                <input v-if="editMode" v-model="task.title" style="width: 88%">
-                <span v-else>{{ task.title }}</span>
+                <EditableText tag="span" v-model="task.title" @input="updateTask"/>
             </sui-card-header>
             <!-- Datas -->
             <sui-card-meta>Entrega:
@@ -20,8 +19,7 @@
                 <div><b>Tipo:</b> {{ task.type }}</div>
                 <div><b>Status:</b> {{ task.status }}</div>
                 <br>
-                <textarea v-if="editMode" v-model="task.description" style="width:100%;resize:none;" rows="12"></textarea>
-                <div v-else class="justified text" v-html="md(task.description)"></div>
+                <EditableText tag="div" v-model="task.description" @input="updateTask" :display="md" spellcheck=false textarea rows=12 />
             </sui-card-description>
         </sui-card-content>
         <sui-card-content extra>
@@ -32,7 +30,7 @@
                 </a>
             </div>
             <div v-else-if="task.users.length > 0">
-                <sui-image v-for="user in task.users" :key="user.id" avatar :src="gravatar(user.email)" :title="user.fullname"/>
+                <sui-image avatar v-for="user in task.users" :key="user.id" :src="gravatar(user.email)" :title="user.fullname"/>
             </div>
             <!-- Botão para adicionar usuários -->
             <sui-dropdown v-if="editMode" icon="plus" class="basic fluid button" :class="{ disabled: usersNotInTask.length == 0 }">
@@ -68,6 +66,9 @@
     div.ui.button.dropdown {
         text-align: center;
         margin: 0.5em 0;
+    }
+    img.avatar {
+        margin-bottom: 1em;
     }
 </style>
 <script src="./ProjectTaskCard.ts" lang="ts"></script>

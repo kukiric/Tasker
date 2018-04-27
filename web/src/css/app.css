@@ -69,6 +69,10 @@ body {
     margin: 1em;
 }
 
+.ui.card {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
 .ui.first.card {
     margin-right: 3em;
 }
