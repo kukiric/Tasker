@@ -24,7 +24,7 @@ export default function createAxios(store: () => ReturnType<typeof createStore>)
         throw err;
     });
     // Loga as requisiçôes pendentes
-    axiosInstance.interceptors.request.use((config) => {
+    axiosInstance.interceptors.request.use(async (config) => {
         store().commit("pushRequest");
         return config;
     });

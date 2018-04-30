@@ -22,8 +22,8 @@ export default Vue.extend({
             switch (this.syncState) {
                 // Enviando
                 case 1: return {
-                    message: "Enviando informações...",
-                    icon: { name: "sync", color: "blue "}
+                    message: "Sincronizando...",
+                    icon: { name: "sync", color: "blue"}
                 };
                 // Idle
                 case 0: return {

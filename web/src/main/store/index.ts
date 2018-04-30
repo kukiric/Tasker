@@ -3,13 +3,14 @@ import { AxiosInstance, AxiosResponse } from "axios";
 import * as JWT from "jsonwebtoken";
 import * as moment from "moment";
 import Vuex from "vuex";
+import Vue from "vue";
 
 // Informações que sempre são trazdias junto com as tarefas
 const taskIncludes = "parent,users,work_items,children[users,work_items]";
 
 // Classe que armazena todas as requisições pendentes e com erros
 export class RequestLog {
-    public pending: void[] = [];
+    public pending: boolean[] = [];
     public errors: number[] = [];
 }
 
@@ -114,7 +115,7 @@ export default function createStore(http: AxiosInstance) {
                 state.token = null;
             },
             pushRequest(state) {
-                state.requests.pending.push();
+                state.requests.pending.push(true);
             },
             popRequest(state) {
                 state.requests.pending.pop();
@@ -219,14 +220,17 @@ export default function createStore(http: AxiosInstance) {
             async updateTask(store, task: TaskStub) {
                 let project = store.state.currentProject;
                 if (project) {
+                    // Cria o objeto com as novas informações da tarefa
                     let taskPartial = {
                         type: task.type,
                         status: task.status,
                         title: task.title,
                         due_date: task.due_date,
                         progress: task.progress,
-                        description: task.description
+                        description: task.description,
+                        estimate_work_hour: task.estimate_work_hour
                     };
+                    // Envia as informações para o servidor
                     let req = await http.put(`/api/projects/${project.id}/tasks/${task.id}`, taskPartial);
                 }
             },

@@ -6,14 +6,12 @@
                 <EditableText tag="span" :value="task.title" @input="updateTitle"/>
             </sui-card-header>
             <!-- Datas -->
-            <sui-card-meta>Entrega:
-                <input v-if="editMode" type="date" v-model="task.due_date">
-                <span v-else>{{ date(task.due_date) }}</span>
-                - {{ task.estimate_work_hour }} Horas</sui-card-meta>
+            <sui-card-meta>Entrega: <EditableText tag="span" :value="task.due_date" :display="date" type="date" @input="updateDueDate"/></sui-card-meta>
+            <sui-card-meta>Estimativa: <EditableText tag="span" :value="task.estimate_work_hour" type="number" :min="1" :max="168" :display="hours" @input="updateHours"/></sui-card-meta>
             <!-- Conteúdo -->
             <sui-card-description>
-                <div><b>Tipo:</b> {{ task.type }}</div>
-                <div><b>Status:</b> {{ task.status }}</div>
+                <div><b>Tipo: </b><EditableText tag="span" :value="task.type" :options="taskTypeList" select @input="updateType"/></div>
+                <div><b>Status: </b><EditableText tag="span" :value="task.status" :options="taskStatusList" select @input="updateStatus" @inputImmediate="updateStatusInternal"/></div>
                 <br>
                 <EditableText tag="div" :value="task.description" @input="updateDescription" :display="md" :spellcheck="false" textarea :rows="12" placeholder="Adicionar descrição..."/>
             </sui-card-description>

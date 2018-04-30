@@ -1,4 +1,4 @@
-import { ProjectStub, UserStub } from "api/stubs";
+import { ProjectStub, UserStub, ProjectStatus } from "api/stubs";
 import * as moment from "moment";
 import Vue from "vue";
 
@@ -40,6 +40,7 @@ export default Vue.extend({
             try {
                 let currentUser = this.$store.state.currentUser;
                 if (currentUser) {
+                    // Monta o objeto básico do novo projeto
                     let project: Partial<ProjectStub> = {
                         name: this.form.name,
                         status: this.form.status,
@@ -47,8 +48,10 @@ export default Vue.extend({
                         users: [ { id: currentUser.id } ],
                         manager_id: currentUser.id
                     };
+                    // Envia o novo projeto para a API
                     let req = await this.$http.post("/api/projects", project);
                     this.$store.commit("appendProject", req.data);
+                    // Redireciona o usuário para o novo projeto
                     this.$router.push({ name: "ProjectView", params: { projectId: req.data.id } });
                 }
             }
@@ -64,11 +67,7 @@ export default Vue.extend({
             return nameIsFilled && isDueDateValid;
         },
         statuses(): any[] {
-            return [
-                "Novo",
-                "Em andamento",
-                "Concluído"
-            ].map(v => ({
+            return Object.values(ProjectStatus).map((v) => ({
                 key: v,
                 text: v,
                 value: v

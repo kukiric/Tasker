@@ -1,8 +1,12 @@
 <template>
-    <!-- Bug: texto fica impossível editar se tiver tamanho nulo -->
     <form @click="beginEditing()" @submit="stopEditing()">
-        <textarea v-if="editing && textarea" ref="input" v-model="content" :rows="rows" :placeholder="placeholder" @input="emitUpdate(content)" @blur="stopEditing()" :spellcheck="spellcheck"></textarea>
-        <input v-if="editing && !textarea" ref="input" v-model="content" :type="type" :placeholder="placeholder" @input="emitUpdate(content)" @blur="stopEditing()"/>
+        <!-- Edição -->
+        <textarea v-if="editing && textarea && !select" ref="input" v-model="content" :rows="rows" :placeholder="placeholder" @input="emitUpdate(content)" @blur="stopEditing()" :spellcheck="spellcheck"></textarea>
+        <input v-if="editing && !textarea && !select" ref="input" v-model="content" :type="type" :placeholder="placeholder" :min="min" :max="max" @input="emitUpdate(content)" @blur="stopEditing()"/>
+        <select v-if="editing && !textarea && select" options="a, b, c" v-model="content" :input="emitUpdate(content)" @blur="stopEditing()">
+            <option v-for="option in options">{{ option }}</option>
+        </select>
+        <!-- Display -->
         <div v-if="!editing && display" :is="tag" v-html="display(divContent)" :style="divStyle"></div>
         <div v-if="!editing && !display" :is="tag" :style="divStyle">{{ divContent }}</div>
     </form>
