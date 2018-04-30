@@ -10,7 +10,6 @@
 <style scoped>
     form {
         display: inline;
-        width: 100%;
         margin: 0;
     }
     textarea {

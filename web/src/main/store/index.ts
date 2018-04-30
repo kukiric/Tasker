@@ -1,14 +1,22 @@
 import { ProjectStub, UserStub, RoleType, TaskStub, AuthResponse } from "api/stubs";
-import createPersistedState from "vuex-persistedstate";
+import createPersistedState, { Options as PersistedStateOptions } from "vuex-persistedstate";
 import { AxiosInstance } from "axios";
 import Vuex from "vuex";
 
-const taskIncludes = "parent,users,work_items,children[users,work_items]";
-
 export default function createStore(http: AxiosInstance) {
+    // Informações que sempre são trazdias junto com as tarefas
+    const taskIncludes = "parent,users,work_items,children[users,work_items]";
+    const persistedStateOptions: PersistedStateOptions = {
+        // Grava somente a token no local storage
+        reducer(state, paths) {
+            return {
+                token: state.token
+            };
+        }
+    };
     return new Vuex.Store({
         plugins: [
-            createPersistedState()
+            createPersistedState(persistedStateOptions)
         ],
         state: {
             currentProject: null,
@@ -36,8 +44,8 @@ export default function createStore(http: AxiosInstance) {
             usersNotInProject(state) {
                 const project = state.currentProject;
                 if (project && project.users && state.allUsers) {
-                    return state.allUsers.filter(u1 => {
-                        return project.users!.some(u2 => u1.id === u2.id) === false;
+                    return state.allUsers.filter((u1) => {
+                        return project.users!.some((u2) => u1.id === u2.id) === false;
                     });
                 }
                 return [];
@@ -46,7 +54,7 @@ export default function createStore(http: AxiosInstance) {
                 const project = state.currentProject;
                 if (project && project.tasks) {
                     // Busca somente as tarefas sem pai
-                    let rootTasks = project.tasks.filter(task => task.parent == null);
+                    let rootTasks = project.tasks.filter((task) => task.parent == null);
                     // Ordena elas por ID
                     return rootTasks.sort((a, b) => a.id! - b.id!);
                 }
@@ -64,7 +72,7 @@ export default function createStore(http: AxiosInstance) {
             },
             removeUser(state, user: UserStub) {
                 if (state.currentProject && state.currentProject.users) {
-                    state.currentProject.users = state.currentProject.users.filter(u => {
+                    state.currentProject.users = state.currentProject.users.filter((u) => {
                         return u.id !== user.id;
                     });
                 }
@@ -76,7 +84,7 @@ export default function createStore(http: AxiosInstance) {
             },
             removeUserFromTask(state, { task, user }: { task: TaskStub, user: UserStub }) {
                 if (task.users) {
-                    task.users = task.users.filter(u => u.id !== user.id);
+                    task.users = task.users.filter((u) => u.id !== user.id);
                 }
             },
             setAllUsers(state, users: UserStub[]) {
@@ -131,7 +139,7 @@ export default function createStore(http: AxiosInstance) {
                         context.commit("setAllUsers", req.data);
                     }
                 }
-                catch(err) {
+                catch (err) {
                     context.commit("setAllUsers", null);
                 }
             },
@@ -151,7 +159,7 @@ export default function createStore(http: AxiosInstance) {
                     // FIXME: operação custosa (fazer no servidor em versão futura)
                     if (project.tasks) {
                         for (let task of project.tasks) {
-                            if (task.users && task.users.some(u => u.id === user.id)) {
+                            if (task.users && task.users.some((u) => u.id === user.id)) {
                                 store.dispatch("removeUserFromTask", { task, user });
                             }
                         }
@@ -189,10 +197,17 @@ export default function createStore(http: AxiosInstance) {
                 }
             },
             async updateTask(store, task: TaskStub) {
-                if (store.state.currentProject) {
-                    let id = task.id;
-                    delete task.id;
-                    let req = await http.put(`/api/projects/${store.state.currentProject.id}/tasks/${id}`, task);
+                let project = store.state.currentProject;
+                if (project) {
+                    let taskPartial = {
+                        type: task.type,
+                        status: task.status,
+                        title: task.title,
+                        due_date: task.due_date,
+                        progress: task.progress,
+                        description: task.description
+                    };
+                    let req = await http.put(`/api/projects/${project.id}/tasks/${task.id}`, taskPartial);
                 }
             },
             async deleteTask(store, task: TaskStub) {

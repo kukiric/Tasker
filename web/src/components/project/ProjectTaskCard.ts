@@ -26,7 +26,7 @@ export default Vue.extend({
             if (project && project.users) {
                 let users = project.users;
                 return users.filter((u1: UserStub) => {
-                    return this.task.users!.some(u2 => u1.id === u2.id) === false;
+                    return this.task.users!.some((u2) => u1.id === u2.id) === false;
                 });
             }
             return [];

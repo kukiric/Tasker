@@ -19,7 +19,7 @@
                 <div><b>Tipo:</b> {{ task.type }}</div>
                 <div><b>Status:</b> {{ task.status }}</div>
                 <br>
-                <EditableText tag="div" v-model="task.description" @input="updateTask" :display="md" spellcheck=false textarea rows=12 />
+                <EditableText tag="div" v-model="task.description" @input="updateTask" :display="md" :spellcheck="false" textarea :rows="12" />
             </sui-card-description>
         </sui-card-content>
         <sui-card-content extra>

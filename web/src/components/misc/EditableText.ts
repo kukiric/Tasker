@@ -11,7 +11,7 @@ export default Vue.extend({
             emitUpdate: ((s: string) => void) & Cancelable,
             editing: boolean,
             content: string
-        }
+        };
     },
     props: {
         debounce: { type: Number, default: 1000 },
