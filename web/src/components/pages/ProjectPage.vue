@@ -44,6 +44,7 @@
                 </div>
                 <div v-else class="content">Carregando...</div>
             </h1>
+            <SyncIndicator class="sync" size="large"/>
         </div>
         <!-- Informações do projeto -->
         <div class="project area">
@@ -54,6 +55,14 @@
     </div>
 </template>
 <style scoped>
+    .sync {
+        position: absolute;
+        right: 0.25em;
+        top: 0.5em;
+    }
+    .ui.header {
+        margin-bottom: 0;
+    }
     .background {
         position: fixed;
         top: 0; left: 0;

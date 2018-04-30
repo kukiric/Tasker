@@ -1,11 +1,12 @@
 import { ProjectStub, UserStub } from "api/stubs";
 import ProjectOverview from "@components/project/ProjectOverview.vue";
+import SyncIndicator from "@components/misc/SyncIndicator.vue";
 import ErrorPage from "@components/pages/ErrorPage.vue";
 import utils from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
-    components: { ProjectOverview, ErrorPage },
+    components: { ProjectOverview, SyncIndicator, ErrorPage },
     data() {
         return {
            showSidebar: false

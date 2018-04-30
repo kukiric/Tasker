@@ -45,6 +45,7 @@ export default class Task extends Model implements TaskStub {
         description: Joi.string()
             .max(16380)
             .required()
+            .allow("")
             .example("Descrição da tarefa")
             .description("Accepts GitHub Flavored Markdown - See https://github.github.com/gfm/")
     };

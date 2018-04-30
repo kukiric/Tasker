@@ -1,23 +1,16 @@
 import { ProjectStub, UserStub, RoleType, TaskStub, AuthResponse } from "api/stubs";
-import createPersistedState, { Options as PersistedStateOptions } from "vuex-persistedstate";
 import { AxiosInstance } from "axios";
 import Vuex from "vuex";
 
+// Informações que sempre são trazdias junto com as tarefas
+const taskIncludes = "parent,users,work_items,children[users,work_items]";
+
+// Chave usada para armazenar e buscar a token do local storage
+export const tokenKey = "Tasker/api-token";
+
 export default function createStore(http: AxiosInstance) {
-    // Informações que sempre são trazdias junto com as tarefas
-    const taskIncludes = "parent,users,work_items,children[users,work_items]";
-    const persistedStateOptions: PersistedStateOptions = {
-        // Grava somente a token no local storage
-        reducer(state, paths) {
-            return {
-                token: state.token
-            };
-        }
-    };
     return new Vuex.Store({
-        plugins: [
-            createPersistedState(persistedStateOptions)
-        ],
+        strict: process.env.NODE_ENV === "development",
         state: {
             currentProject: null,
             currentUser: null,
@@ -30,6 +23,9 @@ export default function createStore(http: AxiosInstance) {
             token: string | null
         },
         getters: {
+            token(state) {
+                return localStorage.getItem(tokenKey);
+            },
             userIsAdmin(state) {
                 const user = state.currentUser;
                 return user && user.role && user.role.id! <= RoleType.ADMIN;
@@ -95,10 +91,11 @@ export default function createStore(http: AxiosInstance) {
             setUserData(state, data?: AuthResponse) {
                 if (data) {
                     state.currentUser = data.user;
-                    state.token = data.token;
+                    localStorage.setItem(tokenKey, data.token);
                 }
                 else {
-                    state.currentUser = state.token = null;
+                    state.currentUser = null;
+                    localStorage.removeItem(tokenKey);
                 }
             },
             reset(state) {

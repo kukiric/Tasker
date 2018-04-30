@@ -1,10 +1,6 @@
 <template>
     <sui-card :class="[getColorForStatus(task), { first: isFirst }]">
         <sui-card-content>
-            <!-- Botão de editar tarefa -->
-            <div v-if="!editMode" class="right floated">
-                <a @click="editMode = true"><sui-icon color="green" name="edit" style="margin: 0" title="Editar tarefa"/></a>
-            </div>
             <!-- Título -->
             <sui-card-header><sui-icon :name="getIconForStatus(task)"/>
                 <EditableText tag="span" v-model="task.title" @input="updateTask"/>
@@ -19,7 +15,7 @@
                 <div><b>Tipo:</b> {{ task.type }}</div>
                 <div><b>Status:</b> {{ task.status }}</div>
                 <br>
-                <EditableText tag="div" v-model="task.description" @input="updateTask" :display="md" :spellcheck="false" textarea :rows="12" />
+                <EditableText tag="div" v-model="task.description" @input="updateTask" :display="md" :spellcheck="false" textarea :rows="12" placeholder="Adicionar descrição..."/>
             </sui-card-description>
         </sui-card-content>
         <sui-card-content extra>

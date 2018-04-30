@@ -33,7 +33,7 @@ import { isMoment } from "moment";
 Vue.use(SuiVue);
 
 import createAxios from "@main/axios";
-const axios = createAxios(() => store);
+const axios = createAxios();
 const store = createStore(axios);
 Vue.prototype.$http = axios;
 

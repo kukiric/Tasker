@@ -17,10 +17,23 @@ export default Vue.extend({
         debounce: { type: Number, default: 1000 },
         textarea: { type: Boolean, default: false },
         spellcheck: { type: Boolean, default: true},
+        type: { type: String, default: "text" },
         tag: { type: String, default: "div" },
         rows: { type: Number, default: 20 },
+        placeholder: { type: String },
         display: Function,
         value: String
+    },
+    computed: {
+        contentIsEmpty(): boolean {
+            return this.placeholder != null && this.content.trim() === "";
+        },
+        divContent(): string {
+            return this.contentIsEmpty ? this.placeholder : this.content;
+        },
+        divStyle(): string {
+            return this.contentIsEmpty ? "color: #bbb" : "";
+        }
     },
     methods: {
         emitUpdateImpl(content: string) {
@@ -43,5 +56,8 @@ export default Vue.extend({
     created() {
         this.content = this.value;
         this.emitUpdate = debounce(this.emitUpdateImpl, this.debounce);
+        if (this.type === "date") {
+            //
+        }
     }
 });
