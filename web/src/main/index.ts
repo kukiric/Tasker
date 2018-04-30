@@ -23,7 +23,7 @@ async function loadAllUsers(vue: Vue) {
 }
 
 // Adiciona o Vuex para gerenciar estados
-import createStore from "@main/store";
+import createStore, { tokenKey } from "@main/store";
 import Vuex from "vuex";
 Vue.use(Vuex);
 
@@ -32,8 +32,9 @@ import SuiVue from "semantic-ui-vue";
 import { isMoment } from "moment";
 Vue.use(SuiVue);
 
-import createAxios from "@main/axios";
-const axios = createAxios();
+import createAxios, { RequestLog } from "@main/axios";
+const requests: RequestLog = { pending: [], errors: [] };
+const axios = createAxios(requests);
 const store = createStore(axios);
 Vue.prototype.$http = axios;
 
@@ -49,5 +50,12 @@ let app = new Vue({
     store: store,
     router: router,
     components: { Layout },
-    template: "<Layout/>"
+    template: "<Layout/>",
+    beforeCreate() {
+        // Carrega o usuário se ele estiver logado
+        let token = localStorage.getItem(tokenKey);
+        if (token) {
+            this.$store.dispatch("loadUser", token);
+        }
+    }
 });

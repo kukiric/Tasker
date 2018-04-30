@@ -58,7 +58,7 @@ export default Vue.extend({
                     this.info = "Entrando...";
                     try {
                         // Busca os dados do usuário, usando a token da resposta
-                        await this.$store.dispatch("loadUser", response);
+                        await this.$store.dispatch("loadUser", response.token);
                         // Retorna o usuário para a página que ele tentou acessar antes de estar logado
                         let redirect = this.$route.query.redirect || "/";
                         this.$router.push(redirect);

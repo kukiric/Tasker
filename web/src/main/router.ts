@@ -22,7 +22,7 @@ export default function createRouter(vueConstructor: typeof Vue, store: ReturnTy
     });
     // Redireciona o usuário para a página de login se ele ainda não tiver uma token
     router.beforeEach((to, from, next) => {
-        let token = store.getters.token;
+        let token = store.state.token;
         // Usuário sem token
         if (token == null && to.name !== "Login") {
             if (to.path !== "/") {

@@ -1,5 +1,7 @@
-import { ProjectStub, UserStub, RoleType, TaskStub, AuthResponse } from "api/stubs";
-import { AxiosInstance } from "axios";
+import { ProjectStub, UserStub, RoleType, TaskStub, AuthResponse, TaskType, TaskStatus, DecodedToken } from "api/stubs";
+import { AxiosInstance, AxiosResponse } from "axios";
+import * as JWT from "jsonwebtoken";
+import * as moment from "moment";
 import Vuex from "vuex";
 
 // Informações que sempre são trazdias junto com as tarefas
@@ -10,7 +12,6 @@ export const tokenKey = "Tasker/api-token";
 
 export default function createStore(http: AxiosInstance) {
     return new Vuex.Store({
-        strict: process.env.NODE_ENV === "development",
         state: {
             currentProject: null,
             currentUser: null,
@@ -23,9 +24,6 @@ export default function createStore(http: AxiosInstance) {
             token: string | null
         },
         getters: {
-            token(state) {
-                return localStorage.getItem(tokenKey);
-            },
             userIsAdmin(state) {
                 const user = state.currentUser;
                 return user && user.role && user.role.id! <= RoleType.ADMIN;
@@ -91,10 +89,11 @@ export default function createStore(http: AxiosInstance) {
             setUserData(state, data?: AuthResponse) {
                 if (data) {
                     state.currentUser = data.user;
+                    state.token = data.token;
                     localStorage.setItem(tokenKey, data.token);
                 }
                 else {
-                    state.currentUser = null;
+                    state.currentUser = state.token = null;
                     localStorage.removeItem(tokenKey);
                 }
             },
@@ -106,18 +105,20 @@ export default function createStore(http: AxiosInstance) {
             }
         },
         actions: {
-            async loadUser(context, data: AuthResponse) {
+            async loadUser(context, token: string) {
                 try {
-                    // Grava a token atual antes de prosseguir
-                    context.commit("setUserData", { user: null, token: data.token });
-                    // Busca mais informações sobre o usuário da API
-                    let req = await http.get(`/api/users/${data.user.id}?include=role,projects,tasks`);
-                    // Grava os dados no estado da aplicação
-                    let user = req.data as UserStub;
-                    context.commit("setUserData", { user, token: data.token });
+                    // Busca o ID do usuário da token
+                    let decodedToken = JWT.decode(token) as DecodedToken;
+                    // Grava a token antes de prosseguir com a requisição
+                    context.commit("setUserData", { user: null, token: token });
+                    // Busca mais informações sobre o usuário da API a partir da token
+                    let req = await http.get(`/api/users/${decodedToken.uid}?include=role,projects,tasks`);
+                    // Grava as informações completas
+                    context.commit("setUserData", { user: req.data, token: token });
                 }
                 catch (err) {
                     context.commit("setUserData", null);
+                    throw err;
                 }
             },
             async fetchProject(context, projectId: number) {
@@ -127,6 +128,7 @@ export default function createStore(http: AxiosInstance) {
                 }
                 catch (err) {
                     context.commit("setCurrentProject", { error: true });
+                    throw err;
                 }
             },
             async ensureAllUsersLoaded(context) {
@@ -138,6 +140,7 @@ export default function createStore(http: AxiosInstance) {
                 }
                 catch (err) {
                     context.commit("setAllUsers", null);
+                    throw err;
                 }
             },
             async addUser(store, user: UserStub) {
@@ -180,17 +183,18 @@ export default function createStore(http: AxiosInstance) {
                 }
             },
             async createTaskGroup(store) {
-                if (store.state.currentProject) {
-                    let req = await http.post(`/api/projects/${store.state.currentProject.id}/tasks`, {
+                let project = store.state.currentProject;
+                if (project) {
+                    let req = await http.post(`/api/projects/${project.id}/tasks`, {
                         title: "Nova tarefa",
                         estimate_work_hour: 10,
-                        progress: Math.random(),
-                        status: "Nova",
-                        type: "Funcionalidade",
-                        description: "Descrição",
-                        due_date: new Date()
+                        progress: 0,
+                        status: TaskStatus.NEW,
+                        type: TaskType.FEATURE,
+                        description: "",
+                        due_date: moment().add(1, "week")
                     });
-                    store.dispatch("fetchProject", store.state.currentProject.id);
+                    store.dispatch("fetchProject", project.id);
                 }
             },
             async updateTask(store, task: TaskStub) {
@@ -208,9 +212,10 @@ export default function createStore(http: AxiosInstance) {
                 }
             },
             async deleteTask(store, task: TaskStub) {
-                if (store.state.currentProject) {
-                    let req = await http.delete(`/api/projects/${store.state.currentProject.id}/tasks/${task.id}`);
-                    store.dispatch("fetchProject", store.state.currentProject.id);
+                let project = store.state.currentProject;
+                if (project) {
+                    let req = await http.delete(`/api/projects/${project.id}/tasks/${task.id}`);
+                    store.dispatch("fetchProject", project.id);
                 }
             }
         }
