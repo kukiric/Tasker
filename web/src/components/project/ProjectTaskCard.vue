@@ -2,7 +2,8 @@
     <sui-card :class="[getColorForStatus(task), { first: isFirst }]">
         <sui-card-content>
             <!-- Título -->
-            <sui-card-header><sui-icon :name="getIconForStatus(task)"/>
+            <sui-card-header>
+                <a title="Deletar tarefa" @click="$emit('delete')"><sui-icon :name="getIconForStatus(task)"/></a>
                 <EditableText tag="span" :value="task.title" @input="updateTitle"/>
             </sui-card-header>
             <!-- Datas -->

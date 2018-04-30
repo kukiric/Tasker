@@ -17,7 +17,10 @@ export default Vue.extend({
             return [];
         },
         createTaskGroup() {
-            this.$store.dispatch("createTaskGroup");
+            this.$store.dispatch("createTask");
+        },
+        createSubTask(parent: number) {
+            this.$store.dispatch("createTask", parent);
         },
         deleteTask(task: TaskStub) {
             this.$store.dispatch("deleteTask", task);

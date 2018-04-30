@@ -202,7 +202,7 @@ export default function createStore(http: AxiosInstance) {
                     store.commit("removeUserFromTask", { task, user });
                 }
             },
-            async createTaskGroup(store) {
+            async createTask(store, parent: number) {
                 let project = store.state.currentProject;
                 if (project) {
                     let req = await http.post(`/api/projects/${project.id}/tasks`, {
@@ -212,6 +212,7 @@ export default function createStore(http: AxiosInstance) {
                         status: TaskStatus.NEW,
                         type: TaskType.FEATURE,
                         description: "",
+                        parent_id: parent,
                         due_date: moment().add(1, "week")
                     });
                     store.dispatch("fetchProject", project.id);
