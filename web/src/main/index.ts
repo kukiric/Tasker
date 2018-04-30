@@ -32,9 +32,8 @@ import SuiVue from "semantic-ui-vue";
 import { isMoment } from "moment";
 Vue.use(SuiVue);
 
-import createAxios, { RequestLog } from "@main/axios";
-const requests: RequestLog = { pending: [], errors: [] };
-const axios = createAxios(requests);
+import createAxios from "@main/axios";
+const axios = createAxios(() => store);
 const store = createStore(axios);
 Vue.prototype.$http = axios;
 

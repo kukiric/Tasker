@@ -7,17 +7,26 @@ import Vuex from "vuex";
 // Informações que sempre são trazdias junto com as tarefas
 const taskIncludes = "parent,users,work_items,children[users,work_items]";
 
+// Classe que armazena todas as requisições pendentes e com erros
+export class RequestLog {
+    public pending: void[] = [];
+    public errors: number[] = [];
+}
+
 // Chave usada para armazenar e buscar a token do local storage
 export const tokenKey = "Tasker/api-token";
 
 export default function createStore(http: AxiosInstance) {
     return new Vuex.Store({
+        strict: process.env.NODE_ENV === "development",
         state: {
+            requests: new RequestLog(),
             currentProject: null,
             currentUser: null,
             allUsers: null,
             token: null
         } as {
+            requests: RequestLog,
             currentProject: ProjectStub & { error?: boolean } | null,
             currentUser: UserStub | null,
             allUsers: UserStub[] | null,
@@ -98,10 +107,20 @@ export default function createStore(http: AxiosInstance) {
                 }
             },
             reset(state) {
+                state.requests = new RequestLog();
                 state.currentProject = null;
                 state.currentUser = null;
                 state.allUsers = null;
                 state.token = null;
+            },
+            pushRequest(state) {
+                state.requests.pending.push();
+            },
+            popRequest(state) {
+                state.requests.pending.pop();
+            },
+            pushError(state, error: number) {
+                state.requests.errors.push(error);
             }
         },
         actions: {

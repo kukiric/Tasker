@@ -60,8 +60,11 @@ export default Vue.extend({
         removeUser(user: UserStub) {
             this.$store.dispatch("removeUserFromTask", { task: this.task, user: user });
         },
-        updateTask() {
-            this.$store.dispatch("updateTask", this.task);
+        updateTitle(title: string) {
+            this.$store.dispatch("updateTask", { ...this.task, title });
+        },
+        updateDescription(description: string) {
+            this.$store.dispatch("updateTask", { ...this.task, description });
         }
     }
 });

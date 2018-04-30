@@ -1,3 +1,4 @@
+import { RequestLog } from "@main/store";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -6,7 +7,16 @@ export default Vue.extend({
     },
     computed: {
         syncState() {
-            return 0;
+            let requests: RequestLog = this.$store.state.requests;
+            if (requests.errors.length > 0) {
+                return 0 - requests.errors.slice(-1)[0];
+            }
+            else if (requests.pending.length > 0) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
         },
         status() {
             switch (this.syncState) {

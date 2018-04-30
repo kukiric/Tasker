@@ -3,7 +3,7 @@
         <sui-card-content>
             <!-- Título -->
             <sui-card-header><sui-icon :name="getIconForStatus(task)"/>
-                <EditableText tag="span" v-model="task.title" @input="updateTask"/>
+                <EditableText tag="span" :value="task.title" @input="updateTitle"/>
             </sui-card-header>
             <!-- Datas -->
             <sui-card-meta>Entrega:
@@ -15,7 +15,7 @@
                 <div><b>Tipo:</b> {{ task.type }}</div>
                 <div><b>Status:</b> {{ task.status }}</div>
                 <br>
-                <EditableText tag="div" v-model="task.description" @input="updateTask" :display="md" :spellcheck="false" textarea :rows="12" placeholder="Adicionar descrição..."/>
+                <EditableText tag="div" :value="task.description" @input="updateDescription" :display="md" :spellcheck="false" textarea :rows="12" placeholder="Adicionar descrição..."/>
             </sui-card-description>
         </sui-card-content>
         <sui-card-content extra>
