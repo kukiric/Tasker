@@ -2,14 +2,15 @@ import { ProjectStub, TaskStub, TaskStatus, UserStub, TaskType } from "api/stubs
 import EditableText from "@components/misc/EditableText.vue";
 import * as moment from "moment";
 import utils from "@main/utils";
+import { clamp } from "lodash";
 import Vue from "vue";
 
 export default Vue.extend({
     components: { EditableText },
     data() {
         return {
-            editMode: false,
-            taskStatus: "" // Para mudar a cor das cartas sem ter que re-construir todo o estado
+            taskStatus: "", // Para mudar a cor das cartas sem ter que re-construir todo o estado
+            taskProgress: 0 // Idem, mas para a barra de progresso
         };
     },
     props: {
@@ -21,7 +22,7 @@ export default Vue.extend({
     },
     computed: {
         progress(): number {
-            return Math.floor(this.task.progress * 100);
+            return Math.floor(this.taskProgress * 100);
         },
         taskStatusList() {
             return Object.values(TaskStatus);
@@ -96,9 +97,24 @@ export default Vue.extend({
         },
         updateStatusInternal(status: string) {
             this.taskStatus = status;
+        },
+        setProgress(event: MouseEvent) {
+            // Busca o elemento dentro da instância do componente
+            let progressBar = (this.$refs.progressBar as any).$el;
+            if (progressBar instanceof HTMLElement) {
+                // Calcula a porcentagem do clique na barra
+                let rect = progressBar.getBoundingClientRect();
+                let width = rect.width;
+                let start = rect.left;
+                let click = event.clientX;
+                let progress = clamp((click - start) / width, 0, 1);
+                this.sendUpdate({ ...this.task, progress });
+                this.taskProgress = progress;
+            }
         }
     },
     created() {
         this.taskStatus = this.task.status;
+        this.taskProgress = this.task.progress;
     }
 });
