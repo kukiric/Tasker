@@ -34,6 +34,35 @@
     </sui-card>
 </template>
 <style scoped>
+    .ui.card {
+        background-color: rgba(255, 255, 255, 0.90) !important;
+        transition: background-color 100ms ease;
+    }
+    .ui.card:hover {
+        background-color: white !important;
+    }
+    .ui.first.card {
+        margin-right: 3em;
+    }
+    .ui.first.card::after {
+        font-family: "Icons";
+        position: absolute;
+        right: -2em;
+        height: initial;
+        visibility: visible;
+        top: calc(50% - 0.5em);
+        transform: scale(4.0);
+        content: "\F105"; /* Caractere '>' (angle-right) */
+        color: lightgray;
+    }
+    .ui.card .text {
+        max-height: 12em;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: justify;
+        text-justify: inter-word;
+        padding-right: 0.5em;
+    }
     div.ui.button.dropdown {
         text-align: center;
         margin: 0.5em 0;

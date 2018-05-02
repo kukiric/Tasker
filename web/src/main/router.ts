@@ -13,6 +13,7 @@ export default function createRouter(vueConstructor: typeof Vue, store: ReturnTy
     vueConstructor.use(VueRouter);
     // Define as rotas da aplicação
     let router = new VueRouter({
+        mode: "history",
         routes: [
             { path: "/", name: "Home", component: HomePage },
             { path: "/login", name: "Login", component: LoginPage },

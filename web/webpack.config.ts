@@ -4,6 +4,8 @@ import * as Webpack from "webpack";
 import * as path from "path";
 import "dotenv/config";
 
+const base = process.env.BASE_URL || "/";
+
 function rel(relativePath: string) {
     return path.join(__dirname, relativePath);
 }
@@ -16,7 +18,10 @@ const devServerConfig: WebpackDevServer.Configuration = {
     contentBase: rel("public/"),
     historyApiFallback: true,
     stats: "minimal",
-    overlay: true
+    overlay: true,
+    proxy: {
+        "/api": "http://localhost:" + process.env.PORT
+    }
 };
 
 const config: Webpack.Configuration = {
@@ -26,7 +31,7 @@ const config: Webpack.Configuration = {
         styles: rel("src/main/styles.ts")
     },
     output: {
-        publicPath: "dist/",
+        publicPath: base + "dist/",
         path: out("public/dist/"),
         filename: "[name].js"
     },
@@ -52,7 +57,7 @@ const config: Webpack.Configuration = {
     },
     plugins: [
         new Webpack.DefinePlugin({
-            BASE_URL: JSON.stringify(process.env.BASE_URL)
+            BASE_URL: JSON.stringify(base)
         }),
         new CopyWebpackPlugin([
             { from: rel("public/index.html"), to: out("public/index.html") }

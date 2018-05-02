@@ -69,35 +69,6 @@ body {
     margin: 1em;
 }
 
-.ui.card {
-    background-color: rgba(255, 255, 255, 0.95) !important;
-}
-
-.ui.first.card {
-    margin-right: 3em;
-}
-
-.ui.first.card::after {
-    font-family: "Icons";
-    position: absolute;
-    right: -2em;
-    height: initial;
-    visibility: visible;
-    top: calc(50% - 0.5em);
-    transform: scale(4.0);
-    content: "\F105"; /* Caractere '>' (angle-right) */
-    color: lightgray;
-}
-
-.ui.card .text {
-    max-height: 12em;
-    overflow-x: hidden;
-    overflow-y: auto;
-    text-align: justify;
-    text-justify: inter-word;
-    padding-right: 0.5em;
-}
-
 .ui.project.progress {
     margin-bottom: 0.5em;
     overflow: hidden;
