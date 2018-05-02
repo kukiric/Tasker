@@ -35,25 +35,11 @@
 </template>
 <style scoped>
     .ui.card {
-        background-color: rgba(255, 255, 255, 0.90) !important;
+        background-color: rgba(255, 255, 255, 0.95);
         transition: background-color 100ms ease;
     }
     .ui.card:hover {
-        background-color: white !important;
-    }
-    .ui.first.card {
-        margin-right: 3em;
-    }
-    .ui.first.card::after {
-        font-family: "Icons";
-        position: absolute;
-        right: -2em;
-        height: initial;
-        visibility: visible;
-        top: calc(50% - 0.5em);
-        transform: scale(4.0);
-        content: "\F105"; /* Caractere '>' (angle-right) */
-        color: lightgray;
+        background-color: white;
     }
     .ui.card .text {
         max-height: 12em;
