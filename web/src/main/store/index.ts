@@ -248,6 +248,8 @@ export default function createStore(http: AxiosInstance) {
                     };
                     // Envia as informações para o servidor
                     let req = await http.put(`/api/projects/${project.id}/tasks/${task.id}`, taskPartial);
+                    // Recarrega o projeto com as informações novas (TODO: achar e recarregar só a tarefa...)
+                    store.dispatch("fetchProject", { id: project.id, refresh: false });
                 }
             },
             async deleteTask(store, task: TaskStub) {
