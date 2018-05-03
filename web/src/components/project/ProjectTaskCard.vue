@@ -62,6 +62,9 @@
         background-color: #1678c2;
         visibility: visible;
     }
+    .justified.text {
+        text-justify: distribute;
+    }
     div.ui.button.dropdown {
         text-align: center;
         margin: 0.5em 0;
@@ -71,12 +74,27 @@
     }
 </style>
 <style>
-    div.ui.progress > div.bar > div.progress {
+    .ui.project.progress {
+        margin-bottom: 0.5em;
+        overflow: hidden;
+    }
+    .ui.project.progress > .bar {
+        min-width: 0;
+    }
+    .ui.project.progress.low > .bar > .progress {
+        right: auto;
+        left: 1em;
+    }
+    .ui.project.progress > .bar > .progress {
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
         pointer-events: none;
+    }
+    .ui.project.progress > .bar > .progress {
+        text-shadow: 0 0 4px black, 0 0 2px black, 0 0 1px black;
+        font-weight: bolder;
     }
 </style>
 <script src="./ProjectTaskCard.ts" lang="ts"></script>

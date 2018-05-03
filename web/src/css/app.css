@@ -31,26 +31,3 @@ body {
     position: sticky;
     z-index: 10;
 }
-
-.ui.project.progress {
-    margin-bottom: 0.5em;
-    overflow: hidden;
-}
-
-.ui.project.progress > .bar {
-    min-width: 0;
-}
-
-.ui.project.progress.low > .bar > .progress {
-    right: auto;
-    left: 1em;
-}
-
-.ui.project.progress > .bar > .progress {
-    text-shadow: 0 0 2px black;
-    font-weight: bolder;
-}
-
-.justified.text {
-    text-justify: distribute;
-}
