@@ -47,7 +47,7 @@ export default Vue.extend({
     methods: {
         refocus() {
             let input = this.$refs.input;
-            if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
+            if (input instanceof HTMLElement) {
                 input.focus();
             }
         },
