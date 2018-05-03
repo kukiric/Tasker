@@ -3,12 +3,6 @@ import { mapState } from "vuex";
 import Vue from "vue";
 
 export default Vue.extend({
-    methods: {
-        logout() {
-            localStorage.clear();
-            window.location.reload();
-        }
-    },
     computed: {
         user(): UserStub {
             return this.$store.state.currentUser!;
@@ -46,6 +40,12 @@ export default Vue.extend({
                 }
             }
             return "red dont icon";
+        }
+    },
+    methods: {
+        logout() {
+            localStorage.clear();
+            window.location.reload();
         }
     }
 });

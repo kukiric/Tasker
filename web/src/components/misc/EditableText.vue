@@ -16,15 +16,13 @@
         display: inline;
         margin: 0;
     }
-    input {
+    input, select, textarea {
         border: 0;
         box-shadow: 0 0 4px 2px skyblue;
     }
     textarea {
         width: 100%;
         resize: none;
-        border: 0;
-        box-shadow: 0 0 4px 2px skyblue;
     }
 </style>
 <script src="./EditableText.ts" lang="ts"></script>

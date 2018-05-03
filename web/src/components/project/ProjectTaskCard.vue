@@ -1,5 +1,5 @@
 <template>
-    <sui-card :class="[getColorForStatus(task), { first: isFirst }]">
+    <sui-card :class="{ first: isFirst }">
         <sui-card-content>
             <!-- Título -->
             <sui-card-header>
@@ -37,8 +37,9 @@
     .ui.card {
         background-color: rgba(255, 255, 255, 0.95);
         transition: background-color 100ms ease;
+        z-index: 1;
     }
-    .ui.card:hover {
+    .ui.card:hover, .ui.card:focus-within {
         background-color: white;
     }
     .ui.card .text {
@@ -49,12 +50,33 @@
         text-justify: inter-word;
         padding-right: 0.5em;
     }
+    .ui.card.first {
+        margin-bottom: 2px !important;
+    }
+    .ui.card.first::after {
+        position: absolute;
+        bottom: -2px;
+        left: -1px;
+        width: calc(100% + 2px);
+        height: 2px;
+        background-color: #1678c2;
+        visibility: visible;
+    }
     div.ui.button.dropdown {
         text-align: center;
         margin: 0.5em 0;
     }
     img.avatar {
         margin-bottom: 1em;
+    }
+</style>
+<style>
+    div.ui.progress > div.bar > div.progress {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        pointer-events: none;
     }
 </style>
 <script src="./ProjectTaskCard.ts" lang="ts"></script>

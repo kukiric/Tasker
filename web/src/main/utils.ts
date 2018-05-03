@@ -8,7 +8,7 @@ import * as md5 from "md5";
  */
 export default {
     isLate(project: ProjectStub) {
-        return project.status !== "Concluído" && moment("now").isAfter(project.due_date, "day");
+        return project.status !== "Concluído" && moment().isAfter(project.due_date, "day");
     },
     date(date: string) {
         return moment(date).format("L");
@@ -19,10 +19,7 @@ export default {
     gravatar(email: string) {
         return `https://www.gravatar.com/avatar/${md5(email)}?s=32&d=identicon`;
     },
-    picsum(hash: string) {
-        
-    },
     md(source: string) {
-        return marked(source, { gfm: true, sanitize: true });
+        return marked(source, { gfm: false, sanitize: true });
     }
 };

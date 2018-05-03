@@ -21,8 +21,8 @@ export default class Project extends Model implements ProjectStub {
     public tasks?: Task[];
     public users?: User[];
     public tags?: Tag[];
-    public created_at!: string;
-    public updated_at!: string;
+    public created_at!: Date;
+    public updated_at!: Date;
 
     public static validStatuses = Object.values(ProjectStatus);
 

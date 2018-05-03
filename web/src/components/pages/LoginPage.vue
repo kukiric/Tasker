@@ -40,4 +40,20 @@
             </div>
         </div>
 </template>
+<style scoped>
+    .ui.login.area {
+        width: 512px;
+        margin: 64px auto;
+    }
+    .ui.raised.login.area {
+        box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
+    }
+    @media screen and (max-width: 767px) {
+        .ui.login.area {
+            box-shadow: initial !important;
+            margin: -2px 0;
+            width: 100%;
+        }
+    }
+</style>
 <script src="./LoginPage.ts" lang="ts"></script>

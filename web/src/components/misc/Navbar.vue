@@ -21,4 +21,17 @@
         </div>
     </sui-menu>
 </template>
+<style scoped>
+    .ui.attached.menu {
+        margin-bottom: 1em;
+        background-color: white;
+        box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
+    }
+    @media screen and (max-width: 767px) {
+        .ui.attached.menu {
+            margin-bottom: 0;
+            box-shadow: initial;
+        }
+    }
+</style>
 <script src="./Navbar.ts" lang="ts"></script>

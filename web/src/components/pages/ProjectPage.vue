@@ -1,6 +1,6 @@
 <template>
     <ErrorPage v-if="project && project.error"/>
-    <div v-else>
+    <div class="root" v-else>
         <!-- Barra lateral -->
         <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">
             <sui-button class="left attached side button" color="blue" icon="users" @click="showSidebar = !showSidebar"/>
@@ -36,15 +36,19 @@
             <h1 class="ui header">
                 <i class="teal open folder icon"></i>
                 <div v-if="project" class="content">
-                    <div>{{ project.name }}</div>
+                        <EditableText :value="project.name" @input="updateName"/>
                     <div class="sub header" :class="{ red: isLate(project) }">
                         <i v-if="isLate(project)" class="clock icon"></i>
-                        <span>{{ project.status }}: {{ date(project.created_at) }} - {{ date(project.due_date) }}</span>
+                        <EditableText tag="span" :value="project.status" select :options="projectStatusList" @input="updateStatus" class="bold"/>
+                        <div style="display: inline-block; width: 20px"></div>
+                        Criado em <EditableText tag="span" :value="project.created_at" :display="date" type="date" @input="updateCreatedAt" class="bold"/>
+                        <div style="display: inline-block; width: 10px"></div>
+                        Entregar até <EditableText tag="span" :value="project.due_date" :display="date" type="date" @input="updateDueDate" class="bold"/>
                     </div>
                 </div>
                 <div v-else class="content">Carregando...</div>
             </h1>
-            <SyncIndicator class="sync" size="large"/>
+            <SyncIndicator class="sync indicator" size="large"/>
         </div>
         <!-- Informações do projeto -->
         <div class="project area">
@@ -55,13 +59,40 @@
     </div>
 </template>
 <style scoped>
-    .sync {
+    .root {
+        width: 100%;
+        height: 100%;
+    }
+    .bold {
+        font-weight: bold;
+    }
+    .ui.sidebar {
+        overflow: visible !important;
+    }
+    .ui.sidebar.inverted div, .ui.sidebar.inverted .header {
+        color: white !important;
+    }
+    .ui.sidebar .side.button {
+        position: absolute;
+        visibility: visible !important;
+        transform: translate(-100%, -50%);
+        border-bottom-left-radius: 4px;
+        border-top-left-radius: 4px;
+        z-index: 50;
+        top: 10em;
+    }
+    .sync.indicator {
         position: absolute;
         right: 0.25em;
         top: 0.5em;
     }
     .ui.header {
         margin-bottom: 0;
+    }
+    .project.area {
+        width: 100%;
+        overflow-y: hidden;
+        overflow-x: auto;
     }
     .background {
         position: fixed;
@@ -70,6 +101,11 @@
         background-image: url("https://source.unsplash.com/1920x1080/daily?nature");
         background-repeat: no-repeat;
         z-index: -1000;
+    }
+    @media screen and (max-width: 767px) {
+        .ui.sidebar .side.button {
+            font-size: 125%;
+        }
     }
 </style>
 <script src="./ProjectPage.ts" lang="ts"></script>

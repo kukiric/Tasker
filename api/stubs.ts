@@ -9,8 +9,8 @@ export interface ProjectStub {
     tasks?: Partial<TaskStub>[];
     users?: Partial<UserStub>[];
     tags?: Partial<TagStub>[];
-    created_at?: string;
-    updated_at?: string;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 export interface RoleStub {
@@ -54,8 +54,8 @@ export interface UserStub {
     projects?: ProjectStub[];
     tasks?: TaskStub[];
     role?: Partial<RoleStub>;
-    created_at?: string;
-    updated_at?: string;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 export interface VersionStub {

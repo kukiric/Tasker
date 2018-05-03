@@ -34,28 +34,28 @@ export default function createStore(http: AxiosInstance) {
             token: string | null
         },
         getters: {
-            userIsAdmin(state) {
-                const user = state.currentUser;
+            userIsAdmin(context) {
+                const user = context.currentUser;
                 return user && user.role && user.role.id! <= RoleType.ADMIN;
             },
-            userIsManager(state) {
-                const user = state.currentUser;
+            userIsManager(context) {
+                const user = context.currentUser;
                 return user && user.role && user.role.id! <= RoleType.MANAGER;
             },
-            projectId(state) {
-                return state.currentProject && state.currentProject.id;
+            projectId(context) {
+                return context.currentProject && context.currentProject.id;
             },
-            usersNotInProject(state) {
-                const project = state.currentProject;
-                if (project && project.users && state.allUsers) {
-                    return state.allUsers.filter((u1) => {
+            usersNotInProject(context) {
+                const project = context.currentProject;
+                if (project && project.users && context.allUsers) {
+                    return context.allUsers.filter((u1) => {
                         return project.users!.some((u2) => u1.id === u2.id) === false;
                     });
                 }
                 return [];
             },
-            rootTasks(state) {
-                const project = state.currentProject;
+            rootTasks(context) {
+                const project = context.currentProject;
                 if (project && project.tasks) {
                     // Busca somente as tarefas sem pai
                     let rootTasks = project.tasks.filter((task) => task.parent == null);
@@ -125,41 +125,56 @@ export default function createStore(http: AxiosInstance) {
             }
         },
         actions: {
-            async loadUser(context, token: string) {
+            async loadUser(store, token: string) {
                 try {
                     // Busca o ID do usuário da token
                     let decodedToken = JWT.decode(token) as DecodedToken;
                     // Grava a token antes de prosseguir com a requisição
-                    context.commit("setUserData", { user: null, token: token });
+                    store.commit("setUserData", { user: null, token: token });
                     // Busca mais informações sobre o usuário da API a partir da token
                     let req = await http.get(`/api/users/${decodedToken.uid}?include=role,projects,tasks`);
                     // Grava as informações completas
-                    context.commit("setUserData", { user: req.data, token: token });
+                    store.commit("setUserData", { user: req.data, token: token });
                 }
                 catch (err) {
-                    context.commit("setUserData", null);
+                    store.commit("setUserData", null);
                     throw err;
                 }
             },
-            async fetchProject(context, projectId: number) {
+            async fetchProject(store, { id, refresh }: { id: number, refresh: boolean }) {
                 try {
-                    let req = await http.get(`/api/projects/${projectId}?include=users[role],tasks[${taskIncludes}]`);
-                    context.commit("setCurrentProject", req.data);
+                    if (refresh) {
+                        store.commit("setCurrentProject", null);
+                    }
+                    let req = await http.get(`/api/projects/${id}?include=users[role],tasks[${taskIncludes}]`);
+                    store.commit("setCurrentProject", req.data);
                 }
                 catch (err) {
-                    context.commit("setCurrentProject", { error: true });
+                    store.commit("setCurrentProject", { error: true });
                     throw err;
                 }
             },
-            async ensureAllUsersLoaded(context) {
+            async updateProject(store, project: ProjectStub) {
+                    // Cria o objeto com as novas informações do projeto
+                let projectPartial = {
+                    name: project.name,
+                    status: project.status,
+                    due_date: project.due_date
+                };
+                // Envia as informações para o servidor
+                let req = await http.put(`/api/projects/${project.id}`, projectPartial);
+                // Recarrega o projeto para exibição
+                store.dispatch("fetchProject", { id: project.id, refresh: false });
+            },
+            async ensureAllUsersLoaded(store) {
                 try {
-                    if (!context.state.allUsers) {
+                    if (!store.state.allUsers) {
                         let req = await http.get(`/api/users?include=role`);
-                        context.commit("setAllUsers", req.data);
+                        store.commit("setAllUsers", req.data);
                     }
                 }
                 catch (err) {
-                    context.commit("setAllUsers", null);
+                    store.commit("setAllUsers", null);
                     throw err;
                 }
             },
@@ -215,7 +230,7 @@ export default function createStore(http: AxiosInstance) {
                         parent_id: parent,
                         due_date: moment().add(1, "week")
                     });
-                    store.dispatch("fetchProject", project.id);
+                    store.dispatch("fetchProject", { id: project.id, refresh: false });
                 }
             },
             async updateTask(store, task: TaskStub) {
@@ -239,7 +254,7 @@ export default function createStore(http: AxiosInstance) {
                 let project = store.state.currentProject;
                 if (project) {
                     let req = await http.delete(`/api/projects/${project.id}/tasks/${task.id}`);
-                    store.dispatch("fetchProject", project.id);
+                    store.dispatch("fetchProject", { id: project.id, refresh: false });
                 }
             }
         }
