@@ -34,7 +34,8 @@ export default function createAxios(store: () => ReturnType<typeof createStore>)
         return value;
     }, (err) => {
         store().commit("popRequest");
-        store().commit("pushError", err.response.status);
+        let code = err.response ? err.response.status : err.message;
+        store().commit("pushError", code);
         throw err;
     });
     return axiosInstance;

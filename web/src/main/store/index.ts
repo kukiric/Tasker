@@ -11,7 +11,7 @@ const taskIncludes = "parent,users,work_items,children[users,work_items]";
 // Classe que armazena todas as requisições pendentes e com erros
 export class RequestLog {
     public pending: boolean[] = [];
-    public errors: number[] = [];
+    public errors: any[] = [];
 }
 
 // Chave usada para armazenar e buscar a token do local storage

@@ -9,7 +9,7 @@ export default Vue.extend({
         syncState() {
             let requests: RequestLog = this.$store.state.requests;
             if (requests.errors.length > 0) {
-                return 0 - requests.errors.slice(-1)[0];
+                return requests.errors.slice(-1)[0];
             }
             else if (requests.pending.length > 0) {
                 return 1;
@@ -32,7 +32,7 @@ export default Vue.extend({
                 };
                 // Erro
                 default: return {
-                    message: "Ocorreu um erro de sincronização! 😨\n\nCódigo do erro: " + (-this.syncState),
+                    message: "Ocorreu um erro de sincronização! 😨\n\nCódigo do erro: " + this.syncState,
                     icon: { name: "close", color: "red" }
                 };
             }
