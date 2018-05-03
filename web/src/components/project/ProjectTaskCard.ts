@@ -69,8 +69,27 @@ export default Vue.extend({
         addUser(user: UserStub) {
             this.$store.dispatch("addUserToTask", { task: this.task, user: user });
         },
+        dropUser(event: DragEvent) {
+            let payload = event.dataTransfer.getData("addUserRequest");
+            if (payload) {
+                let user = JSON.parse(payload) as UserStub;
+                let userInTask = this.task.users!.some((other) => other.id === user.id);
+                if (!userInTask) {
+                    this.addUser(user);
+                }
+            }
+        },
         removeUser(user: UserStub) {
             this.$store.dispatch("removeUserFromTask", { task: this.task, user: user });
+        },
+        dragStartUser(event: DragEvent, user: UserStub) {
+            let target = event.target as HTMLElement;
+            target.classList.add("transparent");
+            event.dataTransfer.setData("removeUserRequest", JSON.stringify({ user: user, task: this.task }));
+        },
+        dragEndUser(event: DragEvent) {
+            let target = event.target as HTMLElement;
+            target.classList.remove("transparent");
         },
         async sendUpdate(newValues: TaskStub) {
             await this.$store.dispatch("updateTask", newValues);
@@ -87,7 +106,7 @@ export default Vue.extend({
             }
         },
         updateHours(estimate_work_hour: number) {
-            this.sendUpdate({ ...this.task, estimate_work_hour })
+            this.sendUpdate({ ...this.task, estimate_work_hour });
         },
         updateType(type: string) {
             this.sendUpdate({ ...this.task, type: type as TaskType });

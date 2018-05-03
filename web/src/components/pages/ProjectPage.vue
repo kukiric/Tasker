@@ -2,14 +2,14 @@
     <ErrorPage v-if="project && project.error"/>
     <div class="root" v-else>
         <!-- Barra lateral -->
-        <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">
+        <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar" @dragover.prevent @drop="dropUser">
             <sui-button class="left attached side button" color="blue" icon="users" @click="showSidebar = !showSidebar"/>
             <div class="item">
                 <!-- Lista de membros do projeto -->
                 <h1 class="ui header">Membros</h1>
                 <div class="ui middle aligned relaxed list" v-if="project">
-                    <div class="item"  v-for="user in project.users" :key="user.id">
-                        <sui-image avatar :src="gravatar(user.email)"/>
+                    <div class="item" v-for="user in project.users" :key="user.id" draggable @dragstart="dragStartUser($event, user)" @dragend="dragEndUser">
+                        <sui-image avatar draggable="false" :src="gravatar(user.email)"/>
                         <div class="content">
                             <div class="header">{{ user.fullname }}</div>
                             <div class="description">{{ user.email }}</div>
@@ -62,9 +62,6 @@
     .root {
         width: 100%;
         height: 100%;
-    }
-    .bold {
-        font-weight: bold;
     }
     .ui.sidebar {
         overflow: visible !important;

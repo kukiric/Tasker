@@ -1,4 +1,4 @@
-import { ProjectStub, UserStub, ProjectStatus } from "api/stubs";
+import { ProjectStub, UserStub, ProjectStatus, TaskStub } from "api/stubs";
 import ProjectOverview from "@components/project/ProjectOverview.vue";
 import SyncIndicator from "@components/misc/SyncIndicator.vue";
 import EditableText from "@components/misc/EditableText.vue";
@@ -60,6 +60,25 @@ export default Vue.extend({
         updateDueDate(date: Date) {
             if (this.project) {
                 this.sendUpdate({ ...this.project, due_date: moment(date).toDate() });
+            }
+        },
+        dragStartUser(event: DragEvent, user: UserStub) {
+            let target = event.target as HTMLElement;
+            target.classList.add("transparent");
+            event.dataTransfer.setData("addUserRequest", JSON.stringify(user));
+        },
+        dragEndUser(event: DragEvent) {
+            let target = event.target as HTMLElement;
+            target.classList.remove("transparent");
+        },
+        dropUser(event: DragEvent) {
+            let payload = event.dataTransfer.getData("removeUserRequest");
+            if (payload) {
+                let obj = JSON.parse(payload) as {
+                    user: UserStub,
+                    task: TaskStub
+                };
+                this.$store.dispatch("removeUserFromTask", obj);
             }
         }
     },

@@ -6,6 +6,12 @@
     </div>
 </template>
 <style>
+    .bold {
+        font-weight: bold;
+    }
+    .transparent {
+        opacity: 0.5;
+    }
     @media screen and (max-width: 1199px) {
         .ui.container {
             margin: auto 2em !important;

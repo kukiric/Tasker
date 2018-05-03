@@ -1,5 +1,5 @@
 <template>
-    <sui-card :class="{ first: isFirst }">
+    <sui-card :class="{ first: isFirst }" @dragover.prevent @drop="dropUser">
         <sui-card-content>
             <!-- Título -->
             <sui-card-header>
@@ -19,8 +19,11 @@
         </sui-card-content>
         <sui-card-content extra>
             <!-- Usuários -->
-            <div v-if="task.users.length > 0">
-                <sui-image avatar v-for="user in task.users" :key="user.id" :src="gravatar(user.email)" :title="user.fullname"/>
+            <div class="user list">
+                <a v-for="user in task.users" :key="user.id" :title="user.fullname" draggable @dragstart="dragStartUser($event, user)" @dragend="dragEndUser">
+                    <sui-image avatar :src="gravatar(user.email)"/>
+                </a>
+                <div v-if="task.users.length == 0" class="hint text">Adicione usuários arrastando-os para a tarefa desejada.</div>
             </div>
             <!-- Itens de trabalho (horas) -->
             <sui-list v-if="task.work_items && task.work_items.length > 0">
@@ -62,6 +65,11 @@
         background-color: #1678c2;
         visibility: visible;
     }
+    .hint.text {
+        text-align: center !important;
+        font-weight: bold;
+        color: #ccc;
+    }
     .justified.text {
         text-justify: distribute;
     }
@@ -75,7 +83,7 @@
 </style>
 <style>
     .ui.project.progress {
-        margin-bottom: 0.5em;
+        margin: 0.5em 0;
         overflow: hidden;
     }
     .ui.project.progress > .bar {
