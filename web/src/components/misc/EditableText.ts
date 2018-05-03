@@ -1,6 +1,6 @@
 import { noop, debounce, Cancelable } from "lodash";
-import * as moment from "moment";
 import Vue, { PropOptions } from "vue";
+import * as moment from "moment";
 
 export default Vue.extend({
     data() {
@@ -10,13 +10,7 @@ export default Vue.extend({
             editing: false,
             content: "",
             saved: ""
-        } as {
-            debouncedUpdate: ((s: string) => void) & Cancelable,
-            canUnfocus: boolean,
-            editing: boolean,
-            content: any,
-            saved: any
-        };
+        }
     },
     props: {
         debounce: { type: Number, default: 1000 },
@@ -34,13 +28,13 @@ export default Vue.extend({
         display: Function
     },
     computed: {
-        contentIsEmpty(): boolean {
+        contentIsEmpty() {
             return this.placeholder != null && this.content.trim() === "";
         },
-        divContent(): string {
+        divContent() {
             return this.contentIsEmpty ? this.placeholder : this.content;
         },
-        divStyle(): string {
+        divStyle() {
             return this.contentIsEmpty ? "color: #bbb" : "";
         }
     },

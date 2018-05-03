@@ -11,16 +11,15 @@ export default Vue.extend({
     methods: {
         ...utils,
         getTaskTree(task: Partial<TaskStub>) {
-            if (task.children) {
-                return [task].concat(task.children);
-            }
-            return [];
+            let parent = task;
+            let children = this.project.tasks.filter((other) => other.parent && other.parent.id === task.id);
+            return [parent].concat(children);
         },
         createTaskGroup() {
             this.$store.dispatch("createTask");
         },
-        createSubTask(parent: number) {
-            this.$store.dispatch("createTask", parent);
+        createSubTask(parentId: number) {
+            this.$store.dispatch("createTask", parentId);
         },
         deleteTask(task: TaskStub) {
             this.$store.dispatch("deleteTask", task);

@@ -10,15 +10,7 @@ export default Vue.extend({
             isShowing: false,
             form: {
                 name: "",
-                status: "Novo",
                 due_date: defaultDate
-            }
-        } as {
-            isShowing: boolean,
-            form: {
-                name: string,
-                status: string,
-                due_date: string
             }
         };
     },
@@ -43,9 +35,9 @@ export default Vue.extend({
                     // Monta o objeto básico do novo projeto
                     let project: Partial<ProjectStub> = {
                         name: this.form.name,
-                        status: this.form.status,
+                        status: "Novo",
                         due_date: moment(this.form.due_date).toDate(),
-                        users: [ { id: currentUser.id } ],
+                        users: [{ id: currentUser.id }],
                         manager_id: currentUser.id
                     };
                     // Envia o novo projeto para a API
@@ -61,24 +53,17 @@ export default Vue.extend({
         }
     },
     computed: {
-        canSubmit(): boolean {
+        canSubmit() {
             let nameIsFilled = this.form.name.length > 0;
             let isDueDateValid = moment(this.form.due_date).isSameOrAfter(moment(), "day");
             return nameIsFilled && isDueDateValid;
-        },
-        statuses(): any[] {
-            return Object.values(ProjectStatus).map((v) => ({
-                key: v,
-                text: v,
-                value: v
-            }));
         }
     },
     watch: {
-        show: function(value) {
+        show: function(value, old) {
             this.isShowing = value;
         },
-        isShowing: function(value) {
+        isShowing: function(value, old) {
             if (!value) {
                 this.$emit("close");
                 this.form.name = "";

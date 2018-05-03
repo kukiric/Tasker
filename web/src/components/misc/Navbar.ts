@@ -4,18 +4,18 @@ import Vue from "vue";
 
 export default Vue.extend({
     computed: {
-        user(): UserStub {
-            return this.$store.state.currentUser!;
+        ...mapState([ "currentUser" ]),
+        user() {
+            return this.currentUser;
         },
-        projects(): ProjectStub[] {
-            return this.$store.state.currentUser!.projects!;
+        projects() {
+            return this.currentUser.projects;
         },
-        myProjects(): any[] {
-            let currentUser = this.$store.state.currentUser;
-            if (currentUser) {
-                let projects = currentUser.projects!;
+        myProjects() {
+            if (this.currentUser) {
+                let projects = this.projects;
                 projects = projects.sort((a: ProjectStub, b: ProjectStub) => {
-                    return a.name! > b.name! ? 1 : -1;
+                    return a.name > b.name ? 1 : -1;
                 });
                 return projects.map((p: ProjectStub) => {
                     return {
@@ -29,10 +29,10 @@ export default Vue.extend({
         },
         userIconClass() {
             if (this.user.role) {
-                if (this.user.role!.name === "Admin") {
+                if (this.user.role.name === "Admin") {
                     return "key icon";
                 }
-                else if (this.user.role!.name === "Manager") {
+                else if (this.user.role.name === "Manager") {
                     return "folder icon";
                 }
                 else {

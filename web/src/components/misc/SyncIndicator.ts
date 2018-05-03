@@ -1,4 +1,5 @@
 import { RequestLog } from "@main/store";
+import { mapState } from "vuex";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -6,8 +7,9 @@ export default Vue.extend({
         size: { type: String }
     },
     computed: {
+        ...mapState([ "requests" ]),
         syncState() {
-            let requests: RequestLog = this.$store.state.requests;
+            let requests: RequestLog = this.requests;
             if (requests.errors.length > 0) {
                 return requests.errors.slice(-1)[0];
             }
@@ -23,7 +25,7 @@ export default Vue.extend({
                 // Enviando
                 case 1: return {
                     message: "Sincronizando...",
-                    icon: { name: "sync", color: "blue"}
+                    icon: { name: "sync", color: "blue" }
                 };
                 // Idle
                 case 0: return {
