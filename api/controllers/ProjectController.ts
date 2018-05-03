@@ -120,7 +120,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/tags": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.idValidator("projectId"),
                 payloadValidator: this.idValidator("tagId"),
                 handler: async ({ projectId, tagId }, h) => {
@@ -129,7 +129,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/tasks": {
-                roles: [ADMIN, MANAGER],
+                roles:EVERYONE,
                 paramsValidator: this.idValidator("projectId"),
                 payloadValidator: Task.validator,
                 handler: async ({ projectId, ...body }, h) => {
@@ -143,7 +143,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/versions": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.idValidator("projectId"),
                 payloadValidator: Version.validator,
                 handler: async ({ projectId, ...body }, h) => {
@@ -157,7 +157,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/tasks/{taskId}/users": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
                 payloadValidator: this.multiIdValidator("userId"),
                 handler: async ({ projectId, taskId, userId }, h) => {
@@ -175,7 +175,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/tasks/{taskId}/work_items": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
                 payloadValidator: Work.validator,
                 handler: async ({ projectId, taskId, ...body }, h) => {
@@ -206,7 +206,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/tasks/{taskId}": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
                 payloadValidator: Task.validator,
                 handler: async ({ projectId, taskId, ...body }, h) => {
@@ -221,7 +221,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/version/{versionId}": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "versionId"),
                 payloadValidator: Version.validator,
                 handler: async ({ projectId, versionId, ...body }, h) => {
@@ -236,7 +236,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/tasks/{taskId}/work_items/{workId}": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "taskId", "workId"),
                 payloadValidator: Work.validator,
                 handler: async ({ projectId, taskId, workId, ...body }, h) => {
@@ -276,7 +276,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/tags/{tagId}": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "tagId"),
                 handler: async ({ projectId, tagId }, h) => {
                     return this.deleteRelation(projectId, "Tag", "tags", tagId, h);
@@ -284,7 +284,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/tasks/{taskId}": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "taskId"),
                 handler: async ({ projectId, taskId }, h) => {
                     if (await this.exists(projectId) === false) {
@@ -298,7 +298,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/versions/{versionId}": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "versionId"),
                 handler: async ({ projectId, versionId }, h) => {
                     if (await this.exists(projectId) === false) {
@@ -312,7 +312,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/tasks/{taskId}/users/{userId}": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "taskId", "userId"),
                 handler: async ({ projectId, taskId, userId }, h) => {
                     if (await this.exists(projectId) === false) {
@@ -326,7 +326,7 @@ export default class ProjectController extends BaseController {
             },
 
             "/projects/{projectId}/tasks/{taskId}/work_items/{workId}": {
-                roles: [ADMIN, MANAGER],
+                roles: EVERYONE,
                 paramsValidator: this.multiIdValidator("projectId", "taskId", "workId"),
                 handler: async ({ projectId, taskId, workId, ...body }, h) => {
                     if (await this.exists(projectId) === false) {
