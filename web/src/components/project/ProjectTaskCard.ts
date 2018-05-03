@@ -82,15 +82,6 @@ export default Vue.extend({
         removeUser(user: UserStub) {
             this.$store.dispatch("removeUserFromTask", { task: this.task, user: user });
         },
-        dragStartUser(event: DragEvent, user: UserStub) {
-            let target = event.target as HTMLElement;
-            target.classList.add("transparent");
-            event.dataTransfer.setData("removeUserRequest", JSON.stringify({ user: user, task: this.task }));
-        },
-        dragEndUser(event: DragEvent) {
-            let target = event.target as HTMLElement;
-            target.classList.remove("transparent");
-        },
         async sendUpdate(newValues: TaskStub) {
             await this.$store.dispatch("updateTask", newValues);
         },

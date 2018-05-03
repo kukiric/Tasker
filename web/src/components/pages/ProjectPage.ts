@@ -71,16 +71,6 @@ export default Vue.extend({
             let target = event.target as HTMLElement;
             target.classList.remove("transparent");
         },
-        dropUser(event: DragEvent) {
-            let payload = event.dataTransfer.getData("removeUserRequest");
-            if (payload) {
-                let obj = JSON.parse(payload) as {
-                    user: UserStub,
-                    task: TaskStub
-                };
-                this.$store.dispatch("removeUserFromTask", obj);
-            }
-        }
     },
     watch: {
         "$route.params.projectId": function(to, from) {

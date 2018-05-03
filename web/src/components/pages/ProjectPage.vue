@@ -2,7 +2,7 @@
     <ErrorPage v-if="project && project.error"/>
     <div class="root" v-else>
         <!-- Barra lateral -->
-        <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar" @dragover.prevent @drop="dropUser">
+        <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">
             <sui-button class="left attached side button" color="blue" icon="users" @click="showSidebar = !showSidebar"/>
             <div class="item">
                 <!-- Lista de membros do projeto -->

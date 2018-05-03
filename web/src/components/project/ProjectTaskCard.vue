@@ -20,7 +20,8 @@
         <sui-card-content extra>
             <!-- Usuários -->
             <div class="user list">
-                <a v-for="user in task.users" :key="user.id" :title="user.fullname" draggable @dragstart="dragStartUser($event, user)" @dragend="dragEndUser">
+                <a v-for="user in task.users" :key="user.id" :title="user.fullname" @click="removeUser(user)">
+                    <sui-icon class="hidden button" color="red" name="trash"/>
                     <sui-image avatar :src="gravatar(user.email)"/>
                 </a>
                 <div v-if="task.users.length == 0" class="hint text">Adicione usuários arrastando-os para a tarefa desejada.</div>
@@ -64,6 +65,21 @@
         height: 2px;
         background-color: #1678c2;
         visibility: visible;
+    }
+    .user.list > * {
+        position: relative;
+    }
+    .avatar {
+        transition: opacity 100ms ease;
+    }
+    .avatar:hover {
+        opacity: 0.25;
+    }
+    .hidden.button {
+        position: absolute;
+        text-align: center;
+        width: 100%;
+        top: -0.5em;
     }
     .hint.text {
         text-align: center !important;
