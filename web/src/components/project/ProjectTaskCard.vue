@@ -17,22 +17,44 @@
                 <EditableText tag="div" :value="task.description" @input="updateDescription" :display="md" :spellcheck="false" textarea :rows="12" placeholder="Adicionar descrição..."/>
             </sui-card-description>
         </sui-card-content>
+        <!-- Usuários -->
         <sui-card-content extra>
-            <!-- Usuários -->
             <div class="user list">
-                <a v-for="user in task.users" :key="user.id" :title="user.fullname" @click="removeUser(user)">
+                <a v-for="user in task.users" :key="user.id" :title="user.fullname" @click="removeUser(user)" class="avatar">
                     <sui-icon class="hidden button" color="red" name="trash"/>
                     <sui-image avatar :src="gravatar(user.email)"/>
                 </a>
-                <div v-if="task.users.length == 0" class="hint text">Adicione usuários arrastando-os para a tarefa desejada.</div>
+                <div v-if="task.users.length == 0" class="hint text">Arraste usuários aqui para adicionar...</div>
             </div>
-            <!-- Itens de trabalho (horas) -->
-            <sui-list v-if="task.work_items && task.work_items.length > 0">
-                <sui-list-item v-for="(work, index) in task.work_items" :key="work.id">
-                    <sui-icon disabled color="blue" name="right arrow"/>Trabalho {{ index + 1 }}: {{ work.hours }} Horas
-                </sui-list-item>
-            </sui-list>
-            <!-- Porcentagem concluída -->
+        </sui-card-content>
+        <!-- Itens de trabalho (horas cumpridas) -->
+        <sui-card-content extra>
+            <sui-accordion fluid>
+                <sui-accordion-title>
+                    <sui-icon name="dropdown"/>
+                    Itens de trabalho
+                </sui-accordion-title>
+                <sui-accordion-content>
+                    <sui-list>
+                        <sui-list-item bulleted v-for="user in task.users" :key="user.id">
+                            <sui-image avatar size="mini" :src="gravatar(user.email)"/> - <span class="black bold text">{{ user.fullname }}</span>
+                            <sui-list>
+                                <sui-list-item v-for="work in workItems(user)" :key="work.id" class="work item">
+                                    <a @click="removeHours(work)" title="Remover item"><sui-icon color="blue" name="right arrow"/></a>
+                                    Dia {{ date(work.start_time) }} - {{ work.hours }}h
+                                </sui-list-item>
+                                <sui-list-item>
+                                    <EditableText tag="span" type="number" value="0" :min="0" :max="168" autoreset :display="textAddWorkItem" @input="addHours($event, user)" :debounce="Infinity"/>
+                                </sui-list-item>
+                                <br>
+                            </sui-list>
+                        </sui-list-item>
+                    </sui-list>
+                </sui-accordion-content>
+            </sui-accordion>
+        </sui-card-content>
+        <!-- Porcentagem concluída -->
+        <sui-card-content extra>
             <a @click="setProgress"><sui-progress ref="progressBar" :color="getColorForStatus(task)" progress :percent="progress" :class="{ project: true, low: progress <= 15 }"/></a>
         </sui-card-content>
     </sui-card>
@@ -66,20 +88,36 @@
         background-color: #1678c2;
         visibility: visible;
     }
+    .styled.accordion {
+        background: transparent;
+    }
     .user.list > * {
         position: relative;
     }
-    .avatar {
-        transition: opacity 100ms ease;
+    .user.list .avatar {
+        display: inline-block;
+        margin: 0.1em;
     }
-    .avatar:hover {
+    .user.list .avatar.image {
+        transition: opacity 100ms ease;
+        margin-bottom: 0;
+    }
+    .user.list .avatar.image:hover {
         opacity: 0.25;
     }
-    .hidden.button {
+    .user.list .hidden.button {
         position: absolute;
         text-align: center;
         width: 100%;
-        top: -0.5em;
+        left: 0;
+        top: 0.33em;
+    }
+    .work.item:hover .right.arrow.icon::before {
+        content: "\F1F8" !important;
+        color: #db2828 !important;
+    }
+    .black.text {
+        color: rgba(0, 0, 0, 0.68);
     }
     .hint.text {
         text-align: center !important;

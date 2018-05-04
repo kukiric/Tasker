@@ -1,4 +1,5 @@
-import { ProjectStub, UserStub, RoleType, TaskStub, AuthResponse, TaskType, TaskStatus, DecodedToken } from "api/stubs";
+import { RoleType, TaskType, TaskStatus, AuthResponse, DecodedToken } from "api/stubs";
+import { ProjectStub, UserStub, TaskStub, WorkStub } from "api/stubs";
 import { AxiosInstance, AxiosResponse } from "axios";
 import * as JWT from "jsonwebtoken";
 import * as moment from "moment";
@@ -6,7 +7,7 @@ import Vuex from "vuex";
 import Vue from "vue";
 
 // Informações que sempre são trazdias junto com as tarefas
-const taskIncludes = "parent,users,work_items,children[users,work_items]";
+const taskIncludes = "parent,users,work_items[user]";
 
 // Classe que armazena todas as requisições pendentes e com erros
 export class RequestLog {
@@ -247,6 +248,29 @@ export default function createStore(http: AxiosInstance) {
                 let project = store.state.currentProject;
                 if (project) {
                     let req = await http.delete(`/api/projects/${project.id}/tasks/${task.id}`);
+                    store.dispatch("fetchProject", { id: project.id, refresh: false });
+                }
+            },
+            async addWorkItem(store, { task, user, hours }: { task: TaskStub, user: UserStub, hours: number }) {
+                let project = store.state.currentProject;
+                if (project) {
+                    let work = {
+                        hours: hours,
+                        start_time: moment().toDate(),
+                        user_id: user.id
+                    };
+                    // Envia as informações para o servidor
+                    let req = await http.post(`/api/projects/${project.id}/tasks/${task.id}/work_items`, work);
+                    // Recarrega o projeto com as informações novas
+                    store.dispatch("fetchProject", { id: project.id, refresh: false });
+                }
+            },
+            async deleteWorkItem(store, { task, work}: { task: TaskStub, work: WorkStub }) {
+                let project = store.state.currentProject;
+                if (project) {
+                    // Envia as informações para o servidor
+                    let req = await http.delete(`/api/projects/${project.id}/tasks/${task.id}/work_items/${work.id}`);
+                    // Recarrega o projeto com as informações novas
                     store.dispatch("fetchProject", { id: project.id, refresh: false });
                 }
             }

@@ -71,6 +71,8 @@ export interface WorkStub {
     end_time?: Date;
     task_id?: number;
     user_id?: number;
+    task?: Partial<TaskStub>;
+    user?: Partial<UserStub>;
 }
 
 // Valores do banco de dados

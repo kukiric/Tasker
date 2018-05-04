@@ -17,6 +17,7 @@ export default Vue.extend({
         textarea: { type: Boolean, default: false },
         select : { type: Boolean, default: false },
         spellcheck: { type: Boolean, default: true},
+        autoreset: { type: Boolean, default: false },
         type: { type: String, default: "text" },
         tag: { type: String, default: "div" },
         rows: { type: Number, default: 20 },
@@ -39,6 +40,9 @@ export default Vue.extend({
         }
     },
     methods: {
+        reset() {
+            this.content = this.saved = this.value;
+        },
         refocus() {
             let input = this.$refs.input;
             if (input instanceof HTMLElement) {
@@ -47,8 +51,13 @@ export default Vue.extend({
         },
         emitUpdateImpl(content: string) {
             if (this.saved !== this.content) {
-                this.saved = this.content;
                 this.$emit("input", content);
+                if (this.autoreset) {
+                    this.reset();
+                }
+                else {
+                    this.saved = this.content;
+                }
             }
         },
         emitUpdate(content: string) {
@@ -74,7 +83,7 @@ export default Vue.extend({
         }
     },
     created() {
-        this.content = this.saved = this.value;
+        this.reset();
         this.debouncedUpdate = debounce(this.emitUpdateImpl, this.debounce);
         if (this.type === "date") {
             let date = moment(this.value).format("YYYY-MM-DD");

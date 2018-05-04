@@ -1,4 +1,4 @@
-import { ProjectStub, TaskStub, TaskStatus, UserStub, TaskType } from "api/stubs";
+import { ProjectStub, TaskStub, TaskStatus, UserStub, TaskType, WorkStub } from "api/stubs";
 import EditableText from "@components/misc/EditableText.vue";
 import * as moment from "moment";
 import utils from "@main/utils";
@@ -63,6 +63,14 @@ export default Vue.extend({
                 default: return "";
             }
         },
+        textAddWorkItem() {
+            return `<i class="green add icon" style="margin-left: 0.05em"></i>Adicionar horas`;
+        },
+        workItems(user: UserStub) {
+            return this.task.work_items
+                .filter((work: WorkStub) => work.user.id === user.id)
+                .sort((a: WorkStub, b: WorkStub) => a.start_time > b.start_time);
+        },
         hours(h: number) {
             return `${h} Horas`;
         },
@@ -107,6 +115,12 @@ export default Vue.extend({
         },
         updateStatusInternal(status: string) {
             this.taskStatus = status;
+        },
+        addHours(hours: number, user: UserStub) {
+            this.$store.dispatch("addWorkItem", { task: this.task, user: user, hours: hours });
+        },
+        removeHours(work: WorkStub) {
+            this.$store.dispatch("deleteWorkItem", { task: this.task, work: work });
         },
         setProgress(event: MouseEvent) {
             // Busca o elemento dentro da instância do componente

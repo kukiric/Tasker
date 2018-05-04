@@ -14,6 +14,8 @@ export default class Work extends Model implements WorkStub {
     public end_time?: Date;
     public task_id?: number;
     public user_id?: number;
+    public task?: Task;
+    public user?: User;
 
     public static validator = {
         id: Joi.forbidden(),
