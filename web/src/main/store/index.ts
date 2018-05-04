@@ -1,4 +1,4 @@
-import { RoleType, TaskType, TaskStatus, AuthResponse, DecodedToken } from "api/stubs";
+import { RoleType, TaskType, TaskStatus, AuthResponse, DecodedToken, TagStub } from "api/stubs";
 import { ProjectStub, UserStub, TaskStub, WorkStub } from "api/stubs";
 import { AxiosInstance, AxiosResponse } from "axios";
 import * as JWT from "jsonwebtoken";
@@ -26,13 +26,15 @@ export default function createStore(http: AxiosInstance) {
             currentProject: null,
             currentUser: null,
             allUsers: null,
-            token: null
+            token: null,
+            tags: null
         } as {
             requests: RequestLog,
             currentProject: ProjectStub & { error?: boolean } | null,
             currentUser: UserStub | null,
             allUsers: UserStub[] | null,
-            token: string | null
+            token: string | null,
+            tags: TagStub[] | null
         },
         getters: {
             userIsAdmin(context) {
@@ -97,6 +99,9 @@ export default function createStore(http: AxiosInstance) {
                     return a.fullname! > b.fullname! ? 1 : -1;
                 });
             },
+            setTags(state, tags: TagStub[]) {
+                state.tags = tags;
+            },
             setUserData(state, data?: AuthResponse) {
                 if (data) {
                     state.currentUser = data.user;
@@ -147,7 +152,7 @@ export default function createStore(http: AxiosInstance) {
                     if (refresh) {
                         store.commit("setCurrentProject", null);
                     }
-                    let req = await http.get(`/api/projects/${id}?include=users[role],tasks[${taskIncludes}]`);
+                    let req = await http.get(`/api/projects/${id}?include=users[role],tags,tasks[${taskIncludes}]`);
                     store.commit("setCurrentProject", req.data);
                 }
                 catch (err) {
@@ -176,6 +181,18 @@ export default function createStore(http: AxiosInstance) {
                 }
                 catch (err) {
                     store.commit("setAllUsers", null);
+                    throw err;
+                }
+            },
+            async ensureTagsLoaded(store) {
+                try {
+                    if (!store.state.tags) {
+                        let req = await http.get(`/api/tags`);
+                        store.commit("setTags", req.data);
+                    }
+                }
+                catch (err) {
+                    store.commit("setTags", null);
                     throw err;
                 }
             },

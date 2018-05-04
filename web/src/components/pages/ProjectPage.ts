@@ -3,6 +3,7 @@ import ProjectOverview from "@components/project/ProjectOverview.vue";
 import SyncIndicator from "@components/misc/SyncIndicator.vue";
 import EditableText from "@components/misc/EditableText.vue";
 import ErrorPage from "@components/pages/ErrorPage.vue";
+import { mapGetters } from "vuex";
 import * as moment from "moment";
 import utils from "@main/utils";
 import Vue from "vue";
@@ -18,6 +19,7 @@ export default Vue.extend({
         projectId: [ Number, String ]
     },
     computed: {
+        ...mapGetters([ "usersNotInProject" ]),
         allUsers(): any[] {
             return this.$store.state.allUsers;
         },
@@ -26,6 +28,9 @@ export default Vue.extend({
         },
         projectStatusList() {
             return Object.values(ProjectStatus);
+        },
+        tags() {
+            return this.$store.state.tags;
         }
     },
     methods: {
@@ -79,6 +84,7 @@ export default Vue.extend({
     },
     created() {
         this.$store.dispatch("ensureAllUsersLoaded");
+        this.$store.dispatch("ensureTagsLoaded");
         this.reloadProject();
     }
 });

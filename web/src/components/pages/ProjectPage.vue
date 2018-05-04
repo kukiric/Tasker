@@ -20,10 +20,10 @@
                     </div>
                 </div>
                 <!-- Botão de adicionar usuários no projeto -->
-                <sui-dropdown v-if="$store.getters.userIsManager" fluid selection class="green button">
+                <sui-dropdown v-if="$store.getters.userIsManager" fluid selection class="green button" :class="{ disabled: usersNotInProject.length === 0 }">
                     Adicionar
                     <sui-dropdown-menu>
-                        <sui-dropdown-item v-for="user in $store.getters.usersNotInProject" :key="user.id" @click="addUser(user)">
+                        <sui-dropdown-item v-for="user in usersNotInProject" :key="user.id" @click="addUser(user)">
                             <sui-image avatar :src="gravatar(user.email)"/>
                             {{ user.fullname }}
                         </sui-dropdown-item>
@@ -36,13 +36,19 @@
             <h1 class="ui header">
                 <i class="teal open folder icon"></i>
                 <div v-if="project" class="content">
-                        <EditableText :value="project.name" @input="updateName"/>
+                    <!-- Título -->
+                    <EditableText tag="span" :value="project.name" @input="updateName"/>
+                    <div class="spacer"></div>
+                    <!-- Tags -->
+                    <sui-label v-for="tag in project.tags" :key="tag.id" :color="tag.color">{{ tag.name }}</sui-label>
+                    <!-- <sui-dropdown multiple :options="tags" placeholder="Marcações" search selection/> -->
+                    <!-- Informações extras -->
                     <div class="sub header" :class="{ red: isLate(project) }">
                         <i v-if="isLate(project)" class="clock icon"></i>
                         <EditableText tag="span" :value="project.status" select :options="projectStatusList" @input="updateStatus" class="bold"/>
-                        <div style="display: inline-block; width: 20px"></div>
+                        <div class="double spacer"></div>
                         Criado em <EditableText tag="span" :value="project.created_at" :display="date" type="date" @input="updateCreatedAt" class="bold"/>
-                        <div style="display: inline-block; width: 10px"></div>
+                        <div class="spacer"></div>
                         Entregar até <EditableText tag="span" :value="project.due_date" :display="date" type="date" @input="updateDueDate" class="bold"/>
                     </div>
                 </div>
@@ -62,6 +68,16 @@
     .root {
         width: 100%;
         height: 100%;
+    }
+    .spacer {
+        display: inline-block;
+        width: 10px;
+    }
+    .spacer.double {
+        width: 20px;
+    }
+    .dropdown {
+        font-size: 1rem;
     }
     .ui.sidebar {
         overflow: visible !important;
