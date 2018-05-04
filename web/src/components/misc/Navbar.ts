@@ -1,5 +1,6 @@
 import { ProjectStub, UserStub } from "api/stubs";
 import { mapState } from "vuex";
+import utils from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -17,13 +18,7 @@ export default Vue.extend({
                 projects = projects.sort((a: ProjectStub, b: ProjectStub) => {
                     return a.name > b.name ? 1 : -1;
                 });
-                return projects.map((p: ProjectStub) => {
-                    return {
-                        key: p.id,
-                        text: p.name,
-                        value: p.id
-                    };
-                });
+                return utils.dropdownItems(projects, "name");
             }
             return [];
         },
@@ -43,6 +38,7 @@ export default Vue.extend({
         }
     },
     methods: {
+        ...utils,
         logout() {
             localStorage.clear();
             window.location.reload();

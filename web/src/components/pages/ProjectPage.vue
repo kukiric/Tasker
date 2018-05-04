@@ -40,8 +40,12 @@
                     <EditableText tag="span" :value="project.name" @input="updateName"/>
                     <div class="spacer"></div>
                     <!-- Tags -->
-                    <sui-label v-for="tag in project.tags" :key="tag.id" :color="tag.color">{{ tag.name }}</sui-label>
-                    <!-- <sui-dropdown multiple :options="tags" placeholder="Marcações" search selection/> -->
+                    <sui-label v-for="tag in project.tags" :key="tag.id" :color="tag.color" image>
+                        {{ tag.name }}
+                        <sui-icon name="delete" @click="removeTag(tag.id)"/>
+                    </sui-label>
+                    <sui-dropdown search selection placeholder="Adicionar tags" :options="tags" class="tags" @input="addTag"/>
+                    <!-- <sui-dropdown multiple :options="allTags" v-model="tags" placeholder="Marcações" search selection/> -->
                     <!-- Informações extras -->
                     <div class="sub header" :class="{ red: isLate(project) }">
                         <i v-if="isLate(project)" class="clock icon"></i>
@@ -107,13 +111,11 @@
         overflow-y: hidden;
         overflow-x: auto;
     }
-    .background {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background-image: url("https://source.unsplash.com/1920x1080/daily?nature");
-        background-repeat: no-repeat;
-        z-index: -1000;
+    .tags {
+        font-size: 0.75rem !important;
+        position: absolute;
+        top: 0.5em;
+        right: 4em;
     }
     @media screen and (max-width: 767px) {
         .ui.sidebar .side.button {

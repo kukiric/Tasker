@@ -3,10 +3,24 @@ import * as marked from "marked";
 import * as moment from "moment";
 import * as md5 from "md5";
 
+interface ObjectWithId {
+    id: number;
+};
+
 /**
  * Métodos utilitários usados em todo o projeto
  */
-export default {
+const utils = {
+    dropdownItem(object: ObjectWithId, textKey: string) {
+        return {
+            key: object.id,
+            value: object.id,
+            text: object[textKey]
+        };
+    },
+    dropdownItems(objects: ObjectWithId[], textKey: string) {
+        return objects.map((value) => utils.dropdownItem(value, textKey));
+    },
     isLate(project: ProjectStub) {
         return project.status !== "Concluído" && moment().isAfter(project.due_date, "day");
     },
@@ -23,3 +37,5 @@ export default {
         return marked(source, { gfm: false, sanitize: true });
     }
 };
+
+export default utils;

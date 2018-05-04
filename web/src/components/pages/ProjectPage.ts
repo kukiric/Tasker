@@ -1,9 +1,10 @@
-import { ProjectStub, UserStub, ProjectStatus, TaskStub } from "api/stubs";
+import { ProjectStub, UserStub, ProjectStatus, TaskStub, TagStub } from "api/stubs";
 import ProjectOverview from "@components/project/ProjectOverview.vue";
 import SyncIndicator from "@components/misc/SyncIndicator.vue";
 import EditableText from "@components/misc/EditableText.vue";
 import ErrorPage from "@components/pages/ErrorPage.vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
+import { differenceWith } from "lodash";
 import * as moment from "moment";
 import utils from "@main/utils";
 import Vue from "vue";
@@ -30,13 +31,15 @@ export default Vue.extend({
             return Object.values(ProjectStatus);
         },
         tags() {
-            return this.$store.state.tags;
+            let allTags = this.$store.state.tags;
+            let uniqueTags = differenceWith<TagStub, TagStub>(allTags, this.project.tags, (a, b) => a.id === b.id);
+            return utils.dropdownItems(uniqueTags, "name");
         }
     },
     methods: {
         ...utils,
-        async reloadProject() {
-            await this.$store.dispatch("fetchProject", { id: this.projectId, refresh: true });
+        async reloadProject(refresh: boolean = true) {
+            await this.$store.dispatch("fetchProject", { id: this.projectId, refresh });
         },
         async addUser(user: UserStub) {
             await this.$store.dispatch("addUser", user);
@@ -76,6 +79,14 @@ export default Vue.extend({
             let target = event.target as HTMLElement;
             target.classList.remove("transparent");
         },
+        async addTag(tagId: number) {
+            await this.$http.post(`/api/projects/${this.project.id}/tags`, { tagId });
+            await this.reloadProject(false);
+        },
+        async removeTag(tagId: number) {
+            await this.$http.delete(`/api/projects/${this.project.id}/tags/${tagId}`);
+            await this.reloadProject(false);
+        }
     },
     watch: {
         "$route.params.projectId": function(to, from) {
