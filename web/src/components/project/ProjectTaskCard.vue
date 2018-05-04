@@ -28,9 +28,9 @@
             </div>
         </sui-card-content>
         <!-- Itens de trabalho (horas cumpridas) -->
-        <sui-card-content extra>
+        <sui-card-content extra v-if="task.users.length > 0">
             <sui-accordion fluid>
-                <sui-accordion-title>
+                <sui-accordion-title >
                     <sui-icon name="dropdown"/>
                     Itens de trabalho
                 </sui-accordion-title>

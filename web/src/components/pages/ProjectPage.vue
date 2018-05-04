@@ -44,8 +44,7 @@
                         {{ tag.name }}
                         <sui-icon name="delete" @click="removeTag(tag.id)"/>
                     </sui-label>
-                    <sui-dropdown search selection placeholder="Adicionar tags" :options="tags" class="tags" @input="addTag"/>
-                    <!-- <sui-dropdown multiple :options="allTags" v-model="tags" placeholder="Marcações" search selection/> -->
+                    <sui-dropdown search selection placeholder="Adicionar tags" :options="tags" class="tags" :class="{ disabled: tags.length == 0 }" @input="addTag"/>
                     <!-- Informações extras -->
                     <div class="sub header" :class="{ red: isLate(project) }">
                         <i v-if="isLate(project)" class="clock icon"></i>
