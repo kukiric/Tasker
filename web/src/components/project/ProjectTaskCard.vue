@@ -120,7 +120,6 @@
         color: rgba(0, 0, 0, 0.68);
     }
     .hint.text {
-        text-align: center !important;
         font-weight: bold;
         color: #ccc;
     }
