@@ -190,15 +190,6 @@ export default function createStore(http: AxiosInstance) {
                 if (project) {
                     let req = await http.delete(`/api/projects/${project.id}/users/${user.id}`);
                     store.commit("removeUser", user);
-                    // Também remove o usuário de cada tarefa do projeto
-                    // FIXME: operação custosa (fazer no servidor em versão futura)
-                    if (project.tasks) {
-                        for (let task of project.tasks) {
-                            if (task.users && task.users.some((u) => u.id === user.id)) {
-                                store.dispatch("removeUserFromTask", { task, user });
-                            }
-                        }
-                    }
                 }
             },
             async addUserToTask(store, { task, user }: { task: TaskStub, user: UserStub }) {
