@@ -74,13 +74,24 @@ export async function startServer(webpackHook?: (server: HapiServer) => void) {
     else {
         const staticPath = path.resolve(__dirname, "../public");
         console.log("Registrando caminho para arquivos estáticos...");
-        await server.register({ plugin: require("inert"), once: true });
+        await server.register({ plugin: require("inert") });
+        // Serve arquivos específicos dentro da pasta dist
+        server.route({
+            method: "GET",
+            path: "/dist/{path}",
+            handler: {
+                directory: {
+                    path: path.join(staticPath, "/dist")
+                }
+            }
+        });
+        // Serve a SPA em caminhos desconhecidos (roteamento client-side)
         server.route({
             method: "GET",
             path: "/{path*}",
             handler: {
-                directory: {
-                    path: staticPath
+                file: {
+                    path: path.join(staticPath, "/index.html")
                 }
             }
         });

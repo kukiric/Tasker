@@ -124,8 +124,8 @@ export default {
                 }
             };
             await server.register([
-                { plugin: require("vision"), once: true },
-                { plugin: require("inert"), once: true },
+                { plugin: require("vision") },
+                { plugin: require("inert") },
                 { plugin: require("hapi-swagger"), options: swaggerOptions }
             ]);
         }
