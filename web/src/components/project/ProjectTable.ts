@@ -27,7 +27,7 @@ export default Vue.extend({
             return false;
         },
         async loadProjects(): Promise<ProjectStub[]> {
-            let req = await this.$http.get(`/api/projects?include=manager`);
+            let req = await this.$http.get(`/api/projects?include=manager,tags`);
             let projects = req.data as ProjectStub[];
             return projects.sort((a, b) => a.name > b.name ? 1 : -1);
         }

@@ -6,6 +6,7 @@ export default class Tag extends Model implements TagStub {
     public static tableName = "tag";
     public id!: number;
     public name!: string;
+    public color?: string;
 
     public static validator = {
         id: Joi.forbidden(),

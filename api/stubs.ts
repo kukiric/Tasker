@@ -21,6 +21,7 @@ export interface RoleStub {
 export interface TagStub {
     id: number;
     name: string;
+    color?: string;
 }
 
 export interface TaskStub {

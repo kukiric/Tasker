@@ -7,6 +7,7 @@
         <thead class="hidden on mobile">
             <tr>
                 <th>Nome</th>
+                <th>Tags</th>
                 <th>Status</th>
                 <th>Data de criação</th>
                 <th>Data de entrega</th>
@@ -18,6 +19,7 @@
                     v-for="project in projects" :key="project.id"
                     tag="tr" :class="{ negative: isLate(project), positive: isDone(project) }">
                 <td>{{ project.name }}</td>
+                <td><sui-label v-for="tag in project.tags" :color="tag.color" :key="tag.id">{{ tag.name }}</sui-label></td>
                 <td>{{ project.status }}</td>
                 <td :title="time(project.created_at)">{{ date(project.created_at) }}</td>
                 <td :title="time(project.due_date)">{{ date(project.due_date) }}</td>

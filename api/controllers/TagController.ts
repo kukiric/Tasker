@@ -24,7 +24,7 @@ export default class TagController extends BaseController {
         },
         POST: {
             "/tags": {
-                roles: [ADMIN, MANAGER],
+                roles: [ADMIN],
                 payloadValidator: Tag.validator,
                 handler: async ({ ...body }, h) => {
                     let newTag = await Tag.query().insert(body).returning("*");
@@ -34,7 +34,7 @@ export default class TagController extends BaseController {
         },
         PUT: {
             "/tags/{tagId}": {
-                roles: [ADMIN, MANAGER],
+                roles: [ADMIN],
                 paramsValidator: this.idValidator("tagId"),
                 payloadValidator: Tag.validator,
                 handler: async ({ id, ...body }) => {
@@ -47,7 +47,7 @@ export default class TagController extends BaseController {
         },
         DELETE: {
             "/tags/{tagId}": {
-                roles: [ADMIN, MANAGER],
+                roles: [ADMIN],
                 paramsValidator: this.idValidator("tagId"),
                 handler: async ({ id }, h) => {
                     let deleted = await Tag.query().del().where({ id: id });

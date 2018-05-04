@@ -1,7 +1,7 @@
 import * as Knex from "knex";
 
 exports.up = async function (knex: Knex): Promise<any> {
-    return knex.schema.createTable("project", table => {
+    return knex.schema.createTable("project", (table) => {
         table.increments();
         table.string("name").notNullable();
         table.date("due_date").notNullable();
