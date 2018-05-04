@@ -97,6 +97,26 @@
         z-index: 50;
         top: 10em;
     }
+    .red.sub.header {
+        color: #db2828 !important;
+    }
+    .ui.raised.attached.segment {
+        margin-top: calc(-1em - 1px);
+    }
+    .ui.raised.attached.segment::after {
+        margin-left: -1em;
+        position: absolute;
+        content: "";
+        width: 100%;
+        height: 2px;
+        bottom: 0;
+        z-index: -1;
+        box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
+    }
+    .ui.sticky.raised.segment {
+        position: sticky;
+        z-index: 10;
+    }
     .sync.indicator {
         position: absolute;
         right: 0.25em;
@@ -117,6 +137,9 @@
         right: 4em;
     }
     @media screen and (max-width: 767px) {
+        .ui.raised.attached.segment {
+            margin-top: -2px;
+        }
         .ui.sidebar .side.button {
             font-size: 125%;
         }
