@@ -1,5 +1,5 @@
 <template>
-    <form @click="beginEditing()" @submit="stopEditing()">
+    <form @click="beginEditing()" @submit.prevent="stopEditing()">
         <!-- Edição -->
         <textarea v-if="editing && textarea && !select" ref="input" v-model="content" :rows="rows" :placeholder="placeholder" @input="emitUpdate(content)" @blur="stopEditing()" :spellcheck="spellcheck"></textarea>
         <input v-if="editing && !textarea && !select" ref="input" v-model="content" :type="type" :placeholder="placeholder" :min="min" :max="max" @input="emitUpdate(content)" @blur="stopEditing()"/>
