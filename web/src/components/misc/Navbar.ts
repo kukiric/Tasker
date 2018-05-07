@@ -7,9 +7,6 @@ export default Vue.extend({
         user() {
             return this.$store.state.currentUser;
         },
-        admin() {
-            return this.user.role.id === RoleType.ADMIN;
-        },
         userProjects() {
             return this.$store.getters.userProjects;
         },
@@ -34,7 +31,7 @@ export default Vue.extend({
             this.$store.commit("setUserData", null);
             this.$store.commit("reset", null);
             this.$nextTick(() => {
-                this.$router.push("/");
+                this.$router.push("/login");
             });
         }
     }

@@ -21,6 +21,15 @@ export default Vue.extend({
                 ref.focus();
             }
         },
+        changeMode() {
+            let query = location.search;
+            if (this.registering) {
+                this.$router.replace("/login" + query);
+            }
+            else {
+                this.$router.push("/register" + query);
+            }
+        },
         async login() {
             try {
                 // Limpa as mensagens
@@ -61,7 +70,7 @@ export default Vue.extend({
                         await this.$store.dispatch("loadUser", response.token);
                         // Retorna o usuário para a página que ele tentou acessar antes de estar logado
                         let redirect = this.$route.query.redirect || "/";
-                        this.$router.push(redirect);
+                        this.$router.replace(redirect);
                     }
                     catch (err) {
                         this.error = "Não foi possível carregar os dados do usuário, tente novamente mais tarde.";
@@ -101,13 +110,25 @@ export default Vue.extend({
         }
     },
     watch: {
-        // Foca automaticamente de volta no campo do usuário ao trocar o modo entre entrar e registrar
-        registering: function() {
+        "$route.path": function(path) {
+            if (path === "/register") {
+                this.registering = true;
+            }
+            else {
+                this.registering =false;
+            }
+        },
+        "registering": function() {
             this.refocus();
         }
     },
+    created() {
+        if (this.$route.path === "/register") {
+            this.registering = true;
+        }
+        this.info = this.user ? "Ao prosseguir, você será deslogado da conta atual" : "";
+    },
     mounted() {
         this.refocus();
-        this.info = this.user ? "Ao prosseguir, você será deslogado da conta atual" : "";
     }
 });

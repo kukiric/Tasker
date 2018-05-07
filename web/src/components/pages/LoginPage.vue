@@ -26,7 +26,7 @@
                     <button class="ui fluid primary button">{{ primaryAction }}</button>
                 </form>
                 <hr class="ui divider">
-                <a href="#" @click.prevent="registering = !registering">{{ changeModeText }}</a>
+                <a href="#" @click.prevent="changeMode">{{ changeModeText }}</a>
             </div>
             <!-- Banner de erro -->
             <div class="ui attached icon error message" v-show="error">

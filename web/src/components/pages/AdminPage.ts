@@ -10,13 +10,10 @@ export default Vue.extend({
         return {
             showProjectModal: false,
             projects: []
-        } as {
-            showProjectModal: boolean,
-            projects: ProjectStub[]
-        };
+        }
     },
     computed: {
-        isAdminOrManager(): boolean {
+        admin() {
             let getters = this.$store.getters;
             return getters.userIsAdmin || getters.userIsManager;
         }

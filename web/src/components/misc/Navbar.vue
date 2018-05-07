@@ -21,7 +21,7 @@
                     <sui-dropdown-item :text="user.fullname" icon="address card" class="text" disabled/>
                     <sui-dropdown-item :text="user.email" icon="envelope" class="text" disabled/>
                     <sui-dropdown-divider/>
-                    <sui-dropdown-item text="Painel de Controle" icon="wrench" v-if="admin"/>
+                    <router-link is="sui-dropdown-item" to="/admin" text="Painel de Controle" icon="wrench"/>
                     <sui-dropdown-item text="Sair" icon="sign out" @click="logout()"/>
                 </sui-dropdown-menu>
             </sui-dropdown>
