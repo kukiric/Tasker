@@ -20,8 +20,8 @@ export default class RoleController extends BaseController {
             "/roles/{roleId}": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("roleId"),
-                handler: async ({ id }) => {
-                    return await Role.query().findById(id) || this.notFound(id);
+                handler: async ({ roleId }) => {
+                    return await Role.query().findById(roleId) || this.notFound(roleId);
                 }
             }
         }

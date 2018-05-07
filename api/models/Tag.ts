@@ -10,6 +10,7 @@ export default class Tag extends Model implements TagStub {
 
     public static validator = {
         id: Joi.forbidden(),
-        name: Joi.string().required().example("Android")
+        name: Joi.string().required().example("Android"),
+        color: Joi.string().optional().example("green")
     };
 }

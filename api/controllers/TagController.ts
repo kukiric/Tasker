@@ -17,8 +17,8 @@ export default class TagController extends BaseController {
             "/tags/{tagId}": {
                 roles: EVERYONE,
                 paramsValidator: this.idValidator("tagId"),
-                handler: async ({ id }) => {
-                    return await Tag.query().findById(id) || this.notFound(id);
+                handler: async ({ tagId }) => {
+                    return await Tag.query().findById(tagId) || this.notFound(tagId);
                 }
             }
         },
@@ -37,11 +37,11 @@ export default class TagController extends BaseController {
                 roles: [ADMIN],
                 paramsValidator: this.idValidator("tagId"),
                 payloadValidator: Tag.validator,
-                handler: async ({ id, ...body }) => {
+                handler: async ({ tagId, ...body }) => {
                     let tag = await Tag.query()
-                        .update(body).where({ id: id })
+                        .update(body).where({ id: tagId })
                         .returning("*").first();
-                    return tag ? tag : this.notFound(id);
+                    return tag ? tag : this.notFound(tagId);
                 }
             }
         },
@@ -49,12 +49,12 @@ export default class TagController extends BaseController {
             "/tags/{tagId}": {
                 roles: [ADMIN],
                 paramsValidator: this.idValidator("tagId"),
-                handler: async ({ id }, h) => {
-                    let deleted = await Tag.query().del().where({ id: id });
+                handler: async ({ tagId }, h) => {
+                    let deleted = await Tag.query().del().where({ id: tagId });
                     if (deleted) {
                         return h.response().code(204);
                     }
-                    return this.notFound(id);
+                    return this.notFound(tagId);
                 }
             }
         }
