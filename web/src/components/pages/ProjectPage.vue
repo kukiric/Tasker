@@ -2,35 +2,8 @@
     <ErrorPage v-if="project && project.error"/>
     <div class="root" v-else>
         <!-- Barra lateral -->
-        <sui-sidebar animation="overlay" direction="right" width="very wide" :visible="showSidebar">
-            <sui-button class="left attached side button" color="blue" icon="users" @click="showSidebar = !showSidebar"/>
-            <div class="item">
-                <!-- Lista de membros do projeto -->
-                <h1 class="ui header">Membros</h1>
-                <div class="ui middle aligned relaxed list" v-if="project">
-                    <div class="item" v-for="user in project.users" :key="user.id" draggable @dragstart="dragStartUser($event, user)" @dragend="dragEndUser">
-                        <sui-image avatar draggable="false" :src="gravatar(user.email)"/>
-                        <div class="content">
-                            <div class="header">{{ user.fullname }}</div>
-                            <div class="description">{{ user.email }}</div>
-                        </div>
-                        <div v-if="$store.getters.userIsManager && user.id != $store.state.currentUser.id" class="right floated content">
-                            <a><sui-icon color="red" name="delete" title="Remover" @click.prevent="removeUser(user)"/></a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Botão de adicionar usuários no projeto -->
-                <sui-dropdown v-if="$store.getters.userIsManager" fluid selection class="green button" :class="{ disabled: availableUsers.length === 0 }">
-                    Adicionar
-                    <sui-dropdown-menu>
-                        <sui-dropdown-item v-for="user in availableUsers" :key="user.id" @click="addUser(user)">
-                            <sui-image avatar :src="gravatar(user.email)"/>
-                            {{ user.fullname }}
-                        </sui-dropdown-item>
-                    </sui-dropdown-menu>
-                </sui-dropdown>
-            </div>
-        </sui-sidebar>
+        <ProjectSidebar v-if="project" :users="project.users" @addUser="addUser" @removeUser="removeUser"/>
+        <ProjectSidebar v-else/>
         <!-- Cabeçalho da página -->
         <div class="ui sticky raised attached segment">
             <h1 class="ui header">
@@ -81,21 +54,6 @@
     }
     .dropdown {
         font-size: 1rem;
-    }
-    .ui.sidebar {
-        overflow: visible !important;
-    }
-    .ui.sidebar.inverted div, .ui.sidebar.inverted .header {
-        color: white !important;
-    }
-    .ui.sidebar .side.button {
-        position: absolute;
-        visibility: visible !important;
-        transform: translate(-100%, -50%);
-        border-bottom-left-radius: 4px;
-        border-top-left-radius: 4px;
-        z-index: 50;
-        top: 10em;
     }
     .red.sub.header {
         color: #db2828 !important;

@@ -14,7 +14,7 @@
                 <div><b>Tipo: </b><EditableText tag="span" :value="task.type" :options="taskTypeList" select @input="updateType"/></div>
                 <div><b>Status: </b><EditableText tag="span" :value="task.status" :options="taskStatusList" select @input="updateStatus" @inputImmediate="updateStatusInternal"/></div>
                 <br>
-                <EditableText tag="div" :value="task.description" @input="updateDescription" :display="md" :spellcheck="false" textarea :rows="12" placeholder="Adicionar descrição..."/>
+                <EditableText tag="div" :value="task.description" @input="updateDescription" :display="markdown" :spellcheck="false" textarea :rows="12" placeholder="Adicionar descrição..."/>
             </sui-card-description>
         </sui-card-content>
         <!-- Usuários -->

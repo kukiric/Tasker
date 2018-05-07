@@ -1,21 +1,17 @@
 import { ProjectStub, UserStub, ProjectStatus, TaskStub, TagStub } from "api/stubs";
 import ProjectOverview from "@components/project/ProjectOverview.vue";
+import ProjectSidebar from "@components/project/ProjectSidebar.vue";
 import SyncIndicator from "@components/misc/SyncIndicator.vue";
 import EditableText from "@components/misc/EditableText.vue";
 import ErrorPage from "@components/pages/ErrorPage.vue";
+import { isLate, dropdownItems, date } from "@main/utils";
 import { mapGetters, mapState } from "vuex";
 import { differenceWith } from "lodash";
 import * as moment from "moment";
-import utils from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
-    components: { ProjectOverview, SyncIndicator, EditableText, ErrorPage },
-    data() {
-        return {
-           showSidebar: false
-        };
-    },
+    components: { ProjectOverview, ProjectSidebar, SyncIndicator, EditableText, ErrorPage },
     props: {
         projectId: [ Number, String ]
     },
@@ -29,19 +25,11 @@ export default Vue.extend({
         availableTags() {
             let allTags = this.$store.state.tags;
             let availableTags = differenceWith<any>(allTags, this.project.tags, (a, b) => a.id === b.id);
-            return utils.dropdownItems(availableTags, "name");
-        },
-        availableUsers() {
-            let project = this.project;
-            if (project) {
-                let allUsers = this.$store.state.allUsers;
-                return differenceWith<any>(allUsers, project.users, (a, b) => a.id === b.id);
-            }
-            return [];
+            return dropdownItems(availableTags, "name");
         }
     },
     methods: {
-        ...utils,
+        isLate, dropdownItems, date,
         async reloadProject(refresh: boolean = true) {
             await this.$store.dispatch("fetchProject", { id: this.projectId, refresh });
         },
@@ -64,24 +52,15 @@ export default Vue.extend({
                 this.sendUpdate({ ...this.project, status });
             }
         },
-        updateCreatedAt(date: Date) {
+        updateCreatedAt(value: Date) {
             if (this.project) {
-                this.sendUpdate({ ...this.project, created_at: moment(date).toDate() });
+                this.sendUpdate({ ...this.project, created_at: moment(value).toDate() });
             }
         },
-        updateDueDate(date: Date) {
+        updateDueDate(value: Date) {
             if (this.project) {
-                this.sendUpdate({ ...this.project, due_date: moment(date).toDate() });
+                this.sendUpdate({ ...this.project, due_date: moment(value).toDate() });
             }
-        },
-        dragStartUser(event: DragEvent, user: UserStub) {
-            let target = event.target as HTMLElement;
-            target.classList.add("transparent");
-            event.dataTransfer.setData("addUserRequest", JSON.stringify(user));
-        },
-        dragEndUser(event: DragEvent) {
-            let target = event.target as HTMLElement;
-            target.classList.remove("transparent");
         },
         async addTag(tagId: number) {
             await this.$http.post(`/api/projects/${this.project.id}/tags`, { tagId });

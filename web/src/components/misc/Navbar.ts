@@ -1,44 +1,35 @@
-import { ProjectStub, UserStub } from "api/stubs";
-import { mapState } from "vuex";
-import utils from "@main/utils";
+import { ProjectStub, UserStub, RoleType } from "api/stubs";
+import { gravatar } from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
     computed: {
-        ...mapState([ "currentUser" ]),
         user() {
-            return this.currentUser;
+            return this.$store.state.currentUser;
         },
-        projects() {
-            return this.currentUser.projects;
+        admin() {
+            return this.user.role.id === RoleType.ADMIN;
         },
-        myProjects() {
-            if (this.currentUser) {
-                let projects = this.projects;
-                projects = projects.sort((a: ProjectStub, b: ProjectStub) => {
-                    return a.name > b.name ? 1 : -1;
-                });
-                return utils.dropdownItems(projects, "name");
-            }
-            return [];
+        userProjects() {
+            return this.$store.getters.userProjects;
         },
         userIconClass() {
             if (this.user.role) {
                 if (this.user.role.name === "Admin") {
-                    return "key icon";
+                    return "yellow key icon";
                 }
                 else if (this.user.role.name === "Manager") {
-                    return "folder icon";
+                    return "blue folder icon";
                 }
                 else {
-                    return "user icon";
+                    return "blue user icon";
                 }
             }
             return "red dont icon";
         }
     },
     methods: {
-        ...utils,
+        gravatar,
         logout() {
             localStorage.clear();
             window.location.reload();

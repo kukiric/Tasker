@@ -1,6 +1,6 @@
 import { ProjectStub, UserStub, ProjectStatus } from "api/stubs";
+import { dropdownItem } from "@main/utils";
 import * as moment from "moment";
-import utils from "@main/utils";
 import Vue from "vue";
 
 const defaultDate = moment().add(1, "week").format("YYYY-MM-DD");
@@ -20,7 +20,7 @@ export default Vue.extend({
     },
     methods: {
         convertUser(user: UserStub) {
-            return utils.dropdownItem(user, "fullname");
+            return dropdownItem(user, "fullname");
         },
         async send() {
             if (!this.canSubmit) {

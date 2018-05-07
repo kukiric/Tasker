@@ -1,4 +1,5 @@
 import { UserStub, RoleStub } from "api/stubs";
+import { date, time } from "@main/utils";
 import * as moment from "moment";
 import Vue from "vue";
 
@@ -11,19 +12,15 @@ export default Vue.extend({
         };
     },
     methods: {
-        date(timestamp: string) {
-            return moment(timestamp).format("LL");
-        },
-        time(timestamp: string) {
-            return moment(timestamp).format("LLLL");
-        },
+        date,
+        time,
         userIconClass(role: RoleStub) {
             if (role) {
                 if (role.name === "Admin") {
-                    return "key icon";
+                    return "yellow key icon";
                 }
                 else if (role.name === "Manager") {
-                    return "folder icon";
+                    return "blue folder icon";
                 }
                 else {
                     return "user icon";
@@ -38,6 +35,6 @@ export default Vue.extend({
         }
     },
     created() {
-        this.getUsers().then(users => this.users = users);
+        this.getUsers().then((users) => this.users = users);
     }
 });

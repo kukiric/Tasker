@@ -1,5 +1,5 @@
 import { ProjectStub, UserStub } from "api/stubs";
-import utils from "@main/utils";
+import { isLate, isDone, time, date } from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -16,16 +16,10 @@ export default Vue.extend({
         }
     },
     methods: {
-        ...utils,
-        isDone(project: ProjectStub) {
-            return project.status === "Concluído";
-        },
-        currentUserIsInProject(project: ProjectStub) {
-            if (this.user && project.users) {
-                return project.users.some(user => this.user.id === user.id);
-            }
-            return false;
-        },
+        isLate,
+        isDone,
+        time,
+        date,
         async loadProjects(): Promise<ProjectStub[]> {
             let req = await this.$http.get(`/api/projects?include=manager,tags`);
             let projects = req.data as ProjectStub[];
@@ -33,6 +27,6 @@ export default Vue.extend({
         }
     },
     created() {
-        this.loadProjects().then(projects => this.projects = projects);
+        this.loadProjects().then((projects) => this.projects = projects);
     }
 });

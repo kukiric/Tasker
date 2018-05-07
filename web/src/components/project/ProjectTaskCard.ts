@@ -1,7 +1,7 @@
 import { ProjectStub, TaskStub, TaskStatus, UserStub, TaskType, WorkStub } from "api/stubs";
 import EditableText from "@components/misc/EditableText.vue";
+import { gravatar, markdown, date } from "@main/utils";
 import * as moment from "moment";
-import utils from "@main/utils";
 import { clamp } from "lodash";
 import Vue from "vue";
 
@@ -16,9 +16,6 @@ export default Vue.extend({
     props: {
         task: Object,
         isFirst: Boolean
-    } as {
-        task: () => TaskStub,
-        isFirst: () => boolean
     },
     computed: {
         progress() {
@@ -32,7 +29,7 @@ export default Vue.extend({
         }
     },
     methods: {
-        ...utils,
+        gravatar, markdown, date,
         getColorForStatus(task: TaskStub) {
             switch (this.taskStatus) {
                 case TaskStatus.NEW: return "yellow";

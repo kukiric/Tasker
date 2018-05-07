@@ -1,6 +1,5 @@
 import { ProjectStub, TaskStub, TaskStatus } from "api/stubs";
 import ProjectTaskCard from "@components/project/ProjectTaskCard.vue";
-import utils from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -8,8 +7,19 @@ export default Vue.extend({
     props: {
         project: Object
     },
+    computed: {
+        rootTasks() {
+            let project = this.project;
+            if (project && project.tasks) {
+                // Busca somente as tarefas sem pai
+                let rootTasks = project.tasks.filter((task) => task.parent == null);
+                // Ordena elas por ID
+                return rootTasks.sort((a, b) => a.id! - b.id!);
+            }
+            return [];
+        }
+    },
     methods: {
-        ...utils,
         getTaskTree(task: Partial<TaskStub>) {
             let parent = task;
             let children = this.project.tasks.filter((other) => other.parent && other.parent.id === task.id);

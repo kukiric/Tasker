@@ -45,18 +45,17 @@ export default function createStore(http: AxiosInstance) {
                 const user = context.currentUser;
                 return user && user.role && user.role.id! <= RoleType.MANAGER;
             },
-            projectId(context) {
-                return context.currentProject && context.currentProject.id;
-            },
-            rootTasks(context) {
-                const project = context.currentProject;
-                if (project && project.tasks) {
-                    // Busca somente as tarefas sem pai
-                    let rootTasks = project.tasks.filter((task) => task.parent == null);
-                    // Ordena elas por ID
-                    return rootTasks.sort((a, b) => a.id! - b.id!);
+            userProjects(context) {
+                const user = context.currentUser;
+                if (user && user.projects) {
+                    return user.projects.slice().sort((a: ProjectStub, b: ProjectStub) => {
+                        return a.name > b.name ? 1 : -1;
+                    });
                 }
                 return [];
+            },
+            projectId(context) {
+                return context.currentProject && context.currentProject.id;
             }
         },
         mutations: {
@@ -166,7 +165,7 @@ export default function createStore(http: AxiosInstance) {
             async ensureAllUsersLoaded(store) {
                 try {
                     if (!store.state.allUsers) {
-                        let req = await http.get(`/api/users?include=role`);
+                        let req = await http.get(`/api/users?include=role,projects`);
                         store.commit("setAllUsers", req.data);
                     }
                 }

@@ -1,6 +1,6 @@
 <template>
     <div class="root">
-        <sui-card-group v-for="task in $store.getters.rootTasks" :key="task.id">
+        <sui-card-group v-for="task in rootTasks" :key="task.id">
             <ProjectTaskCard v-for="(subtask, index) in getTaskTree(task)" :key="subtask.id" :task="subtask" :isFirst="index === 0" @delete="deleteTask(subtask)"/>
             <sui-card class="card button">
                 <sui-button basic icon="add" content="Nova sub-tarefa..." @click="createSubTask(task.id)"/>
