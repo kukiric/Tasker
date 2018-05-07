@@ -49,6 +49,7 @@
         margin-top: 0 !important;
     }
     .ui.basic.button {
+        position: absolute;
         border-radius: 0 !important;
         border-bottom-left-radius: 6px !important;
         border-bottom-right-radius: 6px !important;
