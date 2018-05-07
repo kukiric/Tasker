@@ -2,8 +2,8 @@
     <ErrorPage v-if="project && project.error"/>
     <div class="root" v-else>
         <!-- Barra lateral -->
-        <ProjectSidebar v-if="project" :users="project.users" @addUser="addUser" @removeUser="removeUser"/>
-        <ProjectSidebar v-else/>
+        <!-- <ProjectSidebar v-if="project" :users="project.users" @addUser="addUser" @removeUser="removeUser"/> -->
+        <!-- <ProjectSidebar v-else/> -->
         <!-- Cabeçalho da página -->
         <div class="ui sticky raised attached segment">
             <h1 class="ui header">

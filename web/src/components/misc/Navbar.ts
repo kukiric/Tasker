@@ -31,8 +31,11 @@ export default Vue.extend({
     methods: {
         gravatar,
         logout() {
-            localStorage.clear();
-            window.location.reload();
+            this.$store.commit("setUserData", null);
+            this.$store.commit("reset", null);
+            this.$nextTick(() => {
+                this.$router.push("/");
+            });
         }
     }
 });

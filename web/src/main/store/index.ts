@@ -1,5 +1,6 @@
 import { RoleType, TaskType, TaskStatus, AuthResponse, DecodedToken, TagStub } from "api/stubs";
 import { ProjectStub, UserStub, TaskStub, WorkStub } from "api/stubs";
+import { RequestConfig, ResponseError } from "@main/axios";
 import { AxiosInstance, AxiosResponse } from "axios";
 import * as JWT from "jsonwebtoken";
 import * as moment from "moment";
@@ -11,8 +12,8 @@ const taskIncludes = "parent,users,work_items[user]";
 
 // Classe que armazena todas as requisições pendentes e com erros
 export class RequestLog {
-    public pending: boolean[] = [];
-    public errors: any[] = [];
+    public pending: RequestConfig[] = [];
+    public errors: ResponseError[] = [];
 }
 
 // Chave usada para armazenar e buscar a token do local storage
@@ -110,32 +111,27 @@ export default function createStore(http: AxiosInstance) {
                 state.allUsers = null;
                 state.token = null;
             },
-            pushRequest(state) {
-                state.requests.pending.push(true);
+            pushRequest(state, config) {
+                state.requests.pending.push(config);
             },
-            popRequest(state) {
-                state.requests.pending.pop();
+            popRequest(state, requestId) {
+                let index = state.requests.pending.findIndex((req) => req.requestId === requestId);
+                state.requests.pending.splice(index, 1);
             },
-            pushError(state, error: number) {
+            pushError(state, error) {
                 state.requests.errors.push(error);
             }
         },
         actions: {
             async loadUser(store, token: string) {
-                try {
-                    // Busca o ID do usuário da token
-                    let decodedToken = JWT.decode(token) as DecodedToken;
-                    // Grava a token antes de prosseguir com a requisição
-                    store.commit("setUserData", { user: null, token: token });
-                    // Busca mais informações sobre o usuário da API a partir da token
-                    let req = await http.get(`/api/users/${decodedToken.uid}?include=role,projects,tasks`);
-                    // Grava as informações completas
-                    store.commit("setUserData", { user: req.data, token: token });
-                }
-                catch (err) {
-                    store.commit("setUserData", null);
-                    throw err;
-                }
+                // Busca o ID do usuário da token
+                let decodedToken = JWT.decode(token) as DecodedToken;
+                // Grava a token antes de prosseguir com a requisição
+                store.commit("setUserData", { user: null, token: token });
+                // Busca mais informações sobre o usuário da API a partir da token
+                let req = await http.get(`/api/users/${decodedToken.uid}?include=role,projects,tasks`);
+                // Grava as informações completas
+                store.commit("setUserData", { user: req.data, token: token });
             },
             async fetchProject(store, { id, refresh }: { id: number, refresh: boolean }) {
                 try {

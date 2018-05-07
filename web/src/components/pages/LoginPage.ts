@@ -46,6 +46,7 @@ export default Vue.extend({
                     });
                 }
                 // Tenta logar no usuário
+                this.info = "Entrando...";
                 let req = await this.$http.post("/api/auth", {
                     username: this.username,
                     password: this.password
@@ -55,7 +56,6 @@ export default Vue.extend({
                 if (response.token) {
                     // Limpa os dados do usuário anterior
                     this.$store.commit("reset");
-                    this.info = "Entrando...";
                     try {
                         // Busca os dados do usuário, usando a token da resposta
                         await this.$store.dispatch("loadUser", response.token);

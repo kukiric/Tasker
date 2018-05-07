@@ -1,30 +1,46 @@
+import { RequestConfig } from "@main/axios";
 import { RequestLog } from "@main/store";
-import { mapState } from "vuex";
 import Vue from "vue";
+
+function stringifyRequest(config: RequestConfig) {
+    return `➔ ${config.method.toUpperCase()} ${config.url}`;
+}
 
 export default Vue.extend({
     props: {
         size: { type: String }
     },
     computed: {
-        ...mapState([ "requests" ]),
+        requests() {
+            return this.$store.state.requests;
+        },
         syncState() {
             let requests: RequestLog = this.requests;
             if (requests.errors.length > 0) {
-                return requests.errors.slice(-1)[0];
+                return {
+                    code: -1,
+                    info: requests.errors.map((err) => JSON.stringify(err, null, 2)).join("\n")
+                };
             }
             else if (requests.pending.length > 0) {
-                return 1;
+                return {
+                    code: 1,
+                    info: requests.pending.map((config) => stringifyRequest(config)).join("\n")
+                };
             }
             else {
-                return 0;
+                return {
+                    code: 0,
+                    info: ""
+                };
             }
         },
         status() {
-            switch (this.syncState) {
+            let state = this.syncState;
+            switch (state.code) {
                 // Enviando
                 case 1: return {
-                    message: "Sincronizando...",
+                    message: "Sincronizando...\n\n" + state.info,
                     icon: { name: "sync", color: "blue" }
                 };
                 // Idle
@@ -34,7 +50,7 @@ export default Vue.extend({
                 };
                 // Erro
                 default: return {
-                    message: "Ocorreu um erro de sincronização! 😨\n\nCódigo do erro: " + this.syncState,
+                    message: "Ocorreram erros durante a sincronização! 😨\n\n" + state.info,
                     icon: { name: "close", color: "red" }
                 };
             }

@@ -50,7 +50,7 @@ let app = new Vue({
     router: router,
     components: { Layout },
     template: "<Layout/>",
-    beforeCreate() {
+    created() {
         // Carrega o usuário se ele estiver logado
         let token = localStorage.getItem(tokenKey);
         if (token) {
