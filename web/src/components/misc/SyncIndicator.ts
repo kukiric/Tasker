@@ -1,9 +1,20 @@
-import { RequestConfig } from "@main/axios";
+import { RequestConfig, ResponseError } from "@main/axios";
 import { RequestLog } from "@main/store";
 import Vue from "vue";
 
-function stringifyRequest(config: RequestConfig) {
-    return `➔ ${config.method.toUpperCase()} ${config.url}`;
+enum SyncCode {
+    SENDING,
+    ERROR,
+    OK
+}
+
+function stringifyRequest(config: RequestConfig, err?: ResponseError) {
+    if (err) {
+        return `*** ${config.method.toUpperCase()} ${config.url} - Error ${err.response.status} ***`;
+    }
+    else {
+        return `➔ ${config.method.toUpperCase()} ${config.url}`;
+    }
 }
 
 export default Vue.extend({
@@ -16,39 +27,29 @@ export default Vue.extend({
         },
         syncState() {
             let requests: RequestLog = this.requests;
+            let info = "";
+            let code = SyncCode.OK;
+            if (requests.pending.length > 0) {
+                info += requests.pending.map((config) => stringifyRequest(config)).join("\n");
+                code = SyncCode.SENDING;
+            }
             if (requests.errors.length > 0) {
-                return {
-                    code: -1,
-                    info: requests.errors.map((err) => JSON.stringify(err, null, 2)).join("\n")
-                };
+                info += requests.errors.map((err) => stringifyRequest(err.config, err)).join("\n");
+                code = SyncCode.ERROR;
             }
-            else if (requests.pending.length > 0) {
-                return {
-                    code: 1,
-                    info: requests.pending.map((config) => stringifyRequest(config)).join("\n")
-                };
-            }
-            else {
-                return {
-                    code: 0,
-                    info: ""
-                };
-            }
+            return { info, code };
         },
         status() {
             let state = this.syncState;
             switch (state.code) {
-                // Enviando
-                case 1: return {
+                case SyncCode.SENDING: return {
                     message: "Sincronizando...\n\n" + state.info,
                     icon: { name: "sync", color: "blue" }
                 };
-                // Idle
-                case 0: return {
+                case SyncCode.OK: return {
                     message: "Tudo sincronizado! 😄",
                     icon: { name: "check circle", color: "green" }
                 };
-                // Erro
                 default: return {
                     message: "Ocorreram erros durante a sincronização! 😨\n\n" + state.info,
                     icon: { name: "close", color: "red" }
