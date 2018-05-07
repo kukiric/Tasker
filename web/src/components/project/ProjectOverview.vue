@@ -33,7 +33,7 @@
         border-top-right-radius: 4px !important;
     }
     .card.button {
-        min-height: 2em;
+        min-height: 2.5em;
         background-color: rgba(255, 255, 255, 0.95);
         border-bottom-left-radius: 4px !important;
         border-bottom-right-radius: 4px !important;
