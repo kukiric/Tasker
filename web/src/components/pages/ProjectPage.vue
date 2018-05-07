@@ -20,10 +20,10 @@
                     </div>
                 </div>
                 <!-- Botão de adicionar usuários no projeto -->
-                <sui-dropdown v-if="$store.getters.userIsManager" fluid selection class="green button" :class="{ disabled: usersNotInProject.length === 0 }">
+                <sui-dropdown v-if="$store.getters.userIsManager" fluid selection class="green button" :class="{ disabled: availableUsers.length === 0 }">
                     Adicionar
                     <sui-dropdown-menu>
-                        <sui-dropdown-item v-for="user in usersNotInProject" :key="user.id" @click="addUser(user)">
+                        <sui-dropdown-item v-for="user in availableUsers" :key="user.id" @click="addUser(user)">
                             <sui-image avatar :src="gravatar(user.email)"/>
                             {{ user.fullname }}
                         </sui-dropdown-item>
@@ -44,7 +44,7 @@
                         {{ tag.name }}
                         <sui-icon name="delete" @click="removeTag(tag.id)"/>
                     </sui-label>
-                    <sui-dropdown search selection placeholder="Adicionar tags" :options="tags" class="tags" :class="{ disabled: tags.length == 0 }" @input="addTag"/>
+                    <sui-dropdown search selection placeholder="Adicionar tags" :options="availableTags" class="tags" :class="{ disabled: availableTags.length == 0 }" @input="addTag"/>
                     <!-- Informações extras -->
                     <div class="sub header" :class="{ red: isLate(project) }">
                         <i v-if="isLate(project)" class="clock icon"></i>

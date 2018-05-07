@@ -48,15 +48,6 @@ export default function createStore(http: AxiosInstance) {
             projectId(context) {
                 return context.currentProject && context.currentProject.id;
             },
-            usersNotInProject(context) {
-                const project = context.currentProject;
-                if (project && project.users && context.allUsers) {
-                    return context.allUsers.filter((u1) => {
-                        return project.users!.some((u2) => u1.id === u2.id) === false;
-                    });
-                }
-                return [];
-            },
             rootTasks(context) {
                 const project = context.currentProject;
                 if (project && project.tasks) {

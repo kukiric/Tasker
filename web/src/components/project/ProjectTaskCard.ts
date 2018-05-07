@@ -21,7 +21,7 @@ export default Vue.extend({
         isFirst: () => boolean
     },
     computed: {
-        progress(): number {
+        progress() {
             return Math.floor(this.taskProgress * 100);
         },
         taskStatusList() {
@@ -29,16 +29,6 @@ export default Vue.extend({
         },
         taskTypeList() {
             return Object.values(TaskType);
-        },
-        usersNotInTask(): Partial<UserStub>[] {
-            let project = this.$store.state.currentProject;
-            if (project && project.users) {
-                let users = project.users;
-                return users.filter((u1: UserStub) => {
-                    return this.task.users!.some((u2) => u1.id === u2.id) === false;
-                });
-            }
-            return [];
         }
     },
     methods: {

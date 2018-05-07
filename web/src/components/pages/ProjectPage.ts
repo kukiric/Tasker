@@ -20,20 +20,24 @@ export default Vue.extend({
         projectId: [ Number, String ]
     },
     computed: {
-        ...mapGetters([ "usersNotInProject" ]),
-        allUsers(): any[] {
-            return this.$store.state.allUsers;
-        },
-        project(): ProjectStub | null {
+        project() {
             return this.$store.state.currentProject;
         },
         projectStatusList() {
             return Object.values(ProjectStatus);
         },
-        tags() {
+        availableTags() {
             let allTags = this.$store.state.tags;
-            let uniqueTags = differenceWith<TagStub, TagStub>(allTags, this.project.tags, (a, b) => a.id === b.id);
-            return utils.dropdownItems(uniqueTags, "name");
+            let availableTags = differenceWith<any>(allTags, this.project.tags, (a, b) => a.id === b.id);
+            return utils.dropdownItems(availableTags, "name");
+        },
+        availableUsers() {
+            let project = this.project;
+            if (project) {
+                let allUsers = this.$store.state.allUsers;
+                return differenceWith<any>(allUsers, project.users, (a, b) => a.id === b.id);
+            }
+            return [];
         }
     },
     methods: {
