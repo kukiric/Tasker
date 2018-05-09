@@ -1,10 +1,11 @@
-import * as CopyWebpackPlugin from "copy-webpack-plugin";
+import * as HtmlWebpackPlugin from "html-webpack-plugin";
 import * as WebpackDevServer from "webpack-dev-server";
 import * as Webpack from "webpack";
 import * as path from "path";
 import "dotenv/config";
 
-const base = process.env.BASE_URL || "/";
+let baseUrl = process.env.BASE_URL || "";
+baseUrl = baseUrl.replace(/\/+$/, "") + "/";
 
 function rel(relativePath: string) {
     return path.join(__dirname, relativePath);
@@ -31,7 +32,7 @@ const config: Webpack.Configuration = {
         styles: rel("src/main/styles.ts")
     },
     output: {
-        publicPath: base + "dist/",
+        publicPath: baseUrl + "dist/",
         path: out("public/dist/"),
         filename: "[name].js"
     },
@@ -57,11 +58,12 @@ const config: Webpack.Configuration = {
     },
     plugins: [
         new Webpack.DefinePlugin({
-            BASE_URL: JSON.stringify(base)
+            BASE_URL: JSON.stringify(baseUrl)
         }),
-        new CopyWebpackPlugin([
-            { from: rel("public/index.html"), to: out("public/index.html") }
-        ])
+        new HtmlWebpackPlugin({
+            filename: out("public/index.html"),
+            template: rel("public/index.html")
+        })
     ],
     devServer: devServerConfig,
     devtool: "cheap-module-source-map"
