@@ -4,7 +4,13 @@ import { gravatar } from "@main/utils";
 import Vue from "vue";
 
 export default Vue.extend({
+    data() {
+        return {
+            visible: false
+        };
+    },
     props: {
+        startVisible: { type: Boolean },
         users: { type: Array }
     },
     computed: {
@@ -15,6 +21,9 @@ export default Vue.extend({
                 return differenceWith<any>(allUsers, users, (a, b) => a.id === b.id);
             }
             return [];
+        },
+        pusherIcon() {
+            return this.visible ? "right triangle" : "left triangle";
         }
     },
     methods: {
@@ -27,6 +36,11 @@ export default Vue.extend({
         dragEndUser(event: DragEvent) {
             let target = event.target as HTMLElement;
             target.classList.remove("transparent");
+        }
+    },
+    created() {
+        if (this.startVisible) {
+            this.visible = true;
         }
     }
 });

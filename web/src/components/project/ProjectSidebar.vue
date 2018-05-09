@@ -1,5 +1,7 @@
 <template>
-    <sui-menu vertical fixed="right">
+    <sui-sidebar :visible="visible" direction="right" animation="overlay">
+        <!-- Botão de abrir/fechar -->
+        <sui-button class="left attached side button" :icon="pusherIcon" @click="visible = !visible"/>
         <div class="item">
             <!-- Lista de membros do projeto -->
             <h1 class="ui header">Membros</h1>
@@ -27,13 +29,29 @@
                 </sui-dropdown-menu>
             </sui-dropdown>
         </div>
-    </sui-menu>
+    </sui-sidebar>
 </template>
 <style scoped>
-    .ui.menu {
+    .ui.sidebar {
+        padding-top: 3em;
         overflow: visible !important;
-        background-color: rgba(255, 255, 255, 0.5);
+        z-index: 5 !important;
         width: 25rem;
+    }
+    .ui.sidebar .side.button {
+        position: absolute;
+        visibility: visible !important;
+        transform: translate(-100%, 0);
+        transition: background-color 100ms ease;
+        background-color: white;
+        border-radius: 0;
+        padding: 0.5em;
+        z-index: 50;
+        height: 100%;
+        top: 0;
+    }
+    .ui.sidebar .side.button:hover {
+        background-color: lightgray;
     }
 </style>
 <script src="./ProjectSidebar.ts" lang="ts"></script>

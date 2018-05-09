@@ -2,10 +2,10 @@
     <ErrorPage v-if="project && project.error"/>
     <div class="root" v-else>
         <!-- Barra lateral -->
-        <!-- <ProjectSidebar v-if="project" :users="project.users" @addUser="addUser" @removeUser="removeUser"/> -->
-        <!-- <ProjectSidebar v-else/> -->
+        <ProjectSidebar v-if="project" :users="project.users" @addUser="addUser" @removeUser="removeUser" :startVisible="true"/>
+        <ProjectSidebar v-else/>
         <!-- Cabeçalho da página -->
-        <div class="ui sticky raised attached segment">
+        <div class="ui raised attached segment">
             <h1 class="ui header">
                 <i class="teal open folder icon"></i>
                 <div v-if="project" class="content">
@@ -70,10 +70,6 @@
         bottom: 0;
         z-index: -1;
         box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.15);
-    }
-    .ui.sticky.raised.segment {
-        position: sticky;
-        z-index: 10;
     }
     .sync.indicator {
         position: absolute;
