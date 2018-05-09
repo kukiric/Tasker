@@ -1,3 +1,4 @@
+import * as HtmlWebpackHarddiskPlugin from "html-webpack-harddisk-plugin";
 import * as HtmlWebpackPlugin from "html-webpack-plugin";
 import * as WebpackDevServer from "webpack-dev-server";
 import * as Webpack from "webpack";
@@ -16,7 +17,7 @@ function out(relativePath: string) {
 }
 
 const devServerConfig: WebpackDevServer.Configuration = {
-    contentBase: rel("public/"),
+    contentBase: out("public/"),
     historyApiFallback: true,
     stats: "minimal",
     overlay: true,
@@ -62,8 +63,10 @@ const config: Webpack.Configuration = {
         }),
         new HtmlWebpackPlugin({
             filename: out("public/index.html"),
-            template: rel("public/index.html")
-        })
+            template: rel("public/index.html"),
+            alwaysWriteToDisk: true
+        }),
+        new HtmlWebpackHarddiskPlugin()
     ],
     devServer: devServerConfig,
     devtool: "cheap-module-source-map"
