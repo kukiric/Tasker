@@ -9,8 +9,6 @@ const LoginPage = () => import("@components/pages/LoginPage.vue");
 const ProjectPage = () => import("@components/pages/ProjectPage.vue");
 const ProjectTable = () => import("@components/project/ProjectTable.vue");
 
-const Default = Vue.extend({ template: "<router-view></router-view>" });
-
 export default function createRouter(vueConstructor: typeof Vue, store: ReturnType<typeof createStore>) {
     // Carrega o plugin do VueRouter na instância global do Vue
     vueConstructor.use(VueRouter);
@@ -23,10 +21,8 @@ export default function createRouter(vueConstructor: typeof Vue, store: ReturnTy
             { path: "/", name: "Home" },
             { path: "/admin", name: "Admin", component: AdminPage },
             { path: "/login", name: "Login", component: LoginPage, alias: "/register" },
-            { path: "/projects", component: Default, children: [
-                { path: "/", name: "ProjectList", component: ProjectTable },
-                { path: "/:projectId", name: "Project", component: ProjectPage, props: true }
-            ]},
+            { path: "/projects", name: "ProjectList", component: ProjectTable },
+            { path: "/projects/:projectId", name: "Project", component: ProjectPage, props: true },
             { path: "/tasks", name: "TaskList" },
             { path: "/versions", name: "VersionList" },
             { path: "*", name: "Error", component: ErrorPage }
