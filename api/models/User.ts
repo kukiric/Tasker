@@ -4,7 +4,7 @@ import Project from "api/models/Project";
 import Role from "api/models/Role";
 import Work from "api/models/Work";
 import Task from "api/models/Task";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 import * as Joi from "joi";
 
 export default class User extends Model implements UserStub {

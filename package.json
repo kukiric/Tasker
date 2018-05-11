@@ -13,7 +13,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@types/bcrypt": "^2.0.0",
+    "@types/bcryptjs": "^2.4.1",
     "@types/boom": "^7.2.0",
     "@types/dotenv": "^4.0.3",
     "@types/hapi": "^17.0.12",
@@ -28,7 +28,7 @@
     "@types/webpack-dev-server": "^2.9.4",
     "app-module-path": "^2.2.0",
     "axios": "^0.18.0",
-    "bcrypt": "^2.0.1",
+    "bcryptjs": "^2.4.3",
     "boom": "^7.2.0",
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.11",

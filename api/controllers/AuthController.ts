@@ -4,8 +4,8 @@ import { AuthResponse, DecodedToken } from "api/stubs";
 import NullModel from "api/models/NullModel";
 import User from "api/models/User";
 import * as JWT from "jsonwebtoken";
+import * as bcrypt from "bcryptjs";
 import * as assert from "assert";
-import * as bcrypt from "bcrypt";
 import * as Boom from "boom";
 import * as Joi from "joi";
 
