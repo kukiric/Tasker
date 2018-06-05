@@ -1,5 +1,5 @@
 import * as Knex from "knex";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 
 exports.up = async function (knex: Knex): Promise<any> {
     let now = new Date();
